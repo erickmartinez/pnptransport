@@ -1,15 +1,15 @@
-import pidsim.rsh
 import numpy as np
-# import pandas as pd
+import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import matplotlib.ticker as mticker
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-from matplotlib.ticker import ScalarFormatter
+# from mpl_toolkits.axes_grid1 import make_axes_locatable
+# from matplotlib.ticker import ScalarFormatter
+import matplotlib.gridspec as gridspec
 import platform
 import os
-import matplotlib.gridspec as gridspec
-from tqdm import tqdm
+import pidsim.rsh as prsh
+import numpy as np
 
 
 base_folder = r'G:\My Drive\Research\PVRD1\FENICS\SUPG_TRBDF2\simulations\results_two_layers\pnp\source_limited\source_limited_4um_Cs1E16_0.5MVcm\recovery'
@@ -52,7 +52,7 @@ defaultPlotStyle = {
 }
 
 if __name__ == '__main__':
-
+    mpl.rcParams.update(defaultPlotStyle)
     if platform.system() == 'Windows':
         base_folder = r'\\?\\' + base_folder
 
@@ -61,27 +61,29 @@ if __name__ == '__main__':
     if not os.path.exists(results_folder):
         os.makedirs(results_folder)
 
-    rsh_analysis = pidsim.rsh.Rsh(h5_transport_file=os.path.join(base_folder, transport_file))
+    path_to_file = os.path.join(base_folder, transport_file)
+    rsh_analysis = prsh.Rsh(h5_transport_file=path_to_file)
     time_s = rsh_analysis.time_s
     time_points = len(time_s)
     time_h = time_s / 3600
-    rsh = np.empty(time_points)
-    with tqdm(time_points) as pbar:
-        for i, t in enumerate(time_s):
-            rsh[i] = rsh_analysis.resistance_at_time_t(time_s=t)
-            progress_str = 'Processing Time: {0:.1f}/{1:.1f}, Rsh: {2:.3g} Ohm'.format(t/3600, time_s.max()/3600, rsh[i])
-            pbar.set_description(progress_str)
+    t_max = np.amax(time_s)
+    rsh = np.empty(100)
 
-    mpl.rcParams.update(defaultPlotStyle)
+    requested_indices = rsh_analysis.get_requested_time_indices(time_s)
+    rsh = rsh_analysis.resistance_time_series(requested_indices=requested_indices)
 
     fig = plt.figure()
-    fig.set_size_inches(5.5, 4.5, forward=True)
-    fig.subplots_adjust(hspace=0.15, wspace=0.35)
+    fig.set_size_inches(4.5, 3.0, forward=True)
+    fig.subplots_adjust(hspace=0.15, wspace=0.15)
     gs0 = gridspec.GridSpec(ncols=1, nrows=1, figure=fig, width_ratios=[1])
     gs00 = gridspec.GridSpecFromSubplotSpec(nrows=1, ncols=1, subplot_spec=gs0[0])
-    ax1 = fig.add_subplot(gs0[0, 0])
-    # ax1 = fig.add_subplot(111)
-    # ax1.plot(time_h, rsh)
-    #
-    # plt.tight_layout()
-    # plt.show()
+    ax1 = fig.add_subplot(gs00[0, 0])
+
+    ax1.plot(time_h, rsh)
+    
+    ax1.set_yscale('log')
+    ax1.set_xlabel('time (h)')
+    ax1.set_ylabel('$R_{\mathrm{sh}}$')
+
+    plt.tight_layout()
+    plt.show()

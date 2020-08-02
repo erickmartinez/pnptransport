@@ -130,8 +130,11 @@ class H5Storage:
         with h5py.File(self._filename, 'r') as hf:
             if group_name != "/":
                 group = hf.get(group_name)
-                ds = group.get(name=name)
+                ds = np.array(group.get(name=name))
             else:
-                ds = hf.get(name=name)
-            ds_numpy = np.array(ds)
-        return ds_numpy
+                ds = np.array(hf.get(name=name))
+        return ds
+
+    @property
+    def filename(self):
+        return self._filename

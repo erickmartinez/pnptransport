@@ -432,15 +432,15 @@ def two_layers_source_lim(D1cms: float, Cs: float, D2cms: float, h: float,
             + qee * uc
         return r
 
-    # def segregation_flux(h_, cc1, cc2, m_: Union[float, int] = 1):
-    #     J = h_ * (cc1 - cc2 / m_)
-    #     return J
-
     def segregation_flux(h_, cc1, cc2, m_: Union[float, int] = 1):
-        ux1, uc1, _ = get_solution_array1(mesh1, cc1)
-        ux2, uc2, _ = get_solution_array1(mesh1, cc2)
-        J = h_ * (uc1[-1] - uc2[-1] / m_)
+        J = h_ * (cc1 - cc2 / m_)
         return J
+
+    # def segregation_flux(h_, cc1, cc2, m_: Union[float, int] = 1):
+    #     ux1, uc1, _ = get_solution_array1(mesh1, u1)
+    #     ux2, uc2,   = get_solution_array2(mesh2, u2)
+    #     J = h_ * (uc1[-1] - uc2[0] / m_)
+    #     return J
 
     def update_potential_bc(uui, bias: float = voltage):
         # The total concentration in the oxide (um-2)

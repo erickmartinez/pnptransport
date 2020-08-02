@@ -396,10 +396,14 @@ def two_layers_constant_source(D1cms: float, D2cms: float, Cs: float, h: float,
             + qee * uc
         return r
 
+    # def segregation_flux(h_, cc1, cc2, m_: Union[float, int] = 1):
+    #     ux1, uc1, _ = get_solution_array1(mesh1, cc1)
+    #     ux2, uc2, _ = get_solution_array1(mesh1, cc2)
+    #     J = h_ * (uc1[-1] - uc2[-1] / m_)
+    #     return J
+
     def segregation_flux(h_, cc1, cc2, m_: Union[float, int] = 1):
-        ux1, uc1, _ = get_solution_array1(mesh1, cc1)
-        ux2, uc2, _ = get_solution_array1(mesh1, cc2)
-        J = h_ * (uc1[-1] - uc2[-1] / m_)
+        J = h_ * (cc1 - cc2 / m_)
         return J
 
     def update_potential_bc(uui, bias: float = voltage):

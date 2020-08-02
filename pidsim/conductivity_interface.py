@@ -1,7 +1,7 @@
 import abc
 
 
-class ConductivityInterface(metaclass=abc.ABCMeta):
+class ConductivityInterface:
     @abc.abstractmethod
     def estimate_conductivity(self):
         pass

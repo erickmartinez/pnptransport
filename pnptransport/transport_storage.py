@@ -1,12 +1,10 @@
-from typing import Union
-
-import pnptransport.hd5storage as h5storage
 import numpy as np
+import pnptransport.hd5storage as h5storage
 
 
 class TransportStorage(h5storage.H5Storage):
     __layers = [1, 2]
-    __time_s = np.ndarray = None
+    __time_s: np.ndarray = None
 
     def __init__(self, filename: str):
         super().__init__(filename=filename)
@@ -14,7 +12,8 @@ class TransportStorage(h5storage.H5Storage):
     def create_time_dataset(self, time_s: np.ndarray):
         self.create_dataset(name='time', data=time_s)
 
-    def get_time_data(self) -> np.ndarray:
+    @property
+    def time_s(self) -> np.ndarray:
         """
         Queries the time dataset
 
@@ -46,7 +45,7 @@ class TransportStorage(h5storage.H5Storage):
 
         return self.get_numpy_dataset(name='x', group_name='/L{0}'.format(int(layer)))
 
-    def get_concentration_at_time_t(self, requested_time_s: Union[float, int], layer: int) -> np.ndarray:
+    def get_concentration_at_time_t(self, requested_time_s: float, layer: int) -> np.ndarray:
         """
         Tries to find the concentration profile at the specified time
 
@@ -64,13 +63,13 @@ class TransportStorage(h5storage.H5Storage):
         if layer not in self.__layers:
             raise IndexError('Layer {0} out of bounds. Valid layers are 1 or 2'.format(layer))
 
-        time_s = self.get_time_data()
+        time_s = self.time_s
         # Find the index closet to the requested time
         idx = (np.abs(requested_time_s - time_s)).argmin()
         dataset_name = 'ct_{0:d}'.format(int(idx))
         return self.get_numpy_dataset(name=dataset_name, group_name='/L{0:d}/concentration'.format(int(layer)))
 
-    def get_potential_at_time_t(self, requested_time_s: Union[float, int]) -> np.ndarray:
+    def get_potential_at_time_t(self, requested_time_s: float) -> np.ndarray:
         """
         Tries to find the concentration profile at the specified time
 
@@ -85,7 +84,7 @@ class TransportStorage(h5storage.H5Storage):
             The concentration profile in atoms/cm^3
         """
 
-        time_s = self.get_time_data()
+        time_s = self.time_s
         # Find the index closet to the requested time
         idx = (np.abs(requested_time_s - time_s)).argmin()
         dataset_name = 'ct_{0:d}'.format(int(idx))

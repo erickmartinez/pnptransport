@@ -1,5 +1,5 @@
 import numpy as np
-from .conductivity_interface import ConductivityInterface
+from pidsim.conductivity_interface import ConductivityInterface
 
 
 class KorolConductivity(ConductivityInterface):

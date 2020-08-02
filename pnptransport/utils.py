@@ -1,6 +1,4 @@
-from typing import Union
 import numpy as np
-import scipy.optimize as optimize
 
 
 def evaluate_arrhenius(a0: float, Ea: float, temp: float) -> float:
@@ -25,13 +23,13 @@ def evaluate_arrhenius(a0: float, Ea: float, temp: float) -> float:
     return a0 * np.exp(-Ea / kT)
 
 
-def format_time_str(time_s: Union[float, int]):
+def format_time_str(time_s: float):
     """
     Returns a formatted time string
 
     Parameters
     ----------
-    time_s : float, int
+    time_s : float
         The time in seconds
 
 
@@ -99,7 +97,8 @@ def fit_arrhenius(temperature_axis, y, **kwargs):
     fscale = kwargs.get('fscale', 0.1)
     kB = 8.6173303E-5  # eV/K
 
-    import pnptransport.constantsource as cf
+    import pnptransport.confidence as cf
+    import scipy.optimize as opt
     from scipy.linalg import svd
 
     x = temperature_axis.copy()
@@ -121,14 +120,16 @@ def fit_arrhenius(temperature_axis, y, **kwargs):
         p0 = [-10, 0.5]
 
     all_tol = np.finfo(np.float64).eps
-    res = optimize.least_squares(fobj, p0, xtol=all_tol, ftol=all_tol, gtol=all_tol,
-                                 method='trf',
-                                 jac='3-point',
-                                 # loss='cauchy',
-                                 tr_options={'regularize': True},
-                                 x_scale='jac',
-                                 f_scale=fscale,
-                                 max_nfev=20000)
+    res: opt.OptimizeResult = opt.least_squares(
+        fobj, p0, xtol=all_tol, ftol=all_tol, gtol=all_tol,
+        method='trf',
+        jac='3-point',
+        # loss='cauchy',
+        tr_options={'regularize': True},
+        x_scale='jac',
+        f_scale=fscale,
+        max_nfev=20000
+    )
 
     xfit = np.linspace(min(x), max(x))
     #    yfit = func(xfit,*popt)
@@ -241,3 +242,71 @@ def latex_format_with_error(num, err):
             ltx_str += r'$\mathregular{\times 10^{%d}}$' % err_sci[1]
 
     return ltx_str
+
+
+def get_indices_at_values(x: np.array, requested_values: np.array) -> np.ndarray:
+    """
+    Constructs an array of valid indices in the x array corresponding to the requested values
+
+    Parameters
+    ----------
+    x: np.array
+        The array from which the indices will be drawn
+    requested_values: np.array
+
+    Returns
+    -------
+    np.array
+        An array with the indices corresponding to the requested values
+    """
+    result = np.empty(len(requested_values), dtype=int)
+    for i, v in enumerate(requested_values):
+        result[i] = int((np.abs(v - x)).argmin())
+    return result
+
+
+def tau_c(D: float, E: float, L: float, T: float) -> float:
+    '''
+    tau_c estimates the charactersitic constant for the Nernst-Planck
+    equation in the low concentration approximation
+
+    tau_c = 2D/(mu^2 E^2) + L/(mu E)*[1 ± 2*(kT/(q E L))^(1/2)]
+
+    Since mu = qD/kT
+
+    tau_c = (2/D) X^2 + (l/D) X * [1 ± 2*(X/L)^(1/2)],
+
+    with X = kT/qE
+
+    Parameters:
+    -----------
+    D: float
+        The diffusion coefficient in cm^2/s
+    E: float
+        The electric field in MV/cm = 1E6 V/cm
+    L: float
+        The distance in cm
+    T: float
+        The temperature in °C
+
+    Returns:
+    --------
+    float
+        The characteristic time in s
+    '''
+    TK = T + 273.15
+    kB_red = 8.6173303  # 1E-5 eV/K
+
+    kTq_red = kB_red * TK  # x 1E-5 V
+
+    x = kTq_red / E  # x 1E-5 V x 1E-6 cm/V = 1E-11 cm
+
+    tau1 = 1.0E-11 * x * (L / D) + (2.0E-22 * np.power(x, 2.0) / D) * (1.0 - np.sqrt(1.0 + 1E-11 * (L / x)))
+    tau2 = 1.0E-11 * x * (L / D) + (2.0E-22 * np.power(x, 2.0) / D) * (1.0 + np.sqrt(1.0 + 1E-11 * (L / x)))
+
+    if tau1 <= 0:
+        return tau2
+    elif tau2 <= 0:
+        return tau1
+    else:
+        return min(tau1, tau2)
