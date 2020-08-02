@@ -230,6 +230,7 @@ def two_layers_source_lim(D1cms: float, Cs: float, D2cms: float, h: float,
         fcallLogger.info('h0: {0:.3} (cm/s'.format(h0))
         fcallLogger.info('Thickness of source: {0:.3E} (cm)'.format(thickness_source))
         fcallLogger.info('Recovery time: {0}.'.format(utils.format_time_str(recovery_time_s)))
+        fcallLogger.info('Recovery voltage: {0:.3E}.'.format(recovery_voltage))
         fcallLogger.info('*************** SiNx ******************')
         fcallLogger.info('Thickness: {0:.1E} um'.format(thickness_sinx))
         fcallLogger.info('er: {0:.1f}'.format(er))
@@ -398,12 +399,17 @@ def two_layers_source_lim(D1cms: float, Cs: float, D2cms: float, h: float,
 
     tol = 1E-16
 
-    def update_bcs1(cs_t, bias):
-        return [DirichletBC(W.sub(0), cs_t * 1E-12, boundaries1, 1),
+    def update_bcs1(bias):
+        return [#DirichletBC(W.sub(0), cs_t * 1E-12, boundaries1, 1),
                 DirichletBC(W.sub(1), voltage / er, boundaries1, 1)]
 
     bcs1 = [DirichletBC(W.sub(1), voltage / er, boundaries1, 1)]
     bcs2 = None  # [DirichletBC(V2,Cbulk*CM3TOUM3,boundaries2,2)]
+
+    # bcs1 = [DirichletBC(W.sub(1), bias / er, boundaries1, 1)]
+
+
+    bcs1 = update_bcs1(bias=voltage)
 
     def get_variational_form1(uc, up, gp1_, gp2_, u2c, cs):
         sf2 = segregation_flux(hums, uc, u2c, m)
@@ -453,34 +459,23 @@ def two_layers_source_lim(D1cms: float, Cs: float, D2cms: float, h: float,
         # Get the solution in an array form
         uxi, uci, upi = get_solution_array1(mesh1, uui)
 
-        # The total concentration in the oxide (cm-2)
+        # The integrated concentration in the oxide (cm-2) <------------- Check: (1/cm^3) x (um) x (1E-4 cm/1um)
         Ctot_ = integrate.simps(uci, uxi) * 1E-4
         # The integral in Poisson's equation solution (Nicollian & Brews p.426)
-        # units: 1/cm
+        # units: 1/cm <------------- Check: (1/cm^3) x (um^2) x (1E-4 cm/1um)^2
         Cint_ = integrate.simps(uxi * uci, uxi) * 1E-8
         # The centroid of the charge distribution
         xbar_ = Cint_ / Ctot_ * 1E4  # um
-
-        #        # The surface charge density at silicon C/cm2
-        #        scd_si  = Ctot*constants.e*(xbar/L)
-        #        # The surface charge density at the gate C/cm2
-        #        scd_g   = (1 - xbar/L)*Ctot*constants.e
-        #
-        #
-        #
-        #        # The electric field at the Si interface
-        #        E_si    = -voltage1/L/er - 1E-2*scd_si/constants.epsilon_0/er
-        #        # The electric field at the top interface
-        #        E_g   = voltage1/L/er - 1E-2*scd_g/constants.epsilon_0/er
 
         # The surface charge density at silicon C/cm2
         scd_si = -constants.e * (xbar_ / L1) * Ctot_
         # The surface charge density at the gate C/cm2
         scd_g = -constants.e * (1.0 - xbar_ / L1) * Ctot_
 
-        # The electric field at the gate interface
+        # The electric field at the gate interface V/um
+        # (C / cm^2) * (J * m / C^2 ) x ( 1E2 cm / 1 m) x ( 1E cm / 1E4 um)
         E_g_ = bias / L1 / er + 1E-2 * scd_g / constants.epsilon_0 / er  # x
-        # The electric field at the Si interface
+        # The electric field at the Si interface V/um
         E_si_ = bias / L1 / er - 1E-2 * scd_si / constants.epsilon_0 / er  # x
 
         # Since grad(phi) = -E
@@ -511,8 +506,8 @@ def two_layers_source_lim(D1cms: float, Cs: float, D2cms: float, h: float,
                                     "linear_solver": "lu",
                                     # "preconditioner": 'ilu',  # 'hypre_euclid',
                                     "convergence_criterion": "incremental",
-                                    "absolute_tolerance": 1E-5,
-                                    "relative_tolerance": 1E-4,
+                                    "absolute_tolerance": 1E-6,
+                                    "relative_tolerance": 1E-5,
                                     "maximum_iterations": max_iter,
                                     "relaxation_parameter": relaxation_parameter,
                                     # 'krylov_solver': {
@@ -691,6 +686,8 @@ def two_layers_source_lim(D1cms: float, Cs: float, D2cms: float, h: float,
 
     for n, t in enumerate(t_sim):
         bias_t = voltage if t <= time_s else recovery_voltage
+        if t > time_s:
+            bcs1 = update_bcs1(bias=bias_t)
         gp1, gp2, Cint, Ctot, E_g, E_si, xbar, vfb[n] = update_potential_bc(u1_n, bias=bias_t)
         x1i, c1i, p1i = get_solution_array1(mesh1, u1_n)
         x2i, c2i = get_solution_array2(mesh2, u2_n)
