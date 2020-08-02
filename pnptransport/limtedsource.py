@@ -130,7 +130,7 @@ def two_layers_source_lim(D1cms: float, Cs: float, D2cms: float, h: float,
     fcall = kwargs.get('fcall', 1)
     tsteps = kwargs.get('tsteps', 400)
     max_calls = kwargs.get('max_rcalls', 3)
-    max_iter = kwargs.get('max_iter', 500)
+    max_iter = kwargs.get('max_iter', 1000)
     er = kwargs.get('er', 7.0)
     z = kwargs.get('z', 1.0)
     t_smear = kwargs.get('t_smear', 60)
@@ -401,7 +401,7 @@ def two_layers_source_lim(D1cms: float, Cs: float, D2cms: float, h: float,
 
     def update_bcs1(bias):
         return [#DirichletBC(W.sub(0), cs_t * 1E-12, boundaries1, 1),
-                DirichletBC(W.sub(1), voltage / er, boundaries1, 1)]
+                DirichletBC(W.sub(1), bias / er, boundaries1, 1)]
 
     bcs1 = [DirichletBC(W.sub(1), voltage / er, boundaries1, 1)]
     bcs2 = None  # [DirichletBC(V2,Cbulk*CM3TOUM3,boundaries2,2)]
@@ -506,8 +506,8 @@ def two_layers_source_lim(D1cms: float, Cs: float, D2cms: float, h: float,
                                     "linear_solver": "lu",
                                     # "preconditioner": 'ilu',  # 'hypre_euclid',
                                     "convergence_criterion": "incremental",
-                                    "absolute_tolerance": 1E-6,
-                                    "relative_tolerance": 1E-5,
+                                    "absolute_tolerance": 1E-5,
+                                    "relative_tolerance": 1E-4,
                                     "maximum_iterations": max_iter,
                                     "relaxation_parameter": relaxation_parameter,
                                     # 'krylov_solver': {
