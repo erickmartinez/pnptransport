@@ -1,0 +1,964 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Finite Source Simulation Code &mdash; PNP Transport 0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Rsh Approximation Model" href="pidsim.html" />
+    <link rel="prev" title="Welcome to PNP Transport’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> PNP Transport
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Finite Source Simulation Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#module-pnptransport.infinitesource">Infinite Source Simulation Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#module-pnptransport.utils">Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#module-pnptransport.confidence">Confidence Intervals Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#module-pnptransport.transport_storage">Transport HD5 Storage System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#module-pnptransport.hd5storage">HD5 Storage</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pidsim.html">Rsh Approximation Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pidsim.html#module-pidsim.korol_conductivity">Korol Conductivity Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pidsim.html#module-pidsim.parameter_span">Parameter Span</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pidsim.html#module-pidsim.conductivity_interface">Conductivty Interface</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PNP Transport</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Finite Source Simulation Code</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/pnptransport.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-pnptransport.finitesource">
+<span id="finite-source-simulation-code"></span><h1>Finite Source Simulation Code<a class="headerlink" href="#module-pnptransport.finitesource" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="pnptransport.finitesource.two_layers_constant_flux">
+<code class="sig-prename descclassname">pnptransport.finitesource.</code><code class="sig-name descname">two_layers_constant_flux</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">D1cms</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">D2cms</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">h</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">m</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">thickness_sinx</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">thickness_si</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">tempC</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">voltage</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">time_s</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>float<span class="p">, </span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">surface_concentration</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">100000000000.0</span></em>, <em class="sig-param"><span class="n">h_surface</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0001</span></em>, <em class="sig-param"><span class="n">recovery_time_s</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>float<span class="p">, </span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">recovery_voltage</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">trapping</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.finitesource.two_layers_constant_flux" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function simulates the flatband voltage as a function of time for a
+MIS device where Na is migrating into the cell. It also returns a matrix
+with the concentration profiles as a function of time.</p>
+<p>The system solves Poisson-Nernst-Planck equation for a single species.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>D1cms</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The diffusion coefficient of Na in the dielectric (cm^2/s)</p></li>
+<li><p><strong>D2cms</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The diffusion coefficient of Na in silicon (cm^2/s)</p></li>
+<li><p><strong>h</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The surface mass transfer coefficient (cm/s)</p></li>
+<li><p><strong>m</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The segregation coefficient (unitless)</p></li>
+<li><p><strong>thickness_sinx</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The thickness of the simulated dielectric layer (um)</p></li>
+<li><p><strong>thickness_si</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The thickness of the simulated silicon layer (um)</p></li>
+<li><p><strong>tempC</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – The temperature in °C</p></li>
+<li><p><strong>voltage</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – The voltage applied to the dielectric (V)</p></li>
+<li><p><strong>time_s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – The simulation time in seconds</p></li>
+<li><p><strong>surface_concentration</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The initial surface concentration in atoms/cm^2
+The flux at the source will be determined as J = h_surface * suface_concentration.
+Default value 1E11 atoms/cm^2</p></li>
+<li><p><strong>h_surface</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The surface mass transfer coefficient at the top interface in monolayers per second.
+Default value: 1E-4</p></li>
+<li><p><strong>recovery_time_s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – An additional simulation time during which, no electrical stress is applied. (s)</p></li>
+<li><p><strong>recovery_voltage</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – If provided a recovery time, the bias at which it will recover (V).</p></li>
+<li><p><strong>trapping</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, apply trapping correction to the image charges. Default (True)</p></li>
+<li><p><strong>**kwargs</strong> – <dl class="simple">
+<dt>cbulk: double</dt><dd><p>The base concentration cm-3</p>
+</dd>
+<dt>xpoints_sinx: int</dt><dd><p>The number of cells in the sinx layer</p>
+</dd>
+<dt>xpoints_si: int</dt><dd><p>The number of cells in the si layer</p>
+</dd>
+<dt>z: integer</dt><dd><p>The valency of the ion
+default: 1</p>
+</dd>
+<dt>er: double</dt><dd><p>The relative permittivity of the dielectric</p>
+</dd>
+<dt>phi_b: double</dt><dd><p>The trap level below the conduction band in Frenkel-Pool emission (eV). Default 1.3 eV
+S. M. Sze,  J. Appl. Phys. 38 (7), 2951 (1967).</p>
+</dd>
+<dt>en_opt: float</dt><dd><p>The optical relative permittivity of the nitride film. Default  5.51
+S. M. Sze,  J. Appl. Phys. 38 (7), 2951 (1967).</p>
+</dd>
+<dt>c_fp: float</dt><dd><p>The constant of proportionality for Frenkel-Poole current (A/cm/V). Default 1E-3 A/cm/V.
+S. M. Sze,  J. Appl. Phys. 38 (7), 2951 (1967).</p>
+</dd>
+<dt>xpoints: int</dt><dd><p>The number of x points to simulate</p>
+</dd>
+<dt>fcall: int</dt><dd><p>The number of times the function has been called to solve the same
+problem</p>
+</dd>
+<dt>tsteps: int</dt><dd><p>The number of time steps to simulate</p>
+</dd>
+<dt>max_calls: int</dt><dd><p>The maximum number of times the function can be recursively call if the convergence fails.</p>
+</dd>
+<dt>max_iter: int</dt><dd><p>The maximum number of iterations for the solver</p>
+</dd>
+<dt>relaxation_parameter: float</dt><dd><p>The relaxation w for the Newton algorithm</p>
+</dd>
+<dt>h5fn: str</dt><dd><p>The path to the h5 file to store the simulation results</p>
+</dd>
+<dt>debug: bool</dt><dd><p>True if debugging the function</p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>Vfb</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – An array containing the flat band voltage shift as a function of time
+in (V)</p></li>
+<li><p><strong>tsim</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The time for each flatband voltage point</p></li>
+<li><p><strong>x1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The depth of the concentration profile in SiNx</p></li>
+<li><p><strong>c1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The final concentration profile as a function of depth in SiNx</p></li>
+<li><p><strong>potential</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The final potential profile as a function of depth in SiNx</p></li>
+<li><p><strong>x2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The depth of the concentration profile in Si</p></li>
+<li><p><strong>c2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The final concentration profile in Si</p></li>
+<li><p><strong>cmax</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The maximum concentration in silicon nitride</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pnptransport.finitesource.two_layers_decaying_flux">
+<code class="sig-prename descclassname">pnptransport.finitesource.</code><code class="sig-name descname">two_layers_decaying_flux</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">D1cms</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">Cs</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">D2cms</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">h</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">m</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">thickness_sinx</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">thickness_si</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">tempC</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">voltage</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">time_s</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>float<span class="p">, </span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">na_moles</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">h0</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1e-10</span></em>, <em class="sig-param"><span class="n">max_surface_concentration</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1000000000000.0</span></em>, <em class="sig-param"><span class="n">recovery_time_s</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>float<span class="p">, </span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">recovery_voltage</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">trapping</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.finitesource.two_layers_decaying_flux" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function simulates the flatband voltage as a function of time for a
+MIS device where Na is migrating into the cell. It also returns a matrix
+with the concentration profiles as a function of time.</p>
+<p>The system solves Poisson-Nernst-Planck equation for a single species.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>D1cms</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The diffusion coefficient of Na = in the dielectric (cm^2/s)</p></li>
+<li><p><strong>Cs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The initial concentration of Na (1/cm3)</p></li>
+<li><p><strong>D2cms</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The diffusion coefficient of Na in silicon (cm^2/s)</p></li>
+<li><p><strong>h</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The surface mass transfer coefficient (cm/s)</p></li>
+<li><p><strong>m</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The segregation coefficient (unitless)</p></li>
+<li><p><strong>thickness_sinx</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The thickness of the simulated dielectric layer (um)</p></li>
+<li><p><strong>thickness_si</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The thickness of the simulated silicon layer (um)</p></li>
+<li><p><strong>tempC</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – The temperature in °C</p></li>
+<li><p><strong>voltage</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – The voltage applied to the dielectric (V)</p></li>
+<li><p><strong>time_s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – The simulation time in seconds</p></li>
+<li><p><strong>na_moles</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The initial number of moles on the surface of SiNx</p></li>
+<li><p><strong>h0</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The surface mass transfer coefficient at the top interface</p></li>
+<li><p><strong>max_surface_concentration</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The maximum surface concentration typically observed in SiNx (1E15 cm^-2)</p></li>
+<li><p><strong>recovery_time_s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – An additional simulation time during which, no electrical stress is applied. (s)</p></li>
+<li><p><strong>recovery_voltage</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – If provided a recovery time, the bias at which it will recover (V).</p></li>
+<li><p><strong>trapping</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, apply trapping correction to the image charges. Default (True)</p></li>
+<li><p><strong>**kwargs</strong> – <dl class="simple">
+<dt>cbulk: double</dt><dd><p>The base concentration cm-3</p>
+</dd>
+<dt>xpoints_sinx: int</dt><dd><p>The number of cells in the sinx layer</p>
+</dd>
+<dt>xpoints_si: int</dt><dd><p>The number of cells in the si layer</p>
+</dd>
+<dt>z: integer</dt><dd><p>The valency of the ion
+default: 1</p>
+</dd>
+<dt>er: double</dt><dd><p>The relative permittivity of the dielectric</p>
+</dd>
+<dt>phi_b: double</dt><dd><p>The trap level below the conduction band in Frenkel-Pool emission (eV). Default 1.3 eV
+S. M. Sze,  J. Appl. Phys. 38 (7), 2951 (1967).</p>
+</dd>
+<dt>en_opt: float</dt><dd><p>The optical relative permittivity of the nitride film. Default  5.51
+S. M. Sze,  J. Appl. Phys. 38 (7), 2951 (1967).</p>
+</dd>
+<dt>c_fp: float</dt><dd><p>The constant of proportionality for Frenkel-Poole current (A/cm/V). Default 1E-3 A/cm/V.
+S. M. Sze,  J. Appl. Phys. 38 (7), 2951 (1967).</p>
+</dd>
+<dt>xpoints: int</dt><dd><p>The number of x points to simulate</p>
+</dd>
+<dt>fcall: int</dt><dd><p>The number of times the function has been called to solve the same
+problem</p>
+</dd>
+<dt>tsteps: int</dt><dd><p>The number of time steps to simulate</p>
+</dd>
+<dt>max_calls: int</dt><dd><p>The maximum number of times the function can be recursively call if the convergence fails.</p>
+</dd>
+<dt>max_iter: int</dt><dd><p>The maximum number of iterations for the solver</p>
+</dd>
+<dt>relaxation_parameter: float</dt><dd><p>The relaxation w for the Newton algorithm</p>
+</dd>
+<dt>h5fn: str</dt><dd><p>The path to the h5 file to store the simulation results</p>
+</dd>
+<dt>debug: bool</dt><dd><p>True if debugging the function</p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>Vfb</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – An array containing the flat band voltage shift as a function of time
+in (V)</p></li>
+<li><p><strong>tsim</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The time for each flatband voltage point</p></li>
+<li><p><strong>x1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The depth of the concentration profile in SiNx</p></li>
+<li><p><strong>c1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The final concentration profile as a function of depth in SiNx</p></li>
+<li><p><strong>potential</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The final potential profile as a function of depth in SiNx</p></li>
+<li><p><strong>x2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The depth of the concentration profile in Si</p></li>
+<li><p><strong>c2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The final concentration profile in Si</p></li>
+<li><p><strong>cmax</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The maximum concentration in silicon nitride</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pnptransport.infinitesource">
+<span id="infinite-source-simulation-code"></span><h1>Infinite Source Simulation Code<a class="headerlink" href="#module-pnptransport.infinitesource" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="pnptransport.infinitesource.two_layers_constant_source">
+<code class="sig-prename descclassname">pnptransport.infinitesource.</code><code class="sig-name descname">two_layers_constant_source</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">D1cms</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">D2cms</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">Cs</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">h</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">m</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">thickness_sinx</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">thickness_si</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">tempC</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">voltage</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">time_s</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>float<span class="p">, </span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">recovery_time_s</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>float<span class="p">, </span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">recovery_voltage</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.infinitesource.two_layers_constant_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function simulates the flatband voltage as a function of time for a
+MIS device where Na is migrating into the cell. It also returns a matrix
+with the concentration profiles as a function of time.</p>
+<p>The system solves Poisson-Nernst-Planck equation for a single species.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>D1cms</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The diffusion coefficient of Na in the dielectric (cm^2/s)</p></li>
+<li><p><strong>D2cms</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The diffusion coefficient of Na in silicon (cm^2/s)</p></li>
+<li><p><strong>Cs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The source concentration (1/cm^3)</p></li>
+<li><p><strong>h</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The surface mass transfer coefficient (cm/s)</p></li>
+<li><p><strong>m</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The segregation coefficient (unitless)</p></li>
+<li><p><strong>thickness_sinx</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The thickness of the simulated dielectric layer (um)</p></li>
+<li><p><strong>thickness_si</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The thickness of the simulated silicon layer (um)</p></li>
+<li><p><strong>tempC</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – The temperature in °C</p></li>
+<li><p><strong>voltage</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – The voltage applied to the dielectric (V)</p></li>
+<li><p><strong>time_s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – The simulation time in seconds</p></li>
+<li><p><strong>recovery_time_s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – An additional simulation time during which, no electrical stress is applied (s).</p></li>
+<li><p><strong>recovery_voltage</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – If provided a recovery time, the bias at which it will recover (V).</p></li>
+<li><p><strong>**kwargs</strong> – <dl class="simple">
+<dt>cbulk: double</dt><dd><p>The base concentration cm-3</p>
+</dd>
+<dt>xpoints_sinx: int</dt><dd><p>The number of cells in the sinx layer</p>
+</dd>
+<dt>xpoints_si: int</dt><dd><p>The number of cells in the si layer</p>
+</dd>
+<dt>z: integer</dt><dd><p>The valency of the ion
+default: 1</p>
+</dd>
+<dt>er: double</dt><dd><p>The relative permittivity of the dielectric</p>
+</dd>
+<dt>xpoints: int</dt><dd><p>The number of x points to simulate</p>
+</dd>
+<dt>fcall: int</dt><dd><p>The number of times the function has been called to solve the same
+problem</p>
+</dd>
+<dt>tsteps: int</dt><dd><p>The number of time steps to simulate</p>
+</dd>
+<dt>max_calls: int</dt><dd><p>The maximum number of times the function can be recursively call if the convergence fails.</p>
+</dd>
+<dt>max_iter: int</dt><dd><p>The maximum number of iterations for the solver</p>
+</dd>
+<dt>relaxation_parameter: float</dt><dd><p>The relaxation w for the Newton algorithm</p>
+</dd>
+<dt>t_smear: int, float</dt><dd><p>The time in seconds taken to “smooth” the initial profile (assuming a constant concentration diffused
+over t_smear).</p>
+</dd>
+<dt>h5fn: str</dt><dd><p>The path to the h5 file to store the simulation results</p>
+</dd>
+<dt>debug: bool</dt><dd><p>True if debugging the function</p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>Vfb</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – An array containing the flat band voltage shift as a function of time
+in (V)</p></li>
+<li><p><strong>tsim</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The time for each flatband voltage point</p></li>
+<li><p><strong>x1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The depth of the concentration profile in SiNx</p></li>
+<li><p><strong>c1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The final concentration profile as a function of depth in SiNx</p></li>
+<li><p><strong>potential</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The final potential profile as a function of depth in SiNx</p></li>
+<li><p><strong>x2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The depth of the concentration profile in Si</p></li>
+<li><p><strong>c2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The final concentration profile in Si</p></li>
+<li><p><strong>cmax</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The maximum concentration in silicon nitride</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pnptransport.utils">
+<span id="utils"></span><h1>Utils<a class="headerlink" href="#module-pnptransport.utils" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="pnptransport.utils.evaluate_arrhenius">
+<code class="sig-prename descclassname">pnptransport.utils.</code><code class="sig-name descname">evaluate_arrhenius</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a0</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">Ea</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">temp</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#pnptransport.utils.evaluate_arrhenius" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate an Arrhenius variable</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a0</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The exponential prefactor</p></li>
+<li><p><strong>Ea</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – An activation energy in eV</p></li>
+<li><p><strong>temp</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The temperature</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>x</strong> – The evaluated variable</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pnptransport.utils.fit_arrhenius">
+<code class="sig-prename descclassname">pnptransport.utils.</code><code class="sig-name descname">fit_arrhenius</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">temperature_axis</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.utils.fit_arrhenius" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits the experimental data to an Arrhenius relationship</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>temperature_axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">[double]</span></code>) – The temperature axis</p></li>
+<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">[double]</span></code>) – The dependent variable</p></li>
+<li><p><strong>**kwargs</strong> – <dl class="simple">
+<dt>inverse_temp: boolean</dt><dd><p>True if the units of the temperature are 1/T</p>
+</dd>
+<dt>temp_units: string</dt><dd><p>The units of the temperature. Valid units are K and °C</p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pnptransport.utils.format_time_str">
+<code class="sig-prename descclassname">pnptransport.utils.</code><code class="sig-name descname">format_time_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time_s</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.utils.format_time_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a formatted time string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>time_s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The time in seconds</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>timeStr</strong> – A string representing the time</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pnptransport.utils.get_indices_at_values">
+<code class="sig-prename descclassname">pnptransport.utils.</code><code class="sig-name descname">get_indices_at_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">numpy.array</span></em>, <em class="sig-param"><span class="n">requested_values</span><span class="p">:</span> <span class="n">numpy.array</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pnptransport.utils.get_indices_at_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs an array of valid indices in the x array corresponding to the requested values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.array</span></code>) – The array from which the indices will be drawn</p></li>
+<li><p><strong>requested_values</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.array</span></code>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An array with the indices corresponding to the requested values</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pnptransport.utils.latex_format">
+<code class="sig-prename descclassname">pnptransport.utils.</code><code class="sig-name descname">latex_format</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">digits</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#pnptransport.utils.latex_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a latex string for matplotlib plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The value to be formatted</p></li>
+<li><p><strong>digits</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of digits to round up to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The math-ready string</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pnptransport.utils.latex_format_with_error">
+<code class="sig-prename descclassname">pnptransport.utils.</code><code class="sig-name descname">latex_format_with_error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num</span></em>, <em class="sig-param"><span class="n">err</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.utils.latex_format_with_error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="pnptransport.utils.tau_c">
+<code class="sig-prename descclassname">pnptransport.utils.</code><code class="sig-name descname">tau_c</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">D</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">E</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">L</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">T</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#pnptransport.utils.tau_c" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimates the characteristic constant for the Nernst-Planck
+equation in the low concentration approximation</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[\tau_c = \frac{2D}{\mu^2 E^2} + \frac{L}{\mu E} \left[1 ± 2\left( \frac{kT}{q E L}\right)^{1/2}\right]\]</div>
+</div></blockquote>
+<p>Since  <span class="math notranslate nohighlight">\(\mu = qD/kT\)</span></p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[\tau_c = \left( \frac{2}{D} \right) X^2 + \left( \frac{l}{D} \right) X  \left[ 1 ± 2 \left( \frac{X}{L} \right)^{1/2} \right],\]</div>
+</div></blockquote>
+<p>with <span class="math notranslate nohighlight">\(X = kT/qE\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>D</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The diffusion coefficient in cm^2/s</p></li>
+<li><p><strong>E</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The electric field in MV/cm = 1E6 V/cm</p></li>
+<li><p><strong>L</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The distance in cm</p></li>
+<li><p><strong>T</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The temperature in °C</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The characteristic time in s</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pnptransport.confidence">
+<span id="confidence-intervals-methods"></span><h1>Confidence Intervals Methods<a class="headerlink" href="#module-pnptransport.confidence" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="pnptransport.confidence.confidence_interval">
+<code class="sig-prename descclassname">pnptransport.confidence.</code><code class="sig-name descname">confidence_interval</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span><span class="p">:</span> <span class="n">scipy.optimize.optimize.OptimizeResult</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.confidence.confidence_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function estimates the confidence interval for the optimized parameters
+from the fit.</p>
+<p>Adapted from Matlab</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>res</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code>) – The optimized result from least_squares minimization</p></li>
+<li><p><strong>**kwargs</strong> – <dl class="simple">
+<dt>confidence: float</dt><dd><p>The confidence level (default 0.95)</p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ci: The confidence interval</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pnptransport.confidence.confint">
+<code class="sig-prename descclassname">pnptransport.confidence.</code><code class="sig-name descname">confint</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">pars</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">pcov</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">confidence</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.95</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.confidence.confint" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns the confidence interval for each parameter</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of data points</p></li>
+<li><p><strong>pars</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">[double]</span></code>) – The array with the fitted parameters</p></li>
+<li><p><strong>pcov</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">[double]</span></code>) – The covariance matrix</p></li>
+<li><p><strong>confidence</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The confidence interval</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>np.ndarray</em> – ci: The matrix with the confindence intervals for the parameters</p></li>
+<li><p><em>Note</em> – Adapted from
+<a class="reference external" href="http://kitchingroup.cheme.cmu.edu/blog/2013/02/12/Nonlinear-curve-fitting-with-parameter-confidence-intervals/">http://kitchingroup.cheme.cmu.edu/blog/2013/02/12/Nonlinear-curve-fitting-with-parameter-confidence-intervals/</a>
+Copyright (C) 2013 by John Kitchin.
+<a class="reference external" href="https://kite.com/python/examples/702/scipy-compute-a-confidence-interval-from-a-dataset">https://kite.com/python/examples/702/scipy-compute-a-confidence-interval-from-a-dataset</a></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pnptransport.confidence.get_rsquared">
+<code class="sig-prename descclassname">pnptransport.confidence.</code><code class="sig-name descname">get_rsquared</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">y</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">popt</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">]</span><span class="p">, </span>numpy.ndarray<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.confidence.get_rsquared" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function estimates R^2 for the fitting</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The experimetnal x points</p></li>
+<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The experimental y points</p></li>
+<li><p><strong>popt</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The best fit parameters</p></li>
+<li><p><strong>func</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Callable[[np.ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray]</span></code>) – The fitted function</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>float</em> – rsquared: The value of R^2</p></li>
+<li><p><em>Reference</em> – <a class="reference external" href="http://bagrow.info/dsv/LEC10_notes_2014-02-13.html">http://bagrow.info/dsv/LEC10_notes_2014-02-13.html</a></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pnptransport.confidence.mean_squared_error">
+<code class="sig-prename descclassname">pnptransport.confidence.</code><code class="sig-name descname">mean_squared_error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">yd</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">ym</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.confidence.mean_squared_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function estimates the mean squared error of a fitting</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>yd</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The observed data points</p></li>
+<li><p><strong>ym</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The datapoints from the model</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>mse: The mean squared error</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>double</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pnptransport.confidence.predband">
+<code class="sig-prename descclassname">pnptransport.confidence.</code><code class="sig-name descname">predband</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">xd</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">yd</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">p</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">]</span><span class="p">, </span>numpy.ndarray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">conf</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.95</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.confidence.predband" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function estimates the prediction bands for the specified function without using the jacobian of the fit
+<a class="reference external" href="https://codereview.stackexchange.com/questions/84414/obtaining-prediction-bands-for-regression-model">https://codereview.stackexchange.com/questions/84414/obtaining-prediction-bands-for-regression-model</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The requested data points for the prediction bands</p></li>
+<li><p><strong>xd</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The experimental values for x</p></li>
+<li><p><strong>yd</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The experimental values for y</p></li>
+<li><p><strong>p</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The fitted parameters</p></li>
+<li><p><strong>func</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Callable[[np.ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray]</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray]</span></code>) – The optimized function</p></li>
+<li><p><strong>conf</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The confidence level</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>np.ndarray</em> – yp: The value of the function at the requested points (x)</p></li>
+<li><p><em>np.ndarray</em> – lpb: The lower prediction band</p></li>
+<li><p><em>np.ndarray</em> – upb: The upper prediction band</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pnptransport.confidence.predint">
+<code class="sig-prename descclassname">pnptransport.confidence.</code><code class="sig-name descname">predint</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">xd</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">yd</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">]</span><span class="p">, </span>numpy.ndarray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">res</span><span class="p">:</span> <span class="n">scipy.optimize.optimize.OptimizeResult</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.confidence.predint" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function estimates the prediction bands for the fit
+(see: <a class="reference external" href="https://www.mathworks.com/help/curvefit/confidence-and-prediction-bounds.html">https://www.mathworks.com/help/curvefit/confidence-and-prediction-bounds.html</a>)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The requested x points for the bands</p></li>
+<li><p><strong>xd</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The x datapoints</p></li>
+<li><p><strong>yd</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The y datapoints</p></li>
+<li><p><strong>func</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Callable[[np.ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray]</span></code>) – The fitted function</p></li>
+<li><p><strong>res</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code>) – The optimzied result from least_squares minimization</p></li>
+<li><p><strong>**kwargs</strong> – <dl class="simple">
+<dt>confidence: float</dt><dd><p>The confidence level (default 0.95)</p>
+</dd>
+<dt>simulateneous: bool</dt><dd><p>True if the bound type is simultaneous, false otherwise</p>
+</dd>
+<dt>mode: [functional, observation]</dt><dd><p>Default observation</p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pnptransport.transport_storage">
+<span id="transport-hd5-storage-system"></span><h1>Transport HD5 Storage System<a class="headerlink" href="#module-pnptransport.transport_storage" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="pnptransport.transport_storage.TransportStorage">
+<em class="property">class </em><code class="sig-prename descclassname">pnptransport.transport_storage.</code><code class="sig-name descname">TransportStorage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.transport_storage.TransportStorage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pnptransport.hd5storage.H5Storage" title="pnptransport.hd5storage.H5Storage"><code class="xref py py-class docutils literal notranslate"><span class="pre">pnptransport.hd5storage.H5Storage</span></code></a></p>
+<dl class="py method">
+<dt id="pnptransport.transport_storage.TransportStorage.create_time_dataset">
+<code class="sig-name descname">create_time_dataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time_s</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.transport_storage.TransportStorage.create_time_dataset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pnptransport.transport_storage.TransportStorage.get_concentration_at_time_t">
+<code class="sig-name descname">get_concentration_at_time_t</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">requested_time_s</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">layer</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pnptransport.transport_storage.TransportStorage.get_concentration_at_time_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tries to find the concentration profile at the specified time</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>requested_time_s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – The time at which we want to retrive the concentration profile</p></li>
+<li><p><strong>layer</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The layer from which to get the concentration profile (valid values are 1 and 2)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The concentration profile in atoms/cm^3</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pnptransport.transport_storage.TransportStorage.get_position_data">
+<code class="sig-name descname">get_position_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">layer</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pnptransport.transport_storage.TransportStorage.get_position_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the x coordinate for the transport simulation in the layer X</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>layer</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The layer to query the position data from (1 or 2)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An array containing the coordinates for the layer n</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pnptransport.transport_storage.TransportStorage.get_potential_at_time_t">
+<code class="sig-name descname">get_potential_at_time_t</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">requested_time_s</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pnptransport.transport_storage.TransportStorage.get_potential_at_time_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tries to find the concentration profile at the specified time</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>requested_time_s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – The time at which we want to retrive the concentration profile</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The concentration profile in atoms/cm^3</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pnptransport.transport_storage.TransportStorage.time_s">
+<em class="property">property </em><code class="sig-name descname">time_s</code><a class="headerlink" href="#pnptransport.transport_storage.TransportStorage.time_s" title="Permalink to this definition">¶</a></dt>
+<dd><p>Queries the time dataset</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The time dataset in seconds</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pnptransport.hd5storage">
+<span id="hd5-storage"></span><h1>HD5 Storage<a class="headerlink" href="#module-pnptransport.hd5storage" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="pnptransport.hd5storage.H5Storage">
+<em class="property">class </em><code class="sig-prename descclassname">pnptransport.hd5storage.</code><code class="sig-name descname">H5Storage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.hd5storage.H5Storage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class provides abstraction for creating, updating and retriving information from h5 files</p>
+<dl class="py attribute">
+<dt id="pnptransport.hd5storage.H5Storage._filename">
+<code class="sig-name descname">_filename</code><a class="headerlink" href="#pnptransport.hd5storage.H5Storage._filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>The path to the h5 datafile</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt>
+<code class="sig-name descname">create_storage:</code></dt>
+<dd><p>Creates the</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pnptransport.hd5storage.H5Storage.create_dataset">
+<code class="sig-name descname">create_dataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">group_name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'/'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.hd5storage.H5Storage.create_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a non-resizable dataset in the group ‘group_name’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the dataset</p></li>
+<li><p><strong>data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The data to store</p></li>
+<li><p><strong>group_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the group to save the dataset to</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pnptransport.hd5storage.H5Storage.create_group">
+<code class="sig-name descname">create_group</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">parent_group</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.hd5storage.H5Storage.create_group" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the group to create</p></li>
+<li><p><strong>parent_group</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The parent group</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pnptransport.hd5storage.H5Storage.create_storage">
+<code class="sig-name descname">create_storage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.hd5storage.H5Storage.create_storage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the h5 file and appends the basic groups</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pnptransport.hd5storage.H5Storage.filename">
+<em class="property">property </em><code class="sig-name descname">filename</code><a class="headerlink" href="#pnptransport.hd5storage.H5Storage.filename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pnptransport.hd5storage.H5Storage.get_metadata">
+<code class="sig-name descname">get_metadata</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group</span><span class="o">=</span><span class="default_value">'/'</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#pnptransport.hd5storage.H5Storage.get_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the attributes of a selected group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>group</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The group to get the attributes from</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary with the attributes of the dataset/group</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pnptransport.hd5storage.H5Storage.get_numpy_dataset">
+<code class="sig-name descname">get_numpy_dataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">group_name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'/'</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pnptransport.hd5storage.H5Storage.get_numpy_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrives the dataset from the selected group in the h5 file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the dataset to extract</p></li>
+<li><p><strong>group_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the group the dataset is at (default ‘/’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The requested datast</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pnptransport.hd5storage.H5Storage.metadata">
+<code class="sig-name descname">metadata</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">metadata</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">group</span><span class="o">=</span><span class="default_value">'/'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.hd5storage.H5Storage.metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves a dictionary with the measurement metadata to the specified dataset/group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metadata</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>) – A dictionary with the metadata to save</p></li>
+<li><p><strong>group</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The dataset/group to save the attributes to.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="pidsim.html" class="btn btn-neutral float-right" title="Rsh Approximation Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to PNP Transport’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Erick R Martinez Loran
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

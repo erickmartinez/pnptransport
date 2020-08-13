@@ -1,0 +1,39 @@
+[global]
+# Simulation time in seconds
+simulation_time = $time 
+# Simulation temperature in °C
+temperature = $temperature
+# Surface source concentration in cm-2
+surface_concentration = $sigma_s
+# Base concentration in cm-3
+cb = $cb
+# The base filename for the output
+filetag = $filetag
+# Dielectric constant
+er = $er
+# Number of time steps
+time_steps = $tsteps
+# The surface mass transfer coefficient in cm/s
+h = $h
+# The segregation coefficient
+m = $m
+# Monolayer ingress rate (monolayers/s)
+zeta = $zeta
+
+[sinx]
+# The diffusivity of Na in cm^2/s
+d = $d_sinx
+# The applied voltage stress in volts
+stress_voltage = $bias
+# The thickness of the layer in um
+thickness = $thickness_sinx
+# The number of points in the layer
+npoints = $xpoints_sinx
+
+[si]
+# The diffusivity of Na in cm^2/s
+d = $d_si
+# The thickness of the layer in um
+thickness = $thickness_si
+# The number of points in the layer
+npoints = $xpoints_si

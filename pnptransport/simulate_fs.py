@@ -4,8 +4,7 @@ import configparser
 import os
 import argparse
 import logging
-import pnptransport.constantsource as pnpcs
-import pnptransport.limtedsource as pnpsl
+import pnptransport.finitesource as pnpfs
 import traceback
 
 
@@ -42,11 +41,6 @@ if __name__ == '__main__':
     parser.add_argument(
         '-c', '--config', required=True, type=str, help='The configuration file (.ini)'
     )
-    # Deprectaing model selection
-    # parser.add_argument(
-    #     '-m', '--model', required=True, choices=['erf', 'np', 'pnp'],
-    #     help='The model to use for the simulation: erf, np or pnp.'
-    # )
 
     args = parser.parse_args()
     config_file = args.config
@@ -64,9 +58,7 @@ if __name__ == '__main__':
     # Instantiate the config parser
     config = configparser.ConfigParser()
     # Load the configuration file
-    config.read(configPath)
-    # Get the model string
-    # model = args.model
+    config.read(config_file)
 
     # The configuration file
     # Logging
@@ -95,18 +87,12 @@ if __name__ == '__main__':
     recovery_time = config.getfloat(section='global', option='recovery_time', fallback=0)
     # Recovery voltage in volts (defaults to 0)
     recovery_voltage = config.getfloat(section='global', option='recovery_voltage', fallback=0)
-    # True if a limited source (defaults to False)
-    source_limited = config.getboolean(section='global', option='source_limited', fallback=False)
     # Number of moles of sodium to introduce in the source
-    source_na_moles = config.getfloat(section='global', option='source_na_moles', fallback=1)
+    surface_concentration = config.getfloat(section='global', option='surface_concentration', fallback=1E11)
     # Surface mass transfer coefficient at the source in cm/s. (Defaults to 1E-10 cm/s)
-    source_h = config.getfloat(section='global', option='source_h', fallback=1E-10)
-    # The surface concentration at the source in atoms/cm^2 (defaults to 1E11)
-    source_max_surface_concentration = config.getfloat(
-        section='global',
-        option='source_max_surface_concentration',
-        fallback=1E11
-    )
+    zeta = config.getfloat(section='global', option='zeta', fallback=1E-4)
+    trap_corrected = config.getboolean(section='global', option='trapping', fallback=False)
+    c_fp = config.getfloat(section='global', option='c_fp', fallback=1E-3)
 
     # The diffusion coefficient of layer 1 in cm2/s
     D1cms = config.getfloat(section='sinx', option='d')
@@ -114,8 +100,6 @@ if __name__ == '__main__':
     D2cms = config.getfloat(section='si', option='d')
     # The dielectric constant of the dielectric
     er = config.getfloat(section='global', option='er')
-    # The concentration at the source
-    Cs = config.getfloat(section='global', option='cs')
 
     # The electric fields
     voltage = config.getfloat(section='sinx', option='stress_voltage')  # volts
@@ -136,57 +120,34 @@ if __name__ == '__main__':
     TempK = temp_c + 273.15
 
     try:
-        rpath = os.path.join(out_path, 'pnp')
+        rpath = os.path.join(out_path, 'constant_flux')
         if not os.path.exists(rpath):
             os.makedirs(rpath)
-        h5FileName = os.path.join(rpath, file_tag + "_pnp.h5")
+        h5FileName = os.path.join(rpath, file_tag + ".h5")
         myLogger = getLogger(rpath, file_tag, name='pnp')
-        if source_limited:
-            vfb, tsim, x1sim, c1sim, psim, x2sim, c2sim, cmax = pnpsl.two_layers_source_lim(
-                D1cms=D1cms, D2cms=D2cms,
-                Cs=Cs,
-                h=h, m=m,
-                thickness_sinx=L1,
-                thickness_si=L2,
-                tempC=temp_c,
-                voltage=voltage,
-                time_s=t_max,
-                na_moles=source_na_moles, h0=source_h,
-                max_surface_concentration=source_max_surface_concentration,
-                recovery_time_s=recovery_time,
-                recovery_voltage=recovery_voltage,
-                fcallLogger=myLogger,
-                xpoints_sinx=x1points,
-                xpoints_si=x2points,
-                tsteps=tsteps,
-                h5_storage=h5FileName,
-                er=7.0,
-                z=1.0,
-                maxr_calls=5,
-                debug=True
-            )
-        else:
-            vfb, tsim, x1sim, c1sim, psim, x2sim, c2sim, cmax = pnpcs.two_layers_constant_source(
-                D1cms=D1cms, D2cms=D2cms,
-                Cs=Cs,
-                h=h, m=m,
-                thickness_sinx=L1,
-                thickness_si=L2,
-                tempC=temp_c,
-                voltage=voltage,
-                time_s=t_max,
-                recovery_time_s=recovery_time,
-                recovery_voltage=recovery_voltage,
-                fcallLogger=myLogger,
-                xpoints_sinx=x1points,
-                xpoints_si=x2points,
-                tsteps=tsteps,
-                h5_storage=h5FileName,
-                er=7.0,
-                z=1.0,
-                maxr_calls=5,
-                debug=True
-            )
+        vfb, tsim, x1sim, c1sim, psim, x2sim, c2sim, cmax = pnpfs.two_layers_constant_flux(
+            D1cms=D1cms, D2cms=D2cms,
+            h=h, m=m,
+            thickness_sinx=L1,
+            thickness_si=L2,
+            tempC=temp_c,
+            voltage=voltage,
+            time_s=t_max,
+            surface_concentration=surface_concentration, h_surface=zeta,
+            recovery_time_s=recovery_time,
+            recovery_voltage=recovery_voltage,
+            fcallLogger=myLogger,
+            xpoints_sinx=x1points,
+            xpoints_si=x2points,
+            tsteps=tsteps,
+            h5_storage=h5FileName,
+            er=7.0,
+            z=1.0,
+            maxr_calls=5,
+            trapping=trap_corrected,
+            c_fp=c_fp,
+            debug=True
+        )
 
     except Exception as e:
         traceback.print_exc()

@@ -76,7 +76,7 @@ def format_time_str(time_s: float):
 
 def fit_arrhenius(temperature_axis, y, **kwargs):
     """
-    fitArrhenius fits the experimental data to an Arrhenius relationship
+    Fits the experimental data to an Arrhenius relationship
 
     Parameters
     ----------
@@ -174,7 +174,22 @@ def fit_arrhenius(temperature_axis, y, **kwargs):
             'upb': upb}
 
 
-def latex_format(x, digits=2):
+def latex_format(x, digits=2) -> str:
+    """
+    Creates a latex string for matplotlib plots.
+
+    Parameters
+    ----------
+    x: str
+        The value to be formatted
+    digits: int
+        The number of digits to round up to.
+
+    Returns
+    -------
+    str:
+        The math-ready string
+    """
     fmt_dgts = '%%.%df' % digits
     fmt_in = '%%.%dE' % digits
     x_str = fmt_in % x
@@ -266,20 +281,20 @@ def get_indices_at_values(x: np.array, requested_values: np.array) -> np.ndarray
 
 
 def tau_c(D: float, E: float, L: float, T: float) -> float:
-    '''
-    tau_c estimates the charactersitic constant for the Nernst-Planck
+    """
+    Estimates the characteristic constant for the Nernst-Planck
     equation in the low concentration approximation
 
-    tau_c = 2D/(mu^2 E^2) + L/(mu E)*[1 ± 2*(kT/(q E L))^(1/2)]
+        .. math:: \\tau_c = \\frac{2D}{\\mu^2 E^2} + \\frac{L}{\\mu E} \\left[1 ± 2\\left( \\frac{kT}{q E L}\\right)^{1/2}\\right]
 
-    Since mu = qD/kT
+    Since  :math:`\\mu = qD/kT`
 
-    tau_c = (2/D) X^2 + (l/D) X * [1 ± 2*(X/L)^(1/2)],
+        .. math:: \\tau_c = \\left( \\frac{2}{D} \\right) X^2 + \\left( \\frac{l}{D} \\right) X  \\left[ 1 ± 2 \\left( \\frac{X}{L} \\right)^{1/2} \\right],
 
-    with X = kT/qE
+    with :math:`X = kT/qE`
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     D: float
         The diffusion coefficient in cm^2/s
     E: float
@@ -289,11 +304,11 @@ def tau_c(D: float, E: float, L: float, T: float) -> float:
     T: float
         The temperature in °C
 
-    Returns:
-    --------
-    float
+    Returns
+    -------
+    float:
         The characteristic time in s
-    '''
+    """
     TK = T + 273.15
     kB_red = 8.6173303  # 1E-5 eV/K
 

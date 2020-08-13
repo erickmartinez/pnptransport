@@ -1,6 +1,6 @@
 import numpy as np
 from scipy import interpolate
-from scipy import integrate
+# from scipy import integrate
 from pidsim.korol_conductivity import KorolConductivity
 import pnptransport.transport_storage as data_storage
 import pnptransport.utils as utils
@@ -36,7 +36,7 @@ class Rsh:
         (defaults to 1E-10 S/cm)
     """
     _shunt_width: float = 0.57  # nm
-    _shunt_length: float = 4  # um
+    _shunt_length: float = 1.4142  # um
     _h5_transport_file: str = None
     _data_storage: data_storage.TransportStorage = None
     _conductivity_model: KorolConductivity = None
@@ -49,6 +49,8 @@ class Rsh:
     __conductivity_cutoff = 1E-10  # S / cm
     __simulation_time: np.ndarray = None
     _cell_area = 1  # cm^2
+    __rsh_0: float = 1E5
+    __max_depth: float = 1
 
     def __init__(self, h5_transport_file: str):
         """
@@ -138,7 +140,7 @@ class Rsh:
     @property
     def profile_x(self) -> np.ndarray:
         return self.__shunt_x
-    
+
     @property
     def shunt_depth(self) -> float:
         return np.amax(self.profile_x)
@@ -148,13 +150,28 @@ class Rsh:
         return self.__simulation_time
 
     @property
+    def h5_storage(self) -> data_storage.TransportStorage:
+        return self._data_storage
+
+    @property
+    def rsh_0(self) -> float:
+        return self.__rsh_0
+
+    @rsh_0.setter
+    def rsh_0(self, value: float):
+        value = abs(value)
+        if value == 0:
+            raise ValueError('Trying to set rsh(t=0) to 0.')
+        self.__rsh_0 = value
+
+    @property
     def _x_partition(self) -> np.ndarray:
         """
         Partitions the original x coordinates of the concentration profile into a new set of points to center the
         series resitors at.
         """
         if self.__shunt_partition is None:
-            self.__shunt_partition = np.linspace(0.0, 1.0)
+            self.__shunt_partition = np.linspace(0.0, self.__max_depth)
         return self.__shunt_partition
 
     def resistance_at_time_t(self, time_s: float):
@@ -241,7 +258,7 @@ class Rsh:
                 self._conductivity_model.segregation_coefficient = 50
                 self._conductivity_model.activated_na_fraction = 1
                 conductivity = self._conductivity_model.estimate_conductivity()
-                idx_length = conductivity >= self.__conductivity_cutoff
+                # idx_length = conductivity >= self.__conductivity_cutoff
 
                 # if len(partition_x[idx_length]) > 0:
                 #     shunt_depth = np.amax(partition_x[idx_length])
@@ -253,16 +270,110 @@ class Rsh:
                 #     partition_x = np.array([1])
                 resistivty = 1 / conductivity
                 dx = partition_x[1] - partition_x[0]
-                rsh = np.sum(resistivty) * dx  #/ (self._shunt_width * 1E-7) / self._shunt_length
+                rsh = np.sum(resistivty) * dx * 1E-4  # / (self._shunt_width * 1E-7) / self._shunt_length
                 # rsh = integrate.simps(y=(resistivty[0::]/(self._shunt_length - partition_x[0::])), x=partition_x[0::])
                 # rsh *= self.cell_area
-                rsh = rsh# / (self._shunt_length * self._shunt_width * 1E-7)
+                # rsh = rsh / (self._shunt_length * self._shunt_width * 1E-7)
                 # rsh *= np.sqrt(3)/(2*self._shunt_width * 1E-7)
-                rsh_t[i] = rsh
+                rsh_t[i] = rsh * self.__rsh_0 * self.cell_area / (self.__rsh_0 * self.cell_area + rsh)
                 pbar.set_description('Time: {0:.1f} h, Rsh = {1:.3g} Ohm cm^2'.format(
-                    self.__simulation_time[v]/3600, rsh
+                    self.__simulation_time[v] / 3600, rsh
                 ))
+                pbar.update(1)
                 pbar.refresh()
         # rsh_t[rsh_t < 0] = np.amax(rsh_t)
-        print(rsh_t)
         return rsh_t
+
+    def interface_concentrations_time_series(self, requested_indices: np.ndarray) -> np.ndarray:
+        """
+        Returns the values of the concentration at both sides of the SiNx/Si interface
+
+        Parameters
+        ----------
+        requested_indices: np.ndarray
+            The time indices to estimate the concentrations at.
+
+        Returns
+        -------
+        np.ndarray
+            A data structure containing t, CSiNx, CSi
+        """
+        h5_path = self._data_storage.filename
+        time_points = len(requested_indices)
+        from tqdm import trange
+
+        # allocate memory
+        c_data = np.empty(time_points, np.dtype([('time_s', 'd'), ('C_SiNx (cm^-3)', 'd'), ('C_Si (cm^-3)', 'd')]))
+        # Read the h5 file
+        with h5py.File(h5_path, 'r') as hf:
+            pbar = trange(time_points, desc='Estimating Rsh', leave=True)
+            for i, v in enumerate(requested_indices):
+                c1 = np.array(hf['/L1/concentration/ct_{0:d}'.format(v)])
+                c2 = np.array(hf['/L2/concentration/ct_{0:d}'.format(v)])
+                c_data[i] = (self.__simulation_time[v], c1[-1], c2[0])
+                pbar.set_description('{0:.1f} h, C1 = {1:.3E}, C2 = {2:.3E} cm^-3.'.format(
+                    self.__simulation_time[v] / 3600, c1[-1], c2[0]
+                ))
+                pbar.update(1)
+                pbar.refresh()
+        return c_data
+
+    def dielectric_flux_time_series(self, requested_indices: np.ndarray) -> np.ndarray:
+        """
+        Returns the values of the fluxes at the source and at the middle of the dielectric
+
+        Parameters
+        ----------
+        requested_indices: np.ndarray
+            The time indices to estimate the fluxes at.
+
+        Returns
+        -------
+        np.ndarray
+            A data structure containing t, Js, Jd
+        """
+        h5_path = self._data_storage.filename
+        time_points = len(requested_indices)
+        from tqdm import trange
+
+        # allocate memory
+        j_data = np.empty(time_points, np.dtype([('time_s', 'd'), ('J_1 (cm/s)', 'd'), ('J_2 (cm/s)', 'd')]))
+        # Read the h5 file
+        with h5py.File(h5_path, 'r') as hf:
+            pbar = trange(time_points, desc='Estimating Rsh', leave=True)
+            grp_sinx = hf['/L1']
+            x1 = np.array(grp_sinx['x'])
+            # find the middle point of the SiNx layer
+            idx_middle = int((np.abs(x1 - 0.5 * np.amax(x1))).argmin())
+            dx1 = (x1[1] - x1[0]) * 1E-4  # um to cm
+            dx2 = (x1[idx_middle + 1] - x1[idx_middle]) * 1E-4  # um to cm
+            # Try to see if h0 is defined (source limited)
+            time_metadata = self._data_storage.get_metadata(group='/time')
+            source_limited = False
+            if 'h0' in time_metadata:
+                source_limited = True
+                xs = time_metadata['c_surface'] / time_metadata['cs_0']
+            for i, v in enumerate(requested_indices):
+                c1 = np.array(hf['/L1/concentration/ct_{0:d}'.format(v)])
+                p1 = np.array(hf['/L1/potential/vt_{0:d}'.format(v)])
+                D1 = float(grp_sinx.attrs['D'])
+                mu1 = float(grp_sinx.attrs['ion_mobility'])
+
+                e_field_1 = (p1[0] - p1[1])/dx1
+                e_field_2 = (p1[idx_middle] - p1[idx_middle + 1]) / dx2
+                # Flux around the source
+                # If source limited determine the flux from h0
+                if source_limited:
+                    j1 = time_metadata['cs_0']*np.exp(-time_metadata['h0'] * self.__simulation_time[v] / xs)
+                else:
+                    j1 = D1 * (c1[0] - c1[1]) / dx1 + 0.5 * (c1[0] + c1[1]) * mu1 * e_field_1
+                j2 = D1 * (c1[idx_middle] - c1[idx_middle + 1]) / dx2
+                j2 += 0.5 * (c1[idx_middle] + c1[idx_middle + 1]) * mu1 * e_field_2
+
+                j_data[i] = (self.__simulation_time[v], j1, j2)
+                pbar.set_description('{0:.1f} h, j_1 = {1:.3E}, j_2 = {2:.3E}'.format(
+                    self.__simulation_time[v] / 3600, j1, j2
+                ))
+                pbar.update(1)
+                pbar.refresh()
+        return j_data

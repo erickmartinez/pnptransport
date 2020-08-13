@@ -425,18 +425,6 @@ def two_layers_constant_source(D1cms: float, D2cms: float, Cs: float, h: float,
         # The centroid of the charge distribution
         xbar_ = Cint_ / Ctot_ * 1E4  # um
 
-        #        # The surface charge density at silicon C/cm2
-        #        scd_si  = Ctot*constants.e*(xbar/L)
-        #        # The surface charge density at the gate C/cm2
-        #        scd_g   = (1 - xbar/L)*Ctot*constants.e
-        #
-        #
-        #
-        #        # The electric field at the Si interface
-        #        E_si    = -voltage1/L/er - 1E-2*scd_si/constants.epsilon_0/er
-        #        # The electric field at the top interface
-        #        E_g   = voltage1/L/er - 1E-2*scd_g/constants.epsilon_0/er
-
         # The surface charge density at silicon C/cm2
         scd_si = -constants.e * (xbar_ / L1) * Ctot_
         # The surface charge density at the gate C/cm2
@@ -695,6 +683,10 @@ def two_layers_constant_source(D1cms: float, D2cms: float, Cs: float, h: float,
             solver2N, solver2G = get_solvers_2(dti)
             solver1G.solve()
             solver2G.solve()
+
+            # Update the electric field
+            gp1, gp2, _, _, _, _, _, _ = update_potential_bc(u1_n, bias=bias_t)
+            solver1N, solver1G = get_solvers_1(gp1, gp2, dti)
 
             solver1N.solve()
             solver2N.solve()

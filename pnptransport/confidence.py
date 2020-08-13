@@ -232,6 +232,7 @@ def predint(x: np.ndarray, xd: np.ndarray, yd: np.ndarray, func: Callable[[np.nd
     """
     This function estimates the prediction bands for the fit
     (see: https://www.mathworks.com/help/curvefit/confidence-and-prediction-bounds.html)
+
     Parameters 
     ----------
     x: np.ndarray
