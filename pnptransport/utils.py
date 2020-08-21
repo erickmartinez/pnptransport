@@ -202,6 +202,31 @@ def latex_format(x, digits=2) -> str:
         return ltx_str
 
 
+def latex_order_of_magnitude(num: float, dollar=False):
+    """
+    Returns a latex string with the order of magnitude of the number (10^x)
+
+    Parameters
+    ----------
+    num: float
+        The number
+    dollar: bool
+        If true, enclose string between $. Default False
+
+    Returns
+    -------
+    str:
+        The latex-format string with the order of magnitude of the number.
+    """
+    str_exp = '{0:.1E}'.format(num)
+    # split the string
+    oom = float(str_exp.split('E')[1])
+    if dollar:
+        return '$10^{{{0:.0f}}}$'.format(oom)
+    else:
+        return '10^{{{0:.0f}}}'.format(oom)
+
+
 def latex_format_with_error(num, err):
     num_str = '%.9E' % num
     num_sci = (np.array(num_str.split('E'))).astype(np.float)
@@ -289,7 +314,7 @@ def tau_c(D: float, E: float, L: float, T: float) -> float:
 
     Since  :math:`\\mu = qD/kT`
 
-        .. math:: \\tau_c = \\left( \\frac{2}{D} \\right) X^2 + \\left( \\frac{l}{D} \\right) X  \\left[ 1 ± 2 \\left( \\frac{X}{L} \\right)^{1/2} \\right],
+        .. math:: \\tau_c = \\left( \\frac{2}{D} \\right) X^2 + \\left( \\frac{L}{D} \\right) X  \\left[ 1 ± 2 \\left( \\frac{X}{L} \\right)^{1/2} \\right],
 
     with :math:`X = kT/qE`
 
@@ -325,3 +350,103 @@ def tau_c(D: float, E: float, L: float, T: float) -> float:
         return tau1
     else:
         return min(tau1, tau2)
+
+
+def geometric_series_spaced(max_val: float, min_delta: float, steps: int, reverse: bool = False,
+                            **kwargs) -> np.ndarray:
+    """
+    Produces an array of values spaced according to a geometric series
+
+    S_n = a + a*r + a*r^2 + ... + a*r^(n-2) + a*r^(n-1)
+
+    For which S_n = a*(1-r^n)/(1-r)
+
+    Here, a is the minimum increment (min_delta) and n is the number of steps and r is determined using Newton's method
+
+    Parameters
+    ----------
+    max_val: float
+        The maximum value the series will take
+    min_delta: float
+        The minimum delta value it will take
+    steps: int
+        The number of values in the array
+    reverse: bool
+        If true solve for r = 1 / p
+    **kwargs: keyword arguments
+        n_iterations: int
+            The number of Newton iterations to estimate r
+
+    Returns
+    -------
+    np.ndarray
+        A vector with geometrically spaced values
+    """
+    niter = kwargs.get('n_iterations', 1000)
+    debug = kwargs.get('debug', False)
+    a = min_delta
+    sn = max_val
+    n = steps
+
+    if n == 1:
+        return np.array([0, max_val])
+
+    # Use Newton's method to determine r
+
+    def f(r_: float) -> float:
+        return a * r_ ** n - sn * r_ + sn - a
+
+    def fp(r_: float) -> float:
+        return a * n * r_ ** (n - 1) - sn
+
+    r = 2.0
+    # Estimate r
+
+    for i in range(niter):
+        if fp(r) == 0:  # Avoid zeros
+            r += 0.1
+        r -= f(r) / fp(r)
+
+    result = np.zeros(n + 1)
+    s = 0
+    p = 1
+    for i in range(n):
+        s += a * p
+        result[i + 1] = s
+        p *= r
+
+    if debug:
+        print('r = {0:.3g}'.format(r))
+
+    if reverse:
+        new_result = np.zeros_like(result)
+        dx = np.diff(result)
+        m = len(dx)
+        s = 0
+        for i in range(m):
+            s += dx[m - 1 - i]
+            new_result[i + 1] = s
+        result = new_result
+
+    return result
+
+
+def get_indices_at_values(x: np.array, requested_values: np.array) -> np.ndarray:
+    """
+    Constructs an array of valid indices in the x array corresponding to the requested values
+
+    Parameters
+    ----------
+    x: np.array
+        The array from which the indices will be drawn
+    requested_values: np.array
+
+    Returns
+    -------
+    np.array
+        An array with the indices corresponding to the requested values
+    """
+    result = np.empty(len(requested_values), dtype=int)
+    for i, v in enumerate(requested_values):
+        result[i] = int((np.abs(v - x)).argmin())
+    return result

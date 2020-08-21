@@ -3,6 +3,16 @@ import pnptransport.hd5storage as h5storage
 
 
 class TransportStorage(h5storage.H5Storage):
+    """
+    This class provides functionality to interact with pnptransport hdf5 data file structures
+
+    Attributes
+    ----------
+    __layers: list
+        The label of the layers in the simulations: [1, 2]
+    __time_s: np.ndarray
+        An array containing the time points in the simulation.
+    """
     __layers = [1, 2]
     __time_s: np.ndarray = None
 

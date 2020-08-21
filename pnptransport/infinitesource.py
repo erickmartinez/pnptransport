@@ -282,8 +282,8 @@ def two_layers_constant_source(D1cms: float, D2cms: float, Cs: float, h: float,
         mesh1 = refine(mesh1, cell_markers)
         dr = dr / 1.5
 
-    nor = 4
-    dr = L2 * 1.25
+    nor = 3
+    dr = L2 * 1.1
     for i in range(nor):
         cell_markers = MeshFunction("bool", mesh2, mesh2.topology().dim(), False)
         for cell in cells(mesh2):
@@ -321,12 +321,16 @@ def two_layers_constant_source(D1cms: float, D2cms: float, Cs: float, h: float,
     dx1 = Measure('dx', domain=mesh1, subdomain_data=boundaries1)
     dx2 = Measure('dx', domain=mesh2, subdomain_data=boundaries2)
 
+    # Add some initial Na profile
     # Define the initial concentration in both layers
-    Dsmear = D1ums / 1000
-
-    u1i = Expression(('c1+(cs-c1)*(1-erf(x[0]/(2*sqrt(D*t))))', '(1-x[0]/L)*Vapp/er'),
-                     c1=Cbulk * CM3TOUM3, L=L1, cs=Cs * 1E-12,
-                     D=Dsmear, t=t_smear,
+    # Dsmear = D1ums / 1000
+    # u1i = Expression(('c1+(cs-c1)*(1-erf(x[0]/(2*sqrt(D*t))))', '(1-x[0]/L)*Vapp/er'),
+    #                  c1=Cbulk * CM3TOUM3, L=L1, cs=Cs * 1E-12,
+    #                  D=Dsmear, t=t_smear,
+    #                  Vapp=float(voltage), er=er, degree=1)
+    # Just add background concentration
+    u1i = Expression(('cb', '(1-x[0]/L)*Vapp/er'),
+                     cb=Cbulk * CM3TOUM3, L=L1,
                      Vapp=float(voltage), er=er, degree=1)
     u2i = Expression('cb', cb=Cbulk * CM3TOUM3 * m, degree=0)
 
@@ -366,9 +370,13 @@ def two_layers_constant_source(D1cms: float, D2cms: float, Cs: float, h: float,
 
     tol = 1E-16
 
+    def update_bcs1(bias):
+        return [DirichletBC(W.sub(1), bias / er, boundaries1, 1)]
+
     bcs1 = [DirichletBC(W.sub(0), Cs * 1E-12, boundaries1, 1),
             DirichletBC(W.sub(1), voltage / er, boundaries1, 1)]
     bcs2 = None  # [DirichletBC(V2,Cbulk*CM3TOUM3,boundaries2,2)]
+
 
     def get_variational_form1(uc, up, gp1_, gp2_, u2c):
         sf2 = segregation_flux(hums, uc, u2c, m)

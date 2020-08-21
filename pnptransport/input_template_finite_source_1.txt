@@ -19,6 +19,10 @@ h = $h
 m = $m
 # Monolayer ingress rate (monolayers/s)
 zeta = $zeta
+# The recovery time in seconds (default 0)
+recovery_time = $recovery_time
+# The recovery voltage drop in the sinx layer
+recovery_voltage = $recovery_voltage
 
 [sinx]
 # The diffusivity of Na in cm^2/s

@@ -185,7 +185,7 @@ with the concentration profiles as a function of time.</p>
 <li><p><strong>surface_concentration</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The initial surface concentration in atoms/cm^2
 The flux at the source will be determined as J = h_surface * suface_concentration.
 Default value 1E11 atoms/cm^2</p></li>
-<li><p><strong>h_surface</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The surface mass transfer coefficient at the top interface in monolayers per second.
+<li><p><strong>h_surface</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The surface mass transfer coefficient at the top interface in 1/s.
 Default value: 1E-4</p></li>
 <li><p><strong>recovery_time_s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – An additional simulation time during which, no electrical stress is applied. (s)</p></li>
 <li><p><strong>recovery_voltage</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – If provided a recovery time, the bias at which it will recover (V).</p></li>
@@ -475,6 +475,36 @@ in (V)</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="pnptransport.utils.geometric_series_spaced">
+<code class="sig-prename descclassname">pnptransport.utils.</code><code class="sig-name descname">geometric_series_spaced</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">max_val</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">min_delta</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">steps</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">reverse</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pnptransport.utils.geometric_series_spaced" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces an array of values spaced according to a geometric series</p>
+<p>S_n = a + a*r + a*r^2 + … + a*r^(n-2) + a*r^(n-1)</p>
+<p>For which S_n = a*(1-r^n)/(1-r)</p>
+<p>Here, a is the minimum increment (min_delta) and n is the number of steps and r is determined using Newton’s method</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_val</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The maximum value the series will take</p></li>
+<li><p><strong>min_delta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The minimum delta value it will take</p></li>
+<li><p><strong>steps</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of values in the array</p></li>
+<li><p><strong>reverse</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If true solve for r = 1 / p</p></li>
+<li><p><strong>**kwargs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">keyword</span> <span class="pre">arguments</span></code>) – <dl class="simple">
+<dt>n_iterations: int</dt><dd><p>The number of Newton iterations to estimate r</p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A vector with geometrically spaced values</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="pnptransport.utils.get_indices_at_values">
 <code class="sig-prename descclassname">pnptransport.utils.</code><code class="sig-name descname">get_indices_at_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">numpy.array</span></em>, <em class="sig-param"><span class="n">requested_values</span><span class="p">:</span> <span class="n">numpy.array</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pnptransport.utils.get_indices_at_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs an array of valid indices in the x array corresponding to the requested values</p>
@@ -520,6 +550,26 @@ in (V)</p></li>
 <dd></dd></dl>
 
 <dl class="py function">
+<dt id="pnptransport.utils.latex_order_of_magnitude">
+<code class="sig-prename descclassname">pnptransport.utils.</code><code class="sig-name descname">latex_order_of_magnitude</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">dollar</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.utils.latex_order_of_magnitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a latex string with the order of magnitude of the number (10^x)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The number</p></li>
+<li><p><strong>dollar</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If true, enclose string between $. Default False</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The latex-format string with the order of magnitude of the number.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="pnptransport.utils.tau_c">
 <code class="sig-prename descclassname">pnptransport.utils.</code><code class="sig-name descname">tau_c</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">D</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">E</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">L</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">T</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#pnptransport.utils.tau_c" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimates the characteristic constant for the Nernst-Planck
@@ -531,7 +581,7 @@ equation in the low concentration approximation</p>
 <p>Since  <span class="math notranslate nohighlight">\(\mu = qD/kT\)</span></p>
 <blockquote>
 <div><div class="math notranslate nohighlight">
-\[\tau_c = \left( \frac{2}{D} \right) X^2 + \left( \frac{l}{D} \right) X  \left[ 1 ± 2 \left( \frac{X}{L} \right)^{1/2} \right],\]</div>
+\[\tau_c = \left( \frac{2}{D} \right) X^2 + \left( \frac{L}{D} \right) X  \left[ 1 ± 2 \left( \frac{X}{L} \right)^{1/2} \right],\]</div>
 </div></blockquote>
 <p>with <span class="math notranslate nohighlight">\(X = kT/qE\)</span></p>
 <dl class="field-list simple">
@@ -711,6 +761,29 @@ Copyright (C) 2013 by John Kitchin.
 <dt id="pnptransport.transport_storage.TransportStorage">
 <em class="property">class </em><code class="sig-prename descclassname">pnptransport.transport_storage.</code><code class="sig-name descname">TransportStorage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.transport_storage.TransportStorage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pnptransport.hd5storage.H5Storage" title="pnptransport.hd5storage.H5Storage"><code class="xref py py-class docutils literal notranslate"><span class="pre">pnptransport.hd5storage.H5Storage</span></code></a></p>
+<p>This class provides functionality to interact with pnptransport hdf5 data file structures</p>
+<dl class="py attribute">
+<dt id="pnptransport.transport_storage.TransportStorage.__layers">
+<code class="sig-name descname">__layers</code><a class="headerlink" href="#pnptransport.transport_storage.TransportStorage.__layers" title="Permalink to this definition">¶</a></dt>
+<dd><p>The label of the layers in the simulations: [1, 2]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pnptransport.transport_storage.TransportStorage.__time_s">
+<code class="sig-name descname">__time_s</code><a class="headerlink" href="#pnptransport.transport_storage.TransportStorage.__time_s" title="Permalink to this definition">¶</a></dt>
+<dd><p>An array containing the time points in the simulation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt id="pnptransport.transport_storage.TransportStorage.create_time_dataset">
 <code class="sig-name descname">create_time_dataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time_s</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.transport_storage.TransportStorage.create_time_dataset" title="Permalink to this definition">¶</a></dt>

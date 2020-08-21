@@ -1,7 +1,22 @@
+"""
+This program will create all the necessary input files to run pnp transport simulations with 'one factor at a time'
+variations.
+
+The variations on the relevant parameters are described in  pidsim.parameter_span.one_factor_at_a_time documentation.
+These variations are submitted through a csv data file.
+
+The rest of the parameters are assumed to be constant over all the simulations.
+
+Besides the input files, the code will generate a database as a csv file with all the simulations to be run and the
+parameters used for each simulation.
+
+@author: <erickrmartinez@gmail.com>
+"""
 import numpy as np
 import pidsim.parameter_span as pspan
 
-csv_file = r'G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\one_factor_at_a_time_lower_MLS.csv'
+# The path to the csv file with the conditions of the different variations
+csv_file = r'G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\one_factor_at_a_time_lower_20200818_same_as_20200815_but_higher_base_zeta.csv'
 # Simulation time in h
 simulation_time_h = 96
 # Temperature in °C

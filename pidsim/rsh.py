@@ -247,7 +247,7 @@ class Rsh:
         # Read the h5 file
         with h5py.File(h5_path, 'r') as hf:
             # Get the concentration dataset at the requested time
-            pbar = trange(time_points, desc='Estimating Rsh', leave=True)
+            pbar = trange(time_points, desc='Estimating Rsh', leave=True, position=0)
             for i, v in enumerate(requested_indices):
                 c = np.array(hf['/L2/concentration/ct_{0:d}'.format(v)])
                 # Interpolate the concentration

@@ -492,7 +492,7 @@ resistors corresponding to a partition of the concentration profile into paralle
 
 <dl class="py function">
 <dt id="pidsim.parameter_span.create_filetag">
-<code class="sig-prename descclassname">pidsim.parameter_span.</code><code class="sig-name descname">create_filetag</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time_s</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">temp_c</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">sigma_s</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">zeta</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">d_sf</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">ef</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">m</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">h</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#pidsim.parameter_span.create_filetag" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pidsim.parameter_span.</code><code class="sig-name descname">create_filetag</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time_s</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">temp_c</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">sigma_s</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">zeta</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">d_sf</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">ef</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">m</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">h</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">recovery_time</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">recovery_e_field</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#pidsim.parameter_span.create_filetag" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the filetag for the simulation input file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -500,11 +500,14 @@ resistors corresponding to a partition of the concentration profile into paralle
 <li><p><strong>time_s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The simulation time in seconds</p></li>
 <li><p><strong>temp_c</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The temperature in °C</p></li>
 <li><p><strong>sigma_s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The surface concentration of the source, in atoms/ cm^2</p></li>
-<li><p><strong>zeta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The rate of ingress in monolayers per second.</p></li>
+<li><p><strong>zeta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The rate of ingress in 1/s</p></li>
 <li><p><strong>d_sf</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The diffusivity at the SF in cm^2/s</p></li>
 <li><p><strong>ef</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The applied electric field in SiNx in V/cm</p></li>
 <li><p><strong>m</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The segregation coefficient</p></li>
 <li><p><strong>h</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The surface mass transfer coefficient at the SiNx/Si interface in cm/s</p></li>
+<li><p><strong>recovery_time</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The simulated recovery time (additional to the PID simulations) in s. Default: 0.</p></li>
+<li><p><strong>recovery_e_field</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The electric field applied under recovery (ideally with sign opposite to the PID stress) units: V.
+Default: 0 V</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -518,7 +521,7 @@ resistors corresponding to a partition of the concentration profile into paralle
 
 <dl class="py function">
 <dt id="pidsim.parameter_span.create_input_file">
-<code class="sig-prename descclassname">pidsim.parameter_span.</code><code class="sig-name descname">create_input_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">simulation_time</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">temperature_c</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">sigma_s</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">zeta</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">d_sf</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">e_field</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">segregation_coefficient</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">h</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">thickness_sin</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">thickness_si</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">base_concentration</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">er</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">t_steps</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">x_points_sin</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">x_points_si</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#pidsim.parameter_span.create_input_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pidsim.parameter_span.</code><code class="sig-name descname">create_input_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">simulation_time</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">temperature_c</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">sigma_s</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">zeta</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">d_sf</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">e_field</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">segregation_coefficient</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">h</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">thickness_sin</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">thickness_si</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">base_concentration</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">er</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">t_steps</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">x_points_sin</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">x_points_si</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">recovery_time</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">recovery_e_field</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#pidsim.parameter_span.create_input_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an inputfile for the finite source simulation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -526,7 +529,7 @@ resistors corresponding to a partition of the concentration profile into paralle
 <li><p><strong>simulation_time</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The simulation time in seconds</p></li>
 <li><p><strong>temperature_c</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The simulation temperature °C</p></li>
 <li><p><strong>sigma_s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The surface concentration of the source in atoms/cm^2</p></li>
-<li><p><strong>zeta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The surface rate of ingress of Na in monolayers per second (ML/s)</p></li>
+<li><p><strong>zeta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The surface rate of ingress of Na in (1/s)</p></li>
 <li><p><strong>d_sf</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The diffusion coefficient in the SF in cm^2/s</p></li>
 <li><p><strong>e_field</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The electric field in SiNx in V/cm</p></li>
 <li><p><strong>segregation_coefficient</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The segregation coefficient at the SiNx/Si interface</p></li>
@@ -539,6 +542,8 @@ resistors corresponding to a partition of the concentration profile into paralle
 <li><p><strong>x_points_sin</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of grid points in the SiNx layer</p></li>
 <li><p><strong>x_points_si</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of grid points in the Si layer</p></li>
 <li><p><strong>out_dir</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The path to the output dir</p></li>
+<li><p><strong>recovery_time</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Additional time used to model recovery (s). Default: 0.</p></li>
+<li><p><strong>recovery_e_field</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Electric field applied during the recovery process in V/cm. Default: 0</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -553,7 +558,39 @@ resistors corresponding to a partition of the concentration profile into paralle
 <dl class="py function">
 <dt id="pidsim.parameter_span.create_span_file">
 <code class="sig-prename descclassname">pidsim.parameter_span.</code><code class="sig-name descname">create_span_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">param_list</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">simulation_time</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">temperature_c</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">thickness_sin</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">thickness_si</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">base_concentration</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">er</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">t_steps</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">x_points_sin</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">x_points_si</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pidsim.parameter_span.create_span_file" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>A wrapper for create_input_file that unpacks the values of the parameter span contained in param_list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>param_list</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>) – A dictionary with the values of the parameters that are being varied. Must contain:
+- sigma_s: The surface concentration in atoms/cm^2
+- zeta: the rate of transfer in 1/s
+- dsf: the diffusion coefficient of Na in the SF
+- e_field: The electric field in V/cm
+- segregation coefficient: The segregation coefficient at the SiNx/Si interface
+- h: The surface mass transfer coefficient at the SiNx/Si interface
+- recovery_time: The recovery time added to the simulation
+- recovery_e_field: The electric field applied under recovery</p></li>
+<li><p><strong>simulation_time</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The simulation time in seconds</p></li>
+<li><p><strong>temperature_c</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The simulation temperature in °C</p></li>
+<li><p><strong>thickness_sin</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The thickness of the SiNx layer in um.</p></li>
+<li><p><strong>thickness_si</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The thickness of the simulated SF in um</p></li>
+<li><p><strong>base_concentration</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The bulk base impurity concentration for all layers in 1/cm^3</p></li>
+<li><p><strong>er</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The relative permittivity of SiNx</p></li>
+<li><p><strong>t_steps</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of time steps to simulate.</p></li>
+<li><p><strong>x_points_sin</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of elements to simulate in the SiNx layer.</p></li>
+<li><p><strong>x_points_si</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of elements to simulate in the Si layer.</p></li>
+<li><p><strong>out_dir</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The path to the output directory</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The name of the input file for the simulation.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt id="pidsim.parameter_span.one_factor_at_a_time">
@@ -563,7 +600,7 @@ resistors corresponding to a partition of the concentration profile into paralle
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>csv_file</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <p>The path to the csv file containing the base case and the parameter scans to simulate:
-Format of the file</p>
+Format of the file:</p>
 <blockquote>
 <div><table class="docutils align-default">
 <colgroup>
