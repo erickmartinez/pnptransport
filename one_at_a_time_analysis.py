@@ -25,8 +25,8 @@ from scipy import integrate
 import pnptransport.utils as utils
 from tqdm import tqdm
 
-path_to_csv = r'G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\inputs_20200815\ofat_db.csv'
-path_to_results = r'G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\inputs_20200815\results'
+path_to_csv = r'G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\inputs_20200813\ofat_db.csv'
+path_to_results = r'G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\inputs_20200813\results'
 
 color_map = 'Blues'
 
