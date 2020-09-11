@@ -16,6 +16,18 @@ local os:
 
    $ docker run -ti -v $(pwd):/home/fenics/shared --name fenics-container quay.io/fenicsproject/stable
 
+To start the container run
+
+.. code-block:: console
+
+   $ docker start fenics-container
+
+To stop the container run
+
+.. code-block:: console
+
+   $ docker stop fenics-container
+
 
 To run the container we can create a shell script containing
 

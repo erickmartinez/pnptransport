@@ -186,6 +186,14 @@ local os:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker run -ti -v <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/home/fenics/shared --name fenics-container quay.io/fenicsproject/stable
 </pre></div>
 </div>
+<p>To start the container run</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker start fenics-container
+</pre></div>
+</div>
+<p>To stop the container run</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker stop fenics-container
+</pre></div>
+</div>
 <p>To run the container we can create a shell script containing</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">run_fenics.sh</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
