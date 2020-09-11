@@ -393,14 +393,15 @@ def geometric_series_spaced(max_val: float, min_delta: float, steps: int, revers
 
     *Example:*
 
-    .. ipython::
+    .. code-block:: python
 
-        In [1]: import pnptransport.utils as utils
+        import pnptransport.utils as utils
 
-        In [2]: utils.geometric_series_spaced(max_val=3600, min_delta=1, steps=10)
-        Out[2]: array([0.00000000e+00, 1.00000000e+00, 3.33435191e+00, 8.78355077e+00,
-        2.15038985e+01, 5.11976667e+01, 1.20513371e+02, 2.82320618e+02,
-        6.60035676e+02, 1.54175554e+03, 3.60000000e+03])
+        utils.geometric_series_spaced(max_val=3600, min_delta=1, steps=10)
+        # output:
+        # array([0.00000000e+00, 1.00000000e+00, 3.33435191e+00, 8.78355077e+00,
+        # 2.15038985e+01, 5.11976667e+01, 1.20513371e+02, 2.82320618e+02,
+        # 6.60035676e+02, 1.54175554e+03, 3.60000000e+03])
 
 
     Parameters

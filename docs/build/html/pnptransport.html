@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Rsh Approximation Model" href="pidsim.html" />
-    <link rel="prev" title="Welcome to PNP Transport’s documentation!" href="index.html" /> 
+    <link rel="prev" title="One-factor-at-a-time simulations" href="ofat.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -81,7 +81,18 @@
               
             
             
-              <ul class="current">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="dependencies.html">FEniCS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies.html#python-modules">Python Modules</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart: Finite Source Simulations</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ofat.html">One-factor-at-a-time simulations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ofat.html#one-factor-at-a-time-analysis">One-factor-at-a-time analysis</a></li>
+</ul>
+<ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Finite Source Simulation Code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#module-pnptransport.infinitesource">Infinite Source Simulation Code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#module-pnptransport.utils">Utils</a></li>
@@ -808,13 +819,13 @@ column in hh:mm:ss</p>
 <p>For which <span class="math notranslate nohighlight">\(S_n = a (1-r^n) / (1-r)\)</span></p>
 <p>Here, a is the minimum increment (min_delta) and n is the number of steps and r is determined using Newton’s method</p>
 <p><em>Example:</em></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">pnptransport.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pnptransport.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 
-<span class="gp">In [2]: </span><span class="n">utils</span><span class="o">.</span><span class="n">geometric_series_spaced</span><span class="p">(</span><span class="n">max_val</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span> <span class="n">min_delta</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-<span class="gh">Out[2]: </span><span class="go"></span>
-<span class="go">array([0.00000000e+00, 1.00000000e+00, 3.33435191e+00, 8.78355077e+00,</span>
-<span class="go">       2.15038985e+01, 5.11976667e+01, 1.20513371e+02, 2.82320618e+02,</span>
-<span class="go">       6.60035676e+02, 1.54175554e+03, 3.60000000e+03])</span>
+<span class="n">utils</span><span class="o">.</span><span class="n">geometric_series_spaced</span><span class="p">(</span><span class="n">max_val</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span> <span class="n">min_delta</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="c1"># output:</span>
+<span class="c1"># array([0.00000000e+00, 1.00000000e+00, 3.33435191e+00, 8.78355077e+00,</span>
+<span class="c1"># 2.15038985e+01, 5.11976667e+01, 1.20513371e+02, 2.82320618e+02,</span>
+<span class="c1"># 6.60035676e+02, 1.54175554e+03, 3.60000000e+03])</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -1383,7 +1394,7 @@ Copyright (C) 2013 by John Kitchin.
         <a href="pidsim.html" class="btn btn-neutral float-right" title="Rsh Approximation Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to PNP Transport’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="ofat.html" class="btn btn-neutral float-left" title="One-factor-at-a-time simulations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
