@@ -16,9 +16,9 @@ import numpy as np
 import pidsim.parameter_span as pspan
 
 # The path to the csv file with the conditions of the different variations
-csv_file = r'G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\one_factor_at_a_time_lower_20200818_same_as_20200815_but_higher_base_zeta.csv'
+csv_file = r'G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\one_factor_at_a_time_lower_20200828_h=1E-12.csv'
 # Simulation time in h
-simulation_time_h = 96
+simulation_time_h = 96.
 # Temperature in °C
 temperature_c = 85
 # Relative permittivity of SiNx
@@ -32,7 +32,7 @@ t_steps = 720
 # Number of elements in the sin layer
 x_points_sin = 100
 # number of elements in the Si layer
-x_points_si = 200
+x_points_si = 100
 # Background concentration in cm^-3
 cb = 1E-20
 

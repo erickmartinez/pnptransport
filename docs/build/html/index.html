@@ -1,7 +1,8 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   
@@ -11,18 +12,12 @@
   
 
   
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
   
   
   
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -30,14 +25,18 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Finite Source Simulation Code" href="pnptransport.html" /> 
+    <link rel="next" title="FEniCS" href="dependencies.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -51,7 +50,7 @@
           
 
           
-            <a href="#" class="icon icon-home" alt="Documentation Home"> PNP Transport
+            <a href="#" class="icon icon-home"> PNP Transport
           
 
           
@@ -74,7 +73,6 @@
           
         </div>
 
-        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -83,6 +81,17 @@
             
             
               <ul>
+<li class="toctree-l1"><a class="reference internal" href="dependencies.html">FEniCS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies.html#python-modules">Python Modules</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart: Finite Source Simulations</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ofat.html">One-factor-at-a-time simulations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ofat.html#one-factor-at-a-time-analysis">One-factor-at-a-time analysis</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="pnptransport.html">Finite Source Simulation Code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pnptransport.html#module-pnptransport.infinitesource">Infinite Source Simulation Code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pnptransport.html#module-pnptransport.utils">Utils</a></li>
@@ -100,7 +109,6 @@
             
           
         </div>
-        
       </div>
     </nav>
 
@@ -139,7 +147,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="#">Docs</a> &raquo;</li>
         
       <li>Welcome to PNP Transport’s documentation!</li>
     
@@ -162,7 +170,140 @@
             
   <div class="section" id="welcome-to-pnp-transport-s-documentation">
 <h1>Welcome to PNP Transport’s documentation!<a class="headerlink" href="#welcome-to-pnp-transport-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>This framework uses FEniCS to estimate the numerical solution to
+Poisson-Nernst-Planck equation to solve the transport kinetics
+of charged species in dielectrics and stacks of materials.</p>
+</div>
+<div class="section" id="dependencies">
+<h1>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dependencies.html">FEniCS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies.html#python-modules">Python Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dependencies.html#installation-of-dependencies-using-pip">Installation of dependencies using PIP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dependencies.html#installation-of-dependencies-using-conda">Installation of dependencies using conda</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="quick-start">
+<h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">cd</span> executables
+<span class="gp">$</span> chmod +x *.sh
+</pre></div>
+</div>
+<p>Running a finite source simulation</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">cd</span> ./executables
+<span class="gp">$</span> ./simulate_fs.py --config input_example.ini
+</pre></div>
+</div>
+<p>where the .ini file looks like</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">input_example.ini</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
+<div class="highlight-ini notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">[global]</span>
+<span class="c1"># Simulation time in seconds</span>
+<span class="na">simulation_time</span> <span class="o">=</span> <span class="s">345600.0 </span>
+<span class="c1"># Simulation temperature in °C</span>
+<span class="na">temperature</span> <span class="o">=</span> <span class="s">85</span>
+<span class="c1"># Surface source concentration in cm-2</span>
+<span class="na">surface_concentration</span> <span class="o">=</span> <span class="s">1.0E+10</span>
+<span class="c1"># Monolayer ingress rate (1/s)</span>
+<span class="na">rate_source</span> <span class="o">=</span> <span class="s">1.000E-04</span>
+<span class="c1"># The base filename for the output</span>
+<span class="na">filetag</span> <span class="o">=</span> <span class="s">output_file_Tag</span>
+<span class="c1"># Number of time steps</span>
+<span class="na">time_steps</span> <span class="o">=</span> <span class="s">720</span>
+<span class="c1"># The surface mass transfer coefficient in cm/s</span>
+<span class="na">h</span> <span class="o">=</span> <span class="s">1.0E-12</span>
+<span class="c1"># The segregation coefficient</span>
+<span class="na">m</span> <span class="o">=</span> <span class="s">1.0E+00</span>
+<span class="c1"># The recovery time in seconds (default 0)</span>
+<span class="na">recovery_time</span> <span class="o">=</span> <span class="s">43200.0</span>
+<span class="c1"># The recovery voltage drop in the sinx layer</span>
+<span class="na">recovery_voltage</span> <span class="o">=</span> <span class="s">-7.5e-05</span>
+<span class="c1"># Background concentration in cm-3</span>
+<span class="na">cb</span> <span class="o">=</span> <span class="s">1.000E-20</span>
+<span class="c1"># Dielectric constant</span>
+<span class="na">er</span> <span class="o">=</span> <span class="s">7.0</span>
+
+<span class="k">[sinx]</span>
+<span class="c1"># The diffusivity of Na in cm^2/s</span>
+<span class="na">d</span> <span class="o">=</span> <span class="s">3.92E-16</span>
+<span class="c1"># The applied voltage stress in volts</span>
+<span class="na">stress_voltage</span> <span class="o">=</span> <span class="s">7.500E-05</span>
+<span class="c1"># The thickness of the layer in um</span>
+<span class="na">thickness</span> <span class="o">=</span> <span class="s">0.075</span>
+<span class="c1"># The number of points in the layer</span>
+<span class="na">npoints</span> <span class="o">=</span> <span class="s">100</span>
+
+<span class="k">[si]</span>
+<span class="c1"># The diffusivity of Na in cm^2/s</span>
+<span class="na">d</span> <span class="o">=</span> <span class="s">1.000E-14</span>
+<span class="c1"># The thickness of the layer in um</span>
+<span class="na">thickness</span> <span class="o">=</span> <span class="s">1.0</span>
+<span class="c1"># The number of points in the layer</span>
+<span class="na">npoints</span> <span class="o">=</span> <span class="s">100</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart: Finite Source Simulations</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="batch-analysis">
+<h1>Batch Analysis<a class="headerlink" href="#batch-analysis" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ofat.html">One-factor-at-a-time simulations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ofat.html#one-factor-at-a-time-analysis">One-factor-at-a-time analysis</a></li>
+</ul>
 </div>
 </div>
 <div class="section" id="fenics-transport-simulations-code">
@@ -206,7 +347,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="pnptransport.html" class="btn btn-neutral float-right" title="Finite Source Simulation Code" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="dependencies.html" class="btn btn-neutral float-right" title="FEniCS" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
     </div>
@@ -216,19 +357,11 @@
 
   <div role="contentinfo">
     <p>
-        
         &copy; Copyright 2020, Erick R Martinez Loran
 
     </p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -239,6 +372,7 @@
 
   </div>
   
+
 
   <script type="text/javascript">
       jQuery(function () {

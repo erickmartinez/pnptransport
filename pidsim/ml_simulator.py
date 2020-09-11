@@ -8,7 +8,7 @@ import h5py
 import os
 
 
-class Pmpp:
+class MLSim:
     """
     Attributes
     ----------
@@ -30,11 +30,12 @@ class Pmpp:
     _data_storage: data_storage.TransportStorage = None
     _conductivity_model: KorolConductivity = None
     __activated_na_fraction: float = 1.
-    __segregation_coefficient: float = 50.
+    __segregation_coefficient: float = 1.
     __conductivity_cutoff = 1E-10  # S / cm
     __simulation_time: np.ndarray = None
     _cell_area: float = 1.0  # cm^2
-    __ml_dump: str = None
+    __ml_dump_mpp: str = None
+    __ml_dump_rsh: str = None
     __predictors_depth: np.ndarray = None
     __predictors_colnames: list = None
 
@@ -49,7 +50,8 @@ class Pmpp:
         self._data_storage = data_storage.TransportStorage(filename=h5_transport_file)
         self._conductivity_model = KorolConductivity()
         self.__simulation_time = self._data_storage.time_s
-        self.__ml_dump = os.path.join(os.getcwd(), 'pidsim/random_forest.joblib')
+        self.__ml_dump_mpp = os.path.join(os.getcwd(), 'pidsim/random_forest_mpp.joblib')
+        self.__ml_dump_rsh = os.path.join(os.getcwd(), 'pidsim/random_forest_rsh.joblib')
         self.__generate_predictors_depth()
 
     def __generate_predictors_depth(self):
@@ -146,7 +148,7 @@ class Pmpp:
         from sklearn.ensemble import RandomForestRegressor
         from joblib import load
 
-        model_rf: RandomForestRegressor = load(self.__ml_dump)
+        model_rf: RandomForestRegressor = load(self.__ml_dump_mpp)
 
         # allocate memory
         pmpp_t = np.empty(time_points)
@@ -176,4 +178,56 @@ class Pmpp:
                 pbar.refresh()
         # rsh_t[rsh_t < 0] = np.amax(rsh_t)
         return pmpp_t
+
+    def rsh_time_series(self, requested_indices: np.ndarray) -> np.ndarray:
+        """
+        Gets the modeled Pmpp at the requested time points.
+
+        Parameters
+        ----------
+        requested_indices: np.ndarray
+            The time indices to estimate the Pmpp at.
+
+        Returns
+        -------
+        np.ndarray:
+            The time series for Pmpp
+        """
+
+        h5_path = self._data_storage.filename
+        time_points = len(requested_indices)
+        from tqdm import trange
+        from sklearn.ensemble import RandomForestRegressor
+        from joblib import load
+
+        model_rf: RandomForestRegressor = load(self.__ml_dump_rsh)
+
+        # allocate memory
+        rsh_t = np.empty(time_points)
+        # Read the h5 file
+        with h5py.File(h5_path, 'r') as hf:
+            # Get the concentration dataset at the requested time
+            pbar = trange(time_points, desc='Estimating Pmpp', leave=True, position=0)
+            x1 = np.array(hf['/L1/x'])
+            x2 = np.array(hf['/L2/x'])
+            x2 = x2 - np.amax(x1)
+            for i, v in enumerate(requested_indices):
+                c = np.array(hf['/L2/concentration/ct_{0:d}'.format(v)])
+                # Interpolate the concentration
+                f = interpolate.interp1d(x=x2, y=c, kind='linear')
+                # Get the concentration at the stacking fault partition
+                concentration = f(self.__predictors_depth)
+                self._conductivity_model.concentration_profile = concentration
+                self._conductivity_model.segregation_coefficient = 50
+                self._conductivity_model.activated_na_fraction = 1
+                conductivity = self._conductivity_model.estimate_conductivity()
+                rsh = np.array(model_rf.predict(X=np.array([conductivity]))).mean()
+                rsh_t[i] = rsh
+                pbar.set_description('Time: {0:.1f} h, Rsh = {1:.3f} Ohms cm^2'.format(
+                    self.__simulation_time[v] / 3600, rsh
+                ))
+                pbar.update(1)
+                pbar.refresh()
+        # rsh_t[rsh_t < 0] = np.amax(rsh_t)
+        return rsh_t
 

@@ -13,7 +13,7 @@ def getLogger(out_path, filetag, **kwargs):
     logFile = os.path.join(out_path, filetag + "_{}.log".format(name))
 
     # logging.basicConfig(filename=logFile, level=logging.INFO)
-    # get the myLogger
+    # get pnp_logger
     pnp_logger = logging.getLogger('simlog')
     pnp_logger.setLevel(logging.DEBUG)
     # create file handler which logs even debug messages
@@ -41,15 +41,35 @@ if __name__ == '__main__':
     parser.add_argument(
         '-c', '--config', required=True, type=str, help='The configuration file (.ini)'
     )
+    parser.add_argument(
+        '-o', '--output', required=False, type=str, help='The output folder to save the results',
+    )
 
     args = parser.parse_args()
     config_file = args.config
+
 
     if platform == 'Windows':
         config_file = r'\\\?\\' + config_file
 
     if not os.path.exists(config_file):
         raise Exception('Could not find file \'{}\''.format(config_file))
+
+    full_path = os.path.abspath(config_file)
+    base_path = os.path.dirname(os.path.dirname(config_file))
+
+    out_path = os.path.join(base_path, 'results')
+
+    rpath = os.path.join(out_path, 'constant_flux')
+    if args.output is not None:
+        args_path = args.output
+        if os.path.exists(args_path):
+            rpath = args_path
+        else:
+            print('The folder does not exist, defaulting to \'{0}\''.format(rpath))
+
+    if not os.path.exists(rpath):
+        os.makedirs(rpath)
 
     # Get the current path
     cwd = os.path.dirname(os.path.abspath(__file__))
@@ -63,7 +83,7 @@ if __name__ == '__main__':
     # The configuration file
     # Logging
     # The base filename for the output
-    file_tag = config.get(section='global', option='filetag')
+    file_tag = config.get(section='global', option='file_tag')
     logFile = file_tag + ".log"
 
     full_path = os.path.abspath(config_file)
@@ -87,10 +107,10 @@ if __name__ == '__main__':
     recovery_time = config.getfloat(section='global', option='recovery_time', fallback=0)
     # Recovery voltage in volts (defaults to 0)
     recovery_voltage = config.getfloat(section='global', option='recovery_voltage', fallback=0)
-    # The surface concentration of the source
+    # The surface concentration of the sourceW
     surface_concentration = config.getfloat(section='global', option='surface_concentration', fallback=1E11)
     # The rate of ingress at the source in 1/s.
-    zeta = config.getfloat(section='global', option='zeta', fallback=1E-4)
+    rate_source = config.getfloat(section='global', option='rate_source', fallback=1E-4)
     trap_corrected = config.getboolean(section='global', option='trapping', fallback=False)
     c_fp = config.getfloat(section='global', option='c_fp', fallback=1E-3)
 
@@ -120,9 +140,6 @@ if __name__ == '__main__':
     TempK = temp_c + 273.15
 
     try:
-        rpath = os.path.join(out_path, 'constant_flux')
-        if not os.path.exists(rpath):
-            os.makedirs(rpath)
         h5FileName = os.path.join(rpath, file_tag + ".h5")
         myLogger = getLogger(rpath, file_tag, name='pnp')
         vfb, tsim, x1sim, c1sim, psim, x2sim, c2sim, cmax = pnpfs.two_layers_constant_flux(
@@ -133,7 +150,7 @@ if __name__ == '__main__':
             tempC=temp_c,
             voltage=voltage,
             time_s=t_max,
-            surface_concentration=surface_concentration, h_surface=zeta,
+            surface_concentration=surface_concentration, rate=rate_source,
             recovery_time_s=recovery_time,
             recovery_voltage=recovery_voltage,
             fcallLogger=myLogger,

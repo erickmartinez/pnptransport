@@ -31,7 +31,8 @@ def one_factor_at_a_time(csv_file: str, simulation_time: float, temperature_c: f
     ----------
     csv_file: str
         The path to the csv file containing the base case and the parameter scans to simulate:
-        Format of the file:
+        Format of the file
+
             +----------------+-----------+-----------------+
             | Parameter name | Base case | span            |
             +================+===========+=================+
@@ -64,7 +65,7 @@ def one_factor_at_a_time(csv_file: str, simulation_time: float, temperature_c: f
     x_points_si: int
         The number of grid points in the Si layer.
     base_concentration: float
-        The background impurity concentration in cm^-3. Default 1E-20 cm^-3.
+        The background impurity concentration in cm^-3. Default 1E-20 cm\ :sup:`-3` \.
     """
     # Read the csv
     ofat_df = pd.read_csv(filepath_or_buffer=csv_file, index_col=0)
@@ -372,20 +373,20 @@ def string_list_to_float(the_list: str) -> np.ndarray:
 def create_filetag(time_s: float, temp_c: float, sigma_s: float, zeta: float, d_sf: float, ef: float, m: float,
                    h: float, recovery_time: float = 0, recovery_e_field: float = 0) -> str:
     """
-    Create the filetag for the simulation input file
+    Create the file_tag for the simulation input file
 
     Parameters
     ----------
     time_s: float
-        The simulation time in seconds
+        The simulation time in seconds.
     temp_c: float
         The temperature in °C
     sigma_s: float
-        The surface concentration of the source, in atoms/ cm^2
+        The surface concentration of the source, in atoms/ cm\ :sup:`2` \.
     zeta: float
         The rate of ingress in 1/s
     d_sf: float
-        The diffusivity at the SF in cm^2/s
+        The diffusivity at the SF in cm\ :sup:`2` \/s
     ef: float
         The applied electric field in SiNx in V/cm
     m: float
@@ -401,7 +402,7 @@ def create_filetag(time_s: float, temp_c: float, sigma_s: float, zeta: float, d_
     Returns
     -------
     str:
-        The filetag
+        The file_tag
     """
     filetag = 'constant_source_flux_{0:.0f}'.format(time_s / 3600)
     filetag += '_{0:.0f}C'.format(temp_c)
@@ -446,7 +447,7 @@ def create_span_file(param_list: dict, simulation_time: float, temperature_c: fl
     ----------
     param_list: dict
         A dictionary with the values of the parameters that are being varied. Must contain:
-        - sigma_s: The surface concentration in atoms/cm^2
+        - sigma_s: The surface concentration in atoms/cm\ :sup:`2` \
         - zeta: the rate of transfer in 1/s
         - dsf: the diffusion coefficient of Na in the SF
         - e_field: The electric field in V/cm
@@ -463,7 +464,7 @@ def create_span_file(param_list: dict, simulation_time: float, temperature_c: fl
     thickness_si: float
         The thickness of the simulated SF in um
     base_concentration: float
-        The bulk base impurity concentration for all layers in 1/cm^3
+        The bulk base impurity concentration for all layers in 1/cm\ :sup:`3` \
     er: float
         The relative permittivity of SiNx
     t_steps: int
@@ -507,11 +508,11 @@ def create_input_file(simulation_time: float, temperature_c: float, sigma_s: flo
     temperature_c: float
         The simulation temperature °C
     sigma_s: float
-        The surface concentration of the source in atoms/cm^2
+        The surface concentration of the source in atoms/cm\ :sup:`2` \
     zeta: float
         The surface rate of ingress of Na in (1/s)
     d_sf: float
-        The diffusion coefficient in the SF in cm^2/s
+        The diffusion coefficient in the SF in cm\ :sup:`2` \/s
     e_field: float
         The electric field in SiNx in V/cm
     segregation_coefficient: float
@@ -541,7 +542,7 @@ def create_input_file(simulation_time: float, temperature_c: float, sigma_s: flo
     Returns
     -------
     str:
-        The filetag of the generated file
+        The file_tag of the generated file
     """
     temperature_k = 273.15 + temperature_c
     d_sin = utils.evaluate_arrhenius(a0=d0_sinx, Ea=ea_sinx, temp=temperature_k)
@@ -558,7 +559,7 @@ def create_input_file(simulation_time: float, temperature_c: float, sigma_s: flo
         recovery_e_field=recovery_e_field
     )
     params = {
-        'filetag': filetag,
+        'file_tag': filetag,
         'time': simulation_time,
         'temperature': temperature_c,
         'sigma_s': '{0:.3E}'.format(sigma_s),
@@ -608,7 +609,7 @@ def append_to_batch_script(filetag: str, batch_script: str):
     Parameters
     ----------
     filetag: str
-        The file tag for the .ini configuration file to run
+        The file tag for the .ini configuration file to run.
     batch_script: str
         The path to the batch script to append to.
     """
@@ -634,7 +635,7 @@ def sigma_efield_variations(sigmas: np.ndarray, efields: np.ndarray, out_dir: st
     Parameters
     ----------
     sigmas: np.ndarray
-        An array containing the values of the surface concentration to vary (in ions/cm^2)
+        An array containing the values of the surface concentration to vary (in ions/cm\ :sup:`2` \)
     efields: np.ndarray
         An array containing the values of the electric fields to vary (in V/cm)
     out_dir: str
@@ -664,7 +665,7 @@ def sigma_efield_variations(sigmas: np.ndarray, efields: np.ndarray, out_dir: st
     x_points_si: int
         The number of mesh points in the Si layer. Default 200
     base_concentration: float
-        The background concentration at the initial condition in atoms/cm^3
+        The background concentration at the initial condition in atoms/cm\ :sup:`3` \
 
     """
     total_simulations = len(sigmas) * len(efields)

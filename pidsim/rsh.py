@@ -9,14 +9,44 @@ import h5py
 
 class Rsh:
     """
+    This class provides methods to estimate the shunt resistance :math:`R_{\mathrm{sh}}` of a Na concentration profile
+    in a Si SF defect. It assumes the defect is a rectangular structure of 0.57 nm of width and that the concentration
+    can be discretized within parallelepipeds within the stacking fault, in which the Na concentration is mapped to
+    a resistivity. Then the resistivities are added in series
+
+    .. math:: R_{\mathrm{Na}} = \sum_{i} R_i
+
+    We assume that :math:`R_{\mathrm{Na}}` is in parallel with the junction resistance :math:`R_{\mathrm{jun}}`.
+
+    The shunt resistance is estimated then by
+
+    .. math:: R_{\\mathrm{sh}} = \\frac{R_{\mathrm{Na}} R_{\\mathrm{jun}}}{R_{\\mathrm{Na}} + R_{\\mathrm{jun}}}
+
+    Currently it uses maps the conductivity values to resistivity using KorolConductivity model.
+
+    *Example*
+
+    .. code-block:: python
+
+        import pidsim.rsh as prsh
+        import numpy as np
+        path_to_h5 = './transport_simulation_output.h5'
+        requested_times = np.linspace(0, 3600, 50)
+        rsh_analysis = prsh.Rsh(h5_transport_file=path_to_h5)
+        # Get the indices of the respective time points in the h5 file:
+        requested_indices = prsh.get_requested_time_indices(requested_times=requested_times)
+        rsh = prsh.resistance_time_series(requested_indices=requested_indices)
+
+
     Attributes
     ----------
     _shunt_width: float
         The width of the stacking fault through which the shunt will be constructed.
         A default value of 0.57 nm is used in accordance to
+
         Volker Naumann, Dominik Lausch, Angelika Hähnel, Jan Bauer, Otwin Breitenstein, Andreas Graff, Martina Werner,
-        Sina Swatek, Stephan Großer, Jörg Bagdahn, and Christian Hagendorf,  Sol. Energy Mater. Sol. Cells 120, 383
-        (2014).
+        Sina Swatek, Stephan Großer, Jörg Bagdahn, and Christian Hagendorf,  *Sol. Energy Mater. Sol. Cells* **120**,
+        83 (2014).
     _shunt_length: float
         The length of the shunt as projected on the SiNx/Si interface
     _h5_transport_file: str
@@ -178,13 +208,15 @@ class Rsh:
         """
         Estimates the resistance of the concetration profile as the equivalent resistance of a segment of series
         resistors corresponding to a partition of the concentration profile into parallelepipeds
+
         Parameters
         ----------
         time_s
 
         Returns
         -------
-
+        float:
+            The resistance in Ohm cm
         """
         partition_x = self._x_partition
         # Get the concentration profile at time ts

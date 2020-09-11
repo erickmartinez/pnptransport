@@ -5,6 +5,8 @@ def evaluate_arrhenius(a0: float, Ea: float, temp: float) -> float:
     """
     Evaluate an Arrhenius variable
 
+    .. math:: A = A_0 \\exp\\left( -\\frac{E_{\\mathrm{a}}}{k_{\\mathrm{B}} T} \\right)
+
     Parameters
     ----------
     a0 : float
@@ -161,22 +163,24 @@ def fit_arrhenius(temperature_axis, y, **kwargs):
 
     Ea_err = a_err * kB * temp_factor
 
-    return {'A0': A0,
-            'A0_err': A0_err,
-            'Ea': Ea,
-            'Ea_err': Ea_err,
-            'popt': popt,
-            'pcov': pcov,
-            'ci': ci,
-            'xfit': xfit,
-            'yfit': yfit,
-            'lpb': lpb,
-            'upb': upb}
+    return {
+        'A0': A0,
+        'A0_err': A0_err,
+        'Ea': Ea,
+        'Ea_err': Ea_err,
+        'popt': popt,
+        'pcov': pcov,
+        'ci': ci,
+        'xfit': xfit,
+        'yfit': yfit,
+        'lpb': lpb,
+        'upb': upb
+    }
 
 
 def latex_format(x, digits=2) -> str:
     """
-    Creates a latex string for matplotlib plots.
+    Creates a LaTeX string for matplotlib plots.
 
     Parameters
     ----------
@@ -204,7 +208,7 @@ def latex_format(x, digits=2) -> str:
 
 def latex_order_of_magnitude(num: float, dollar=False):
     """
-    Returns a latex string with the order of magnitude of the number (10^x)
+    Returns a LaTeX string with the order of magnitude of the number (10\ :sup:`x`\)
 
     Parameters
     ----------
@@ -216,7 +220,7 @@ def latex_order_of_magnitude(num: float, dollar=False):
     Returns
     -------
     str:
-        The latex-format string with the order of magnitude of the number.
+        The LaTeX-format string with the order of magnitude of the number.
     """
     str_exp = '{0:.1E}'.format(num)
     # split the string
@@ -228,6 +232,21 @@ def latex_order_of_magnitude(num: float, dollar=False):
 
 
 def latex_format_with_error(num, err):
+    """
+    Parses a measurement quantity and it's error as a LaTeX string to use in matplotlib texts.
+
+    Parameters
+    ----------
+    num: float
+        The measured quantity to parse
+    err: float
+        The error associated error.
+
+    Returns
+    -------
+    str:
+        The quantity and its error formatted as a LaTeX string
+    """
     num_str = '%.9E' % num
     num_sci = (np.array(num_str.split('E'))).astype(np.float)
     if np.isinf(err):
@@ -310,18 +329,25 @@ def tau_c(D: float, E: float, L: float, T: float) -> float:
     Estimates the characteristic constant for the Nernst-Planck
     equation in the low concentration approximation
 
-        .. math:: \\tau_c = \\frac{2D}{\\mu^2 E^2} + \\frac{L}{\\mu E} \\left[1 ± 2\\left( \\frac{kT}{q E L}\\right)^{1/2}\\right]
+        .. math::
+            \\tau_c = \\frac{L}{\\mu E} + \\frac{2D}{\\mu^2 E^2} \\left[1 \pm \\left( 1 + \\frac{q E}{kT} L \\right)^{1/2}\\right]
 
     Since  :math:`\\mu = qD/kT`
 
-        .. math:: \\tau_c = \\left( \\frac{2}{D} \\right) X^2 + \\left( \\frac{L}{D} \\right) X  \\left[ 1 ± 2 \\left( \\frac{X}{L} \\right)^{1/2} \\right],
+        .. math::
+            \\tau_c = \\left( \\frac{L}{D} \\right) X + \\left( \\frac{2}{D} \\right) X^2  \\left[ 1 \pm \\left( 1 + \\frac{L}{X} \\right)^{1/2} \\right],
 
     with :math:`X = kT/qE`
+
+    When :math:`\mu E \\tau_c` is negligible, compared with the diffusive term :math:`2\sqrt{D\\tau_c}`, it returns
+
+    .. math::
+        \\tau_c = \\frac{L^2}{D}
 
     Parameters
     ----------
     D: float
-        The diffusion coefficient in cm^2/s
+        The diffusion coefficient in cm\ :sup:`2`\/s
     E: float
         The electric field in MV/cm = 1E6 V/cm
     L: float
@@ -341,15 +367,17 @@ def tau_c(D: float, E: float, L: float, T: float) -> float:
 
     x = kTq_red / E  # x 1E-5 V x 1E-6 cm/V = 1E-11 cm
 
-    tau1 = 1.0E-11 * x * (L / D) + (2.0E-22 * np.power(x, 2.0) / D) * (1.0 - np.sqrt(1.0 + 1E-11 * (L / x)))
-    tau2 = 1.0E-11 * x * (L / D) + (2.0E-22 * np.power(x, 2.0) / D) * (1.0 + np.sqrt(1.0 + 1E-11 * (L / x)))
+    tau1 = 1.0E-11 * x * (L / D) + (2.0E-22 * np.power(x, 2.0) / D) * (1.0 - np.sqrt(1E11 * (L / x)))
+    tau2 = 1.0E-11 * x * (L / D) + (2.0E-22 * np.power(x, 2.0) / D) * (1.0 + np.sqrt(1E11 * (L / x)))
+    
+    tau_d = np.power(L, 2.0) / D
 
     if tau1 <= 0:
-        return tau2
+        return min(tau2, tau_d)
     elif tau2 <= 0:
-        return tau1
+        return min(tau1, tau_d)
     else:
-        return min(tau1, tau2)
+        return min(min(tau1, tau2), tau_d)
 
 
 def geometric_series_spaced(max_val: float, min_delta: float, steps: int, reverse: bool = False,
@@ -357,11 +385,23 @@ def geometric_series_spaced(max_val: float, min_delta: float, steps: int, revers
     """
     Produces an array of values spaced according to a geometric series
 
-    S_n = a + a*r + a*r^2 + ... + a*r^(n-2) + a*r^(n-1)
+    .. math:: S_n = a + a r + a r^2 + ... + a r^{n-2} + a r^{n-1}
 
-    For which S_n = a*(1-r^n)/(1-r)
+    For which :math:`S_n = a (1-r^n) / (1-r)`
 
     Here, a is the minimum increment (min_delta) and n is the number of steps and r is determined using Newton's method
+
+    *Example:*
+
+    .. ipython::
+
+        In [1]: import pnptransport.utils as utils
+
+        In [2]: utils.geometric_series_spaced(max_val=3600, min_delta=1, steps=10)
+        Out[2]: array([0.00000000e+00, 1.00000000e+00, 3.33435191e+00, 8.78355077e+00,
+        2.15038985e+01, 5.11976667e+01, 1.20513371e+02, 2.82320618e+02,
+        6.60035676e+02, 1.54175554e+03, 3.60000000e+03])
+
 
     Parameters
     ----------
@@ -450,3 +490,44 @@ def get_indices_at_values(x: np.array, requested_values: np.array) -> np.ndarray
     for i, v in enumerate(requested_values):
         result[i] = int((np.abs(v - x)).argmin())
     return result
+
+
+def format_pid_hhmmss_csv(path_to_csv: str):
+    """
+    This function process the input csv so that a column with the time in seconds is added based on the input time
+    column in hh:mm:ss
+
+    Parameters
+    ----------
+    path_to_csv: str
+        The pid csv file
+    """
+    import platform
+    import pandas as pd
+    import os
+    from datetime import timedelta
+    if platform.system() == 'Windows':
+        path_to_csv = r'\\?\\' + path_to_csv
+
+    pid_df = pd.read_csv(path_to_csv)
+    time_str = pid_df['Time'].to_numpy().astype('str')
+    time_s = np.empty(len(time_str), dtype=float)
+    print(time_str)
+    for i, t in enumerate(time_str):
+        print('Processing time string {0}'.format(t))
+        t_split = t.split(':')
+        if len(t_split) == 2:
+            h = int(t_split[0])
+            m = int(t_split[1])
+            s = 0
+        else:
+            h = int(t_split[0])
+            m = int(t_split[1])
+            s = int(t_split[2])
+        time_s[i] = int(timedelta(hours=h, minutes=m, seconds=s).total_seconds())
+
+    pid_df['time (s)'] = time_s
+    base_dir = os.path.dirname(path_to_csv)
+    filetag = os.path.splitext(path_to_csv)[0]
+    pid_df.to_csv(os.path.join(base_dir, filetag + '_modified.csv'))
+

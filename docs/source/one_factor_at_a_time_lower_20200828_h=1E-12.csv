@@ -1,0 +1,9 @@
+﻿Parameter,base,span
+sigma_s,1.00E+10,"1E10,1E11,1E12,1E13,1E14"
+zeta,1.00E-04,"1E-8, 1E-7, 1E-6, 1E-5,1E-4"
+DSF,1.00E-14,"1E-14,1E-15,1E-16"
+E,1.00E+04,"1E1,1E2,1E3,1E4,1E5,1E6"
+m,1.00E+00,1
+h,1.00E-12,"1E-12,1E-10,1E-8"
+recovery time,43200,43200
+recovery electric field,-1.00E+04,-1.00E+04

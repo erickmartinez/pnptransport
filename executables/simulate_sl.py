@@ -9,6 +9,23 @@ import traceback
 
 
 def getLogger(out_path, filetag, **kwargs):
+    """
+    Gets the logger for the cuurent simulation
+
+    Parameters
+    ----------
+    out_path: str
+        The path to store the log
+    filetag: str
+        The fle tag of the log file
+    kwargs:
+        name: str
+            The name to use as a prefix
+
+    Returns
+    -------
+
+    """
     name = kwargs.get('name', '')
     logFile = os.path.join(out_path, filetag + "_{}.log".format(name))
 
@@ -63,7 +80,7 @@ if __name__ == '__main__':
     # The configuration file
     # Logging
     # The base filename for the output
-    file_tag = config.get(section='global', option='filetag')
+    file_tag = config.get(section='global', option='file_tag')
     logFile = file_tag + ".log"
 
     full_path = os.path.abspath(config_file)
@@ -85,7 +102,10 @@ if __name__ == '__main__':
     # Number of moles of sodium to introduce in the source
     surface_concentration = config.getfloat(section='global', option='surface_concentration', fallback=1E11)
     # The rate of ingress of ions at the source
-    zeta = config.getfloat(section='global', option='zeta', fallback=1E-5)
+    rate = config.getfloat(section='global', option='rate', fallback=1E-5)
+    x1 = config.getfloat(section='global', option='x1', fallback=0.015)
+    # Whether running a constant flux or a zero flux source
+    zero_flux = config.getboolean(section='global', option='zero_fux_source', fallback=True)
 
     # The diffusion coefficient of layer 1 in cm2/s
     D1cms = config.getfloat(section='sinx', option='d')
@@ -107,23 +127,42 @@ if __name__ == '__main__':
             os.makedirs(rpath)
         h5FileName = os.path.join(rpath, file_tag + ".h5")
         myLogger = getLogger(rpath, file_tag, name='SL')
-        vfb, t_sim, x1i, c1i, p1i, c_max = pnpfs.single_layers_zero_flux(
-            D1cms=D1cms,
-            thickness_sinx=L1,
-            tempC=temp_c,
-            voltage=voltage,
-            time_s=t_max,
-            surface_concentration=surface_concentration,
-            fcallLogger=myLogger,
-            xpoints_sinx=x1points,
-            tsteps=tsteps,
-            h5_storage=h5FileName,
-            zeta=zeta,
-            er=7.0,
-            z=1.0,
-            maxr_calls=5,
-            debug=True
-        )
+        if zero_flux:
+            vfb, t_sim, x1i, c1i, p1i, c_max = pnpfs.single_layer_zero_flux(
+                D1cms=D1cms,
+                thickness_dielectric=L1,
+                tempC=temp_c,
+                voltage=voltage,
+                time_s=t_max,
+                surface_concentration=surface_concentration,
+                fcallLogger=myLogger,
+                xpoints_sinx=x1points,
+                tsteps=tsteps,
+                h5_storage=h5FileName,
+                er=er,
+                z=1.0,
+                maxr_calls=5,
+                x1=x1,
+                debug=True
+            )
+        else:
+            vfb, t_sim, x1i, c1i, p1i, c_max = pnpfs.single_layer_constant_source_flux(
+                D1cms=D1cms,
+                thickness_sinx=L1,
+                tempC=temp_c,
+                voltage=voltage,
+                time_s=t_max,
+                surface_concentration=surface_concentration,
+                fcallLogger=myLogger,
+                xpoints_sinx=x1points,
+                tsteps=tsteps,
+                h5_storage=h5FileName,
+                rate=rate,
+                er=er,
+                z=1.0,
+                maxr_calls=5,
+                debug=True
+            )
 
     except Exception as e:
         traceback.print_exc()

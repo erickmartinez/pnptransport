@@ -29,14 +29,19 @@ if __name__ == "__main__":
         base_path = r'\\?\\' + base_path
 
     df = pd.read_csv(os.path.join(base_path, sentarus_dataset))
-    # Do not use Rsh for now
+    # If fitting pmpp uncomment the next line
     column_list = list(set(list(df.columns)) - set(['Rsh (Ohms cm2)', 'time (s)']))
+    # If fitting rsh uncomment the next line
+    # column_list = list(set(list(df.columns)) - set(['pd_mpp (mW/cm2)', 'time (s)']))
     column_list.sort()
     df = df[column_list]
     print(df)
     print(df.describe())
 
+    # If fitting pmpp uncomment the next line
     target_column = ['pd_mpp (mW/cm2)']
+    # If fitting rsh uncomment the next line
+    # target_column = ['Rsh (Ohms cm2)']
     predictors = list(set(list(df.columns)) - set(target_column))
     df[predictors] = df[predictors] / df[predictors].max()
     print(df.describe())
@@ -44,7 +49,7 @@ if __name__ == "__main__":
     X = df[predictors].values
     y = df[target_column].values
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30, random_state=40)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30, random_state=10)
     print(X_train.shape)
     print(X_test.shape)
 
@@ -60,5 +65,6 @@ if __name__ == "__main__":
     print(np.sqrt(mean_squared_error(y_test, pred_test_rf)))
     print(r2_score(y_test, pred_test_rf))
 
-    dump(model_rf, os.path.join(base_path, 'random_forest.joblib'))
+    # If fitting mpp append mpp to the pickle, if fitting rsh append rsh
+    dump(model_rf, os.path.join(base_path, 'random_forest_mpp.joblib'))
 

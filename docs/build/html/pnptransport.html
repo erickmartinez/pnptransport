@@ -1,7 +1,8 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   
@@ -11,18 +12,12 @@
   
 
   
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
   
   
   
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -30,11 +25,15 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Rsh Approximation Model" href="pidsim.html" />
@@ -52,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> PNP Transport
+            <a href="index.html" class="icon icon-home"> PNP Transport
           
 
           
@@ -75,7 +74,6 @@
           
         </div>
 
-        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -101,7 +99,6 @@
             
           
         </div>
-        
       </div>
     </nav>
 
@@ -140,7 +137,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="index.html">Docs</a> &raquo;</li>
         
       <li>Finite Source Simulation Code</li>
     
@@ -164,34 +161,272 @@
   <div class="section" id="module-pnptransport.finitesource">
 <span id="finite-source-simulation-code"></span><h1>Finite Source Simulation Code<a class="headerlink" href="#module-pnptransport.finitesource" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="pnptransport.finitesource.two_layers_constant_flux">
-<code class="sig-prename descclassname">pnptransport.finitesource.</code><code class="sig-name descname">two_layers_constant_flux</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">D1cms</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">D2cms</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">h</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">m</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">thickness_sinx</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">thickness_si</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">tempC</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">voltage</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">time_s</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>float<span class="p">, </span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">surface_concentration</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">100000000000.0</span></em>, <em class="sig-param"><span class="n">h_surface</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0001</span></em>, <em class="sig-param"><span class="n">recovery_time_s</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>float<span class="p">, </span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">recovery_voltage</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">trapping</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.finitesource.two_layers_constant_flux" title="Permalink to this definition">¶</a></dt>
+<dt id="pnptransport.finitesource.single_layer_constant_source_flux">
+<code class="sig-prename descclassname">pnptransport.finitesource.</code><code class="sig-name descname">single_layer_constant_source_flux</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">D1cms</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">thickness_sinx</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">tempC</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">voltage</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">time_s</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>float<span class="p">, </span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">surface_concentration</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">100000000000.0</span></em>, <em class="sig-param"><span class="n">rate</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1e-05</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.finitesource.single_layer_constant_source_flux" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function simulates the flatband voltage as a function of time for a
 MIS device where Na is migrating into the cell. It also returns a matrix
 with the concentration profiles as a function of time.</p>
 <p>The system solves Poisson-Nernst-Planck equation for a single species.</p>
+<p><em>Example</em></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pnptransport.finitesource</span> <span class="k">as</span> <span class="nn">pnpfs</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">D1</span> <span class="o">=</span> <span class="mf">1E-16</span>
+<span class="n">thickness_1</span> <span class="o">=</span> <span class="mf">75E-7</span>
+<span class="n">temp_c</span> <span class="o">=</span> <span class="mf">60.</span>
+<span class="n">s</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="mf">1E10</span><span class="p">,</span> <span class="mf">1E-6</span>
+<span class="n">voltage</span> <span class="o">=</span> <span class="mf">0.75</span>
+<span class="n">time_s</span> <span class="o">=</span> <span class="mf">86400.</span>
+<span class="n">h5FileName</span> <span class="o">=</span> <span class="s1">&#39;simulation_output.h5&#39;</span>
+<span class="c1"># Chose a small time step to reduce truncation error in the TRBDF2</span>
+<span class="n">t_steps</span> <span class="o">=</span> <span class="mi">3600</span>
+
+<span class="c1"># Create a logger</span>
+<span class="n">logFile</span> <span class="o">=</span> <span class="s1">&#39;simulation_output.log&#39;</span>
+<span class="n">my_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;simlog&#39;</span><span class="p">)</span>
+<span class="n">my_logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="c1"># create file handler which logs even debug messages</span>
+<span class="n">fh</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">logFile</span><span class="p">)</span>
+<span class="n">fh</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="c1"># create console handler and set level to debug</span>
+<span class="n">ch</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+<span class="n">ch</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="c1"># add the handlers to the logger</span>
+<span class="n">my_logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+<span class="n">my_logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
+
+<span class="n">vfb</span><span class="p">,</span> <span class="n">tsim</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">cmax</span> <span class="o">=</span> <span class="n">pnpfs</span><span class="o">.</span><span class="n">single_layer_constant_source_flux</span><span class="p">(</span>
+    <span class="n">D1cms</span><span class="o">=</span><span class="n">D1</span><span class="p">,</span> <span class="n">thickness_sinx</span><span class="o">=</span><span class="n">thickness_1</span><span class="p">,</span>
+    <span class="n">tempC</span><span class="o">=</span><span class="n">temp_c</span><span class="p">,</span> <span class="n">voltage</span><span class="o">=</span><span class="n">voltage</span><span class="p">,</span> <span class="n">time_s</span><span class="o">=</span><span class="n">surface_concentration</span><span class="p">,</span>
+    <span class="n">rate</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">tsteps</span><span class="o">=</span><span class="n">t_steps</span><span class="p">,</span> <span class="n">h5_storage</span><span class="o">=</span><span class="n">h5FileName</span><span class="p">,</span> <span class="n">er</span><span class="o">=</span><span class="mf">7.0</span>
+<span class="p">)</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>D1cms</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The diffusion coefficient of Na in the dielectric (cm^2/s)</p></li>
-<li><p><strong>D2cms</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The diffusion coefficient of Na in silicon (cm^2/s)</p></li>
-<li><p><strong>h</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The surface mass transfer coefficient (cm/s)</p></li>
-<li><p><strong>m</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The segregation coefficient (unitless)</p></li>
-<li><p><strong>thickness_sinx</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The thickness of the simulated dielectric layer (um)</p></li>
-<li><p><strong>thickness_si</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The thickness of the simulated silicon layer (um)</p></li>
-<li><p><strong>tempC</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – The temperature in °C</p></li>
-<li><p><strong>voltage</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – The voltage applied to the dielectric (V)</p></li>
-<li><p><strong>time_s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – The simulation time in seconds</p></li>
-<li><p><strong>surface_concentration</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The initial surface concentration in atoms/cm^2
-The flux at the source will be determined as J = h_surface * suface_concentration.
-Default value 1E11 atoms/cm^2</p></li>
-<li><p><strong>h_surface</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The surface mass transfer coefficient at the top interface in 1/s.
-Default value: 1E-4</p></li>
-<li><p><strong>recovery_time_s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – An additional simulation time during which, no electrical stress is applied. (s)</p></li>
-<li><p><strong>recovery_voltage</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – If provided a recovery time, the bias at which it will recover (V).</p></li>
-<li><p><strong>trapping</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, apply trapping correction to the image charges. Default (True)</p></li>
+<li><p><strong>D1cms</strong> (<em>float</em>) – The diffusion coefficient of Na in the dielectric (cm<sup>2</sup>/s)</p></li>
+<li><p><strong>thickness_sinx</strong> (<em>float</em>) – The thickness of the simulated dielectric layer (um)</p></li>
+<li><p><strong>tempC</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – The temperature in °C</p></li>
+<li><p><strong>voltage</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – The voltage applied to the dielectric (V)</p></li>
+<li><p><strong>time_s</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – The simulation time in seconds</p></li>
+<li><p><strong>surface_concentration</strong> (<em>float</em>) – The initial surface concentration in atoms/cm<sup>2</sup>.
+The flux at the source will be determined as J = rate * suface_concentration.
+Default value 1E11 atoms/cm<sup>2</sup>.</p></li>
+<li><p><strong>rate</strong> (<em>float</em>) – The rate of transfer at the source in 1/s
+Defulat 1E-5</p></li>
 <li><p><strong>**kwargs</strong> – <dl class="simple">
-<dt>cbulk: double</dt><dd><p>The base concentration cm-3</p>
+<dt>cbulk: double</dt><dd><p>The base concentration cm<sup>-3</sup>.</p>
+</dd>
+<dt>xpoints_sinx: int</dt><dd><p>The number of cells in the sinx layer</p>
+</dd>
+<dt>z: integer</dt><dd><p>The valency of the ion
+default: 1</p>
+</dd>
+<dt>er: double</dt><dd><p>The relative permittivity of the dielectric</p>
+</dd>
+<dt>xpoints: int</dt><dd><p>The number of x points to simulate</p>
+</dd>
+<dt>fcall: int</dt><dd><p>The number of times the function has been called to solve the same
+problem</p>
+</dd>
+<dt>tsteps: int</dt><dd><p>The number of time steps to simulate</p>
+</dd>
+<dt>max_calls: int</dt><dd><p>The maximum number of times the function can be recursively call if the convergence fails.</p>
+</dd>
+<dt>max_iter: int</dt><dd><p>The maximum number of iterations for the solver</p>
+</dd>
+<dt>relaxation_parameter: float</dt><dd><p>The relaxation w for the Newton algorithm</p>
+</dd>
+<dt>h5fn: str</dt><dd><p>The path to the h5 file to store the simulation results</p>
+</dd>
+<dt>debug: bool</dt><dd><p>True if debugging the function</p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>Vfb</strong> (<em>np.ndarray</em>) – An array containing the flat band voltage shift as a function of time
+in (V)</p></li>
+<li><p><strong>tsim</strong> (<em>np.ndarray</em>) – The time for each flatband voltage point in seconds.</p></li>
+<li><p><strong>x1</strong> (<em>np.ndarray</em>) – The depth of the concentration profile in SiNx in um.</p></li>
+<li><p><strong>c1</strong> (<em>np.ndarray</em>) – The final concentration profile as a function of depth in SiNx in cm<sup>-3</sup>.</p></li>
+<li><p><strong>potential</strong> (<em>np.ndarray</em>) – The final potential profile as a function of depth in SiNx in V.</p></li>
+<li><p><strong>cmax</strong> (<em>float</em>) – The maximum concentration in silicon nitride in cm<sup>-3</sup>.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pnptransport.finitesource.single_layer_zero_flux">
+<code class="sig-prename descclassname">pnptransport.finitesource.</code><code class="sig-name descname">single_layer_zero_flux</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">D1cms</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">thickness_dielectric</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">tempC</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">voltage</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">time_s</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>float<span class="p">, </span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">surface_concentration</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">100000000000.0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.finitesource.single_layer_zero_flux" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function simulates the flatband voltage as a function of time for a
+MIS device where Na is migrating into the cell. It also returns a matrix
+with the concentration profiles as a function of time.</p>
+<p>The system solves Poisson-Nernst-Planck equation for a single species.</p>
+<p><em>Example</em></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pnptransport.finitesource</span> <span class="k">as</span> <span class="nn">pnpfs</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">D1</span> <span class="o">=</span> <span class="mf">1E-16</span>
+<span class="n">thickness_1</span> <span class="o">=</span> <span class="mf">75E-7</span>
+<span class="n">temp_c</span> <span class="o">=</span> <span class="mf">60.</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="mf">0.015</span>
+<span class="n">S</span> <span class="o">=</span> <span class="mf">1E11</span>
+<span class="n">voltage</span> <span class="o">=</span> <span class="mf">0.75</span>
+<span class="n">time_s</span> <span class="o">=</span> <span class="mf">86400.</span>
+<span class="n">h5FileName</span> <span class="o">=</span> <span class="s1">&#39;simulation_output.h5&#39;</span>
+<span class="c1"># Chose a small time step to reduce truncation error in the TRBDF2</span>
+<span class="n">t_steps</span> <span class="o">=</span> <span class="mi">3600</span>
+
+<span class="n">logFile</span> <span class="o">=</span> <span class="s1">&#39;simulation_output.log&#39;</span>
+<span class="n">my_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;simlog&#39;</span><span class="p">)</span>
+<span class="n">my_logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="c1"># create file handler which logs even debug messages</span>
+<span class="n">fh</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">logFile</span><span class="p">)</span>
+<span class="n">fh</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="c1"># create console handler and set level to debug</span>
+<span class="n">ch</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+<span class="n">ch</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="c1"># add the handlers to the logger</span>
+<span class="n">my_logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+<span class="n">my_logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
+
+<span class="n">vfb</span><span class="p">,</span> <span class="n">t_sim</span><span class="p">,</span> <span class="n">x_sim</span><span class="p">,</span> <span class="n">c_sim</span><span class="p">,</span> <span class="n">p_sim</span><span class="p">,</span> <span class="n">c_max</span> <span class="o">=</span> <span class="n">pnpfs</span><span class="o">.</span><span class="n">single_layer_zero_flux</span><span class="p">(</span>
+    <span class="n">D1cms</span><span class="o">=</span><span class="n">D1</span><span class="p">,</span> <span class="n">thickness_dielectric</span><span class="o">=</span><span class="n">thickness_1</span><span class="p">,</span>
+    <span class="n">tempC</span><span class="o">=</span><span class="n">temp_c</span><span class="p">,</span> <span class="n">voltage</span><span class="o">=</span><span class="n">voltage</span><span class="p">,</span> <span class="n">time_s</span><span class="o">=</span><span class="n">time_s</span><span class="p">,</span>
+    <span class="n">surface_concentration</span><span class="o">=</span><span class="n">S</span><span class="p">,</span> <span class="n">x1</span>
+    <span class="n">tsteps</span><span class="o">=</span><span class="n">t_steps</span><span class="p">,</span> <span class="n">h5_storage</span><span class="o">=</span><span class="n">h5FileName</span><span class="p">,</span> <span class="n">er</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>D1cms</strong> (<em>float</em>) – The diffusion coefficient of Na in the dielectric (cm<sup>2</sup>/s).</p></li>
+<li><p><strong>thickness_dielectric</strong> (<em>float</em>) – The thickness of the simulated dielectric layer (um).</p></li>
+<li><p><strong>tempC</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – The temperature in °C.</p></li>
+<li><p><strong>voltage</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – The voltage applied to the dielectric (V).</p></li>
+<li><p><strong>time_s</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – The simulation time in seconds.</p></li>
+<li><p><strong>surface_concentration</strong> (<em>float</em>) – The initial surface concentration in atoms/cm<sup>2</sup>.
+Default value 1E11 atoms/cm<sup>2</sup></p></li>
+<li><p><strong>**kwargs</strong> – <dl class="simple">
+<dt>x1: float</dt><dd><p>The thickness of the initial step profile in um.</p>
+</dd>
+<dt>cbulk: double</dt><dd><p>The base concentration cm<sup>-3</sup>.</p>
+</dd>
+<dt>xpoints_sinx: int</dt><dd><p>The number of cells in the sinx layer.</p>
+</dd>
+<dt>z: integer</dt><dd><p>The valency of the ion.
+default: 1</p>
+</dd>
+<dt>er: double</dt><dd><p>The relative permittivity of the dielectric.</p>
+</dd>
+<dt>xpoints: int</dt><dd><p>The number of x points to simulate</p>
+</dd>
+<dt>fcall: int</dt><dd><p>The number of times the function has been called to solve the same
+problem.</p>
+</dd>
+<dt>tsteps: int</dt><dd><p>The number of time steps to simulate.</p>
+</dd>
+<dt>max_calls: int</dt><dd><p>The maximum number of times the function can be recursively call if the convergence fails.</p>
+</dd>
+<dt>max_iter: int</dt><dd><p>The maximum number of iterations for the solver.</p>
+</dd>
+<dt>relaxation_parameter: float</dt><dd><p>The relaxation w for the Newton algorithm.</p>
+</dd>
+<dt>h5fn: str</dt><dd><p>The path to the h5 file to store the simulation results.</p>
+</dd>
+<dt>debug: bool</dt><dd><p>True if debugging the function.</p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>Vfb</strong> (<em>np.ndarray</em>) – An array containing the flat band voltage shift as a function of time
+in (V).</p></li>
+<li><p><strong>tsim</strong> (<em>np.ndarray</em>) – The time for each flatband voltage point in seconds.</p></li>
+<li><p><strong>x1</strong> (<em>np.ndarray</em>) – The depth of the concentration profile in SiNx in um.</p></li>
+<li><p><strong>c1</strong> (<em>np.ndarray</em>) – The final concentration profile as a function of depth in SiNx in cm<sup>-3</sup>.</p></li>
+<li><p><strong>potential</strong> (<em>np.ndarray</em>) – The final potential profile as a function of depth in SiNx in V.</p></li>
+<li><p><strong>cmax</strong> (<em>float</em>) – The maximum concentration in silicon nitride in cm<sup>-3</sup>.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pnptransport.finitesource.two_layers_constant_flux">
+<code class="sig-prename descclassname">pnptransport.finitesource.</code><code class="sig-name descname">two_layers_constant_flux</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">D1cms</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">D2cms</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">h</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">m</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">thickness_sinx</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">thickness_si</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">tempC</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">voltage</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">time_s</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>float<span class="p">, </span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">surface_concentration</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">100000000000.0</span></em>, <em class="sig-param"><span class="n">rate</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0001</span></em>, <em class="sig-param"><span class="n">recovery_time_s</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>float<span class="p">, </span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">recovery_voltage</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">trapping</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.finitesource.two_layers_constant_flux" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function simulates the flatband voltage as a function of time for a
+MIS device where Na is migrating into the cell. It also returns a matrix
+with the concentration profiles as a function of time.</p>
+<p>The system solves Poisson-Nernst-Planck equation for a single species.</p>
+<p><em>Example</em></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pnptransport.finitesource</span> <span class="k">as</span> <span class="nn">pnpfs</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">D1</span><span class="p">,</span> <span class="n">D2</span> <span class="o">=</span> <span class="mf">1E-16</span><span class="p">,</span> <span class="mf">1E-15</span>
+<span class="n">h</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="mf">1E-12</span><span class="p">,</span> <span class="mf">1.0</span>
+<span class="n">thickness_1</span><span class="p">,</span> <span class="n">thickness_2</span> <span class="o">=</span> <span class="mf">75E-7</span><span class="p">,</span> <span class="mf">1.</span>
+<span class="n">temp_c</span> <span class="o">=</span> <span class="mf">60.</span>
+<span class="n">S</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="mf">1.E-5</span><span class="p">,</span> <span class="mf">1E10</span>
+<span class="n">voltage</span> <span class="o">=</span> <span class="mf">0.75</span>
+<span class="n">time_s</span> <span class="o">=</span> <span class="mf">86400.</span>
+<span class="n">h5FileName</span> <span class="o">=</span> <span class="s1">&#39;simulation_output.h5&#39;</span>
+<span class="c1"># Chose a small time step to reduce truncation error in the TRBDF2</span>
+<span class="n">t_steps</span> <span class="o">=</span> <span class="mi">3600</span>
+
+<span class="n">logFile</span> <span class="o">=</span> <span class="s1">&#39;simulation_output.log&#39;</span>
+<span class="n">my_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;simlog&#39;</span><span class="p">)</span>
+<span class="n">my_logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="c1"># create file handler which logs even debug messages</span>
+<span class="n">fh</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">logFile</span><span class="p">)</span>
+<span class="n">fh</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="c1"># create console handler and set level to debug</span>
+<span class="n">ch</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+<span class="n">ch</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="c1"># add the handlers to the logger</span>
+<span class="n">my_logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+<span class="n">my_logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
+
+<span class="n">vfb</span><span class="p">,</span> <span class="n">tsim</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">cmax</span> <span class="o">=</span> <span class="n">pnpfs</span><span class="o">.</span><span class="n">two_layers_constant_flux</span><span class="p">(</span>
+    <span class="n">D1cms</span><span class="o">=</span><span class="n">D1</span><span class="p">,</span> <span class="n">D2cms</span><span class="o">=</span><span class="n">D2</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">thickness_sinx</span><span class="o">=</span><span class="n">thickness_1</span><span class="p">,</span> <span class="n">thickness_si</span><span class="o">=</span><span class="n">thickness_2</span><span class="p">,</span>
+    <span class="n">tempC</span><span class="o">=</span><span class="n">temp_c</span><span class="p">,</span> <span class="n">voltage</span><span class="o">=</span><span class="n">voltage</span><span class="p">,</span> <span class="n">time_s</span><span class="o">=</span><span class="n">time_s</span><span class="p">,</span>
+    <span class="n">surface_concentration</span><span class="o">=</span><span class="n">S</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="n">k</span><span class="p">,</span>
+    <span class="n">tsteps</span><span class="o">=</span><span class="n">t_steps</span><span class="p">,</span> <span class="n">h5_storage</span><span class="o">=</span><span class="n">h5FileName</span><span class="p">,</span> <span class="n">er</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>D1cms</strong> (<em>float</em>) – The diffusion coefficient of Na in the dielectric (cm<sup>2</sup>/s)</p></li>
+<li><p><strong>D2cms</strong> (<em>float</em>) – The diffusion coefficient of Na in silicon (cm<sup>2</sup>/s)</p></li>
+<li><p><strong>h</strong> (<em>float</em>) – The surface mass transfer coefficient (cm/s)</p></li>
+<li><p><strong>m</strong> (<em>float</em>) – The segregation coefficient (unitless)</p></li>
+<li><p><strong>thickness_sinx</strong> (<em>float</em>) – The thickness of the simulated dielectric layer (um)</p></li>
+<li><p><strong>thickness_si</strong> (<em>float</em>) – The thickness of the simulated silicon layer (um)</p></li>
+<li><p><strong>tempC</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – The temperature in °C</p></li>
+<li><p><strong>voltage</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – The voltage applied to the dielectric (V)</p></li>
+<li><p><strong>time_s</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – The simulation time in seconds</p></li>
+<li><p><strong>surface_concentration</strong> (<em>float</em>) – The initial surface concentration in atoms/cm<sup>2</sup>.
+The flux at the source will be determined as J = h_surface * suface_concentration.
+Default value 1E11 atoms/cm<sup>2</sup>.</p></li>
+<li><p><strong>rate</strong> (<em>float</em>) – The surface mass transfer coefficient at the top interface in 1/s.
+Default value: 1E-4</p></li>
+<li><p><strong>recovery_time_s</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – An additional simulation time during which, no electrical stress is applied. (s)</p></li>
+<li><p><strong>recovery_voltage</strong> (<em>float</em>) – If provided a recovery time, the bias at which it will recover (V).</p></li>
+<li><p><strong>trapping</strong> (<em>bool</em>) – If True, apply trapping correction to the image charges. Default (True)</p></li>
+<li><p><strong>**kwargs</strong> – <dl class="simple">
+<dt>cbulk: double</dt><dd><p>The base concentration cm<sup>-3</sup>.</p>
 </dd>
 <dt>xpoints_sinx: int</dt><dd><p>The number of cells in the sinx layer</p>
 </dd>
@@ -234,15 +469,15 @@ problem</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>Vfb</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – An array containing the flat band voltage shift as a function of time
+<li><p><strong>Vfb</strong> (<em>np.ndarray</em>) – An array containing the flat band voltage shift as a function of time
 in (V)</p></li>
-<li><p><strong>tsim</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The time for each flatband voltage point</p></li>
-<li><p><strong>x1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The depth of the concentration profile in SiNx</p></li>
-<li><p><strong>c1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The final concentration profile as a function of depth in SiNx</p></li>
-<li><p><strong>potential</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The final potential profile as a function of depth in SiNx</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The depth of the concentration profile in Si</p></li>
-<li><p><strong>c2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The final concentration profile in Si</p></li>
-<li><p><strong>cmax</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The maximum concentration in silicon nitride</p></li>
+<li><p><strong>tsim</strong> (<em>np.ndarray</em>) – The time for each flatband voltage point in s.</p></li>
+<li><p><strong>x1</strong> (<em>np.ndarray</em>) – The depth of the concentration profile in SiNx in um.</p></li>
+<li><p><strong>c1</strong> (<em>np.ndarray</em>) – The final concentration profile as a function of depth in SiNx in cm<sup>-3</sup>.</p></li>
+<li><p><strong>potential</strong> (<em>np.ndarray</em>) – The final potential profile as a function of depth in SiNx in V.</p></li>
+<li><p><strong>x2</strong> (<em>np.ndarray</em>) – The depth of the concentration profile in Si in um.</p></li>
+<li><p><strong>c2</strong> (<em>np.ndarray</em>) – The final concentration profile in Si in cm<sup>-3</sup>.</p></li>
+<li><p><strong>cmax</strong> (<em>float</em>) – The maximum concentration in silicon nitride in cm<sup>-3</sup>.</p></li>
 </ul>
 </p>
 </dd>
@@ -255,28 +490,67 @@ in (V)</p></li>
 <dd><p>This function simulates the flatband voltage as a function of time for a
 MIS device where Na is migrating into the cell. It also returns a matrix
 with the concentration profiles as a function of time.</p>
-<p>The system solves Poisson-Nernst-Planck equation for a single species.</p>
+<p>The code solves Poisson-Nernst-Planck equation for a single species.</p>
+<p><em>Example</em></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pnptransport.finitesource</span> <span class="k">as</span> <span class="nn">pnpfs</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">D1</span><span class="p">,</span> <span class="n">D2</span> <span class="o">=</span> <span class="mf">1E-16</span><span class="p">,</span> <span class="mf">1E-15</span>
+<span class="n">Cs</span> <span class="o">=</span> <span class="mf">1E16</span>
+<span class="n">h</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="mf">1E-12</span><span class="p">,</span> <span class="mf">1.0</span>
+<span class="n">thickness_1</span><span class="p">,</span> <span class="n">thickness_2</span> <span class="o">=</span> <span class="mf">75E-7</span><span class="p">,</span> <span class="mf">1.</span>
+<span class="n">temp_c</span> <span class="o">=</span> <span class="mf">60.</span>
+<span class="n">n_moles</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">h0</span> <span class="o">=</span> <span class="mf">1.E-5</span><span class="p">,</span> <span class="mf">1E10</span><span class="p">,</span> <span class="mf">1E-6</span>
+<span class="n">voltage</span> <span class="o">=</span> <span class="mf">0.75</span>
+<span class="n">time_s</span> <span class="o">=</span> <span class="mf">86400.</span>
+<span class="n">h5FileName</span> <span class="o">=</span> <span class="s1">&#39;simulation_output.h5&#39;</span>
+<span class="c1"># Chose a small time step to reduce truncation error in the TRBDF2</span>
+<span class="n">t_steps</span> <span class="o">=</span> <span class="mi">3600</span>
+
+<span class="c1"># Create a logger</span>
+<span class="n">logFile</span> <span class="o">=</span> <span class="s1">&#39;simulation_output.log&#39;</span>
+<span class="n">my_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;simlog&#39;</span><span class="p">)</span>
+<span class="n">my_logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="c1"># create file handler which logs even debug messages</span>
+<span class="n">fh</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">logFile</span><span class="p">)</span>
+<span class="n">fh</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="c1"># create console handler and set level to debug</span>
+<span class="n">ch</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+<span class="n">ch</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="c1"># add the handlers to the logger</span>
+<span class="n">my_logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+<span class="n">my_logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
+
+<span class="n">vfb</span><span class="p">,</span> <span class="n">tsim</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">cmax</span> <span class="o">=</span> <span class="n">pnpfs</span><span class="o">.</span><span class="n">two_layers_decaying_flux</span><span class="p">(</span>
+    <span class="n">D1cms</span><span class="o">=</span><span class="n">D1</span><span class="p">,</span>
+    <span class="n">Cs</span><span class="o">=</span><span class="n">Cs</span><span class="p">,</span> <span class="n">D2cms</span><span class="o">=</span><span class="n">D2</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">thickness_sinx</span><span class="o">=</span><span class="n">thickness_1</span><span class="p">,</span> <span class="n">thickness_si</span><span class="o">=</span><span class="n">thickness_2</span><span class="p">,</span>
+    <span class="n">tempC</span><span class="o">=</span><span class="n">temp_c</span><span class="p">,</span> <span class="n">voltage</span><span class="o">=</span><span class="n">voltage</span><span class="p">,</span> <span class="n">time_s</span><span class="o">=</span><span class="n">time_s</span><span class="p">,</span> <span class="n">na_moles</span><span class="o">=</span><span class="n">n_moles</span><span class="p">,</span>
+    <span class="n">h0</span><span class="o">=</span><span class="n">h0</span><span class="p">,</span> <span class="n">max_surface_concentration</span><span class="o">=</span><span class="n">s</span><span class="p">,</span>
+    <span class="n">tsteps</span><span class="o">=</span><span class="n">t_steps</span><span class="p">,</span> <span class="n">h5_storage</span><span class="o">=</span><span class="n">h5FileName</span><span class="p">,</span> <span class="n">er</span><span class="o">=</span><span class="mf">7.0</span>
+<span class="p">)</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>D1cms</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The diffusion coefficient of Na = in the dielectric (cm^2/s)</p></li>
-<li><p><strong>Cs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The initial concentration of Na (1/cm3)</p></li>
-<li><p><strong>D2cms</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The diffusion coefficient of Na in silicon (cm^2/s)</p></li>
-<li><p><strong>h</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The surface mass transfer coefficient (cm/s)</p></li>
-<li><p><strong>m</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The segregation coefficient (unitless)</p></li>
-<li><p><strong>thickness_sinx</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The thickness of the simulated dielectric layer (um)</p></li>
-<li><p><strong>thickness_si</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The thickness of the simulated silicon layer (um)</p></li>
-<li><p><strong>tempC</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – The temperature in °C</p></li>
-<li><p><strong>voltage</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – The voltage applied to the dielectric (V)</p></li>
-<li><p><strong>time_s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – The simulation time in seconds</p></li>
-<li><p><strong>na_moles</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The initial number of moles on the surface of SiNx</p></li>
-<li><p><strong>h0</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The surface mass transfer coefficient at the top interface</p></li>
-<li><p><strong>max_surface_concentration</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The maximum surface concentration typically observed in SiNx (1E15 cm^-2)</p></li>
-<li><p><strong>recovery_time_s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – An additional simulation time during which, no electrical stress is applied. (s)</p></li>
-<li><p><strong>recovery_voltage</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – If provided a recovery time, the bias at which it will recover (V).</p></li>
-<li><p><strong>trapping</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, apply trapping correction to the image charges. Default (True)</p></li>
+<li><p><strong>D1cms</strong> (<em>float</em>) – The diffusion coefficient of Na = in the dielectric (cm<sup>2</sup>/s)</p></li>
+<li><p><strong>Cs</strong> (<em>float</em>) – The initial concentration of Na (1/cm<sup>3</sup>)</p></li>
+<li><p><strong>D2cms</strong> (<em>float</em>) – The diffusion coefficient of Na in silicon (cm<sup>2</sup>/s)</p></li>
+<li><p><strong>h</strong> (<em>float</em>) – The surface mass transfer coefficient (cm/s)</p></li>
+<li><p><strong>m</strong> (<em>float</em>) – The segregation coefficient (unitless)</p></li>
+<li><p><strong>thickness_sinx</strong> (<em>float</em>) – The thickness of the simulated dielectric layer (um)</p></li>
+<li><p><strong>thickness_si</strong> (<em>float</em>) – The thickness of the simulated silicon layer (um)</p></li>
+<li><p><strong>tempC</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – The temperature in °C</p></li>
+<li><p><strong>voltage</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – The voltage applied to the dielectric (V)</p></li>
+<li><p><strong>time_s</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – The simulation time in seconds</p></li>
+<li><p><strong>na_moles</strong> (<em>float</em>) – The initial number of moles on the surface of SiNx</p></li>
+<li><p><strong>h0</strong> (<em>float</em>) – The surface mass transfer coefficient at the top interface</p></li>
+<li><p><strong>max_surface_concentration</strong> (<em>float</em>) – The maximum surface concentration typically observed in SiNx (1E15 cm<sup>-2</sup>)</p></li>
+<li><p><strong>recovery_time_s</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – An additional simulation time during which, no electrical stress is applied. (s)</p></li>
+<li><p><strong>recovery_voltage</strong> (<em>float</em>) – If provided a recovery time, the bias at which it will recover (V).</p></li>
+<li><p><strong>trapping</strong> (<em>bool</em>) – If True, apply trapping correction to the image charges. Default (True)</p></li>
 <li><p><strong>**kwargs</strong> – <dl class="simple">
-<dt>cbulk: double</dt><dd><p>The base concentration cm-3</p>
+<dt>cbulk: double</dt><dd><p>The base concentration cm<sup>-3</sup>.</p>
 </dd>
 <dt>xpoints_sinx: int</dt><dd><p>The number of cells in the sinx layer</p>
 </dd>
@@ -319,15 +593,15 @@ problem</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>Vfb</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – An array containing the flat band voltage shift as a function of time
+<li><p><strong>Vfb</strong> (<em>np.ndarray</em>) – An array containing the flat band voltage shift as a function of time
 in (V)</p></li>
-<li><p><strong>tsim</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The time for each flatband voltage point</p></li>
-<li><p><strong>x1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The depth of the concentration profile in SiNx</p></li>
-<li><p><strong>c1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The final concentration profile as a function of depth in SiNx</p></li>
-<li><p><strong>potential</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The final potential profile as a function of depth in SiNx</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The depth of the concentration profile in Si</p></li>
-<li><p><strong>c2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The final concentration profile in Si</p></li>
-<li><p><strong>cmax</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The maximum concentration in silicon nitride</p></li>
+<li><p><strong>tsim</strong> (<em>np.ndarray</em>) – The time for each flatband voltage point in s.</p></li>
+<li><p><strong>x1</strong> (<em>np.ndarray</em>) – The depth of the concentration profile in SiNx in um.</p></li>
+<li><p><strong>c1</strong> (<em>np.ndarray</em>) – The final concentration profile as a function of depth in SiNx in cm<sup>-3</sup>.</p></li>
+<li><p><strong>potential</strong> (<em>np.ndarray</em>) – The final potential profile as a function of depth in SiNx in V.</p></li>
+<li><p><strong>x2</strong> (<em>np.ndarray</em>) – The depth of the concentration profile in Si in um.</p></li>
+<li><p><strong>c2</strong> (<em>np.ndarray</em>) – The final concentration profile in Si in cm<sup>-3</sup>.</p></li>
+<li><p><strong>cmax</strong> (<em>float</em>) – The maximum concentration in silicon nitride in cm<sup>-3</sup>.</p></li>
 </ul>
 </p>
 </dd>
@@ -344,52 +618,89 @@ in (V)</p></li>
 MIS device where Na is migrating into the cell. It also returns a matrix
 with the concentration profiles as a function of time.</p>
 <p>The system solves Poisson-Nernst-Planck equation for a single species.</p>
+<p><em>Example</em></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pnptransport.infinitesource</span> <span class="k">as</span> <span class="nn">pnpis</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">D1</span><span class="p">,</span> <span class="n">D2</span> <span class="o">=</span> <span class="mf">1E-16</span><span class="p">,</span> <span class="mf">1E-15</span>
+<span class="n">Cs</span> <span class="o">=</span> <span class="mf">1E16</span>
+<span class="n">h</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="mf">1E-12</span><span class="p">,</span> <span class="mf">1.0</span>
+<span class="n">thickness_1</span><span class="p">,</span> <span class="n">thickness_2</span> <span class="o">=</span> <span class="mf">75E-7</span><span class="p">,</span> <span class="mf">1.</span>
+<span class="n">temp_c</span> <span class="o">=</span> <span class="mf">60.</span>
+<span class="n">voltage</span> <span class="o">=</span> <span class="mf">0.75</span>
+<span class="n">time_s</span> <span class="o">=</span> <span class="mf">86400.</span>
+<span class="n">h5FileName</span> <span class="o">=</span> <span class="s1">&#39;simulation_output.h5&#39;</span>
+<span class="c1"># Chose a small time step to reduce truncation error in the TR-BDF2</span>
+<span class="n">t_steps</span> <span class="o">=</span> <span class="mi">3600</span>
+
+<span class="c1"># Create a logger</span>
+<span class="n">logFile</span> <span class="o">=</span> <span class="s1">&#39;simulation_output.log&#39;</span>
+<span class="n">my_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;simlog&#39;</span><span class="p">)</span>
+<span class="n">my_logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="c1"># create file handler which logs even debug messages</span>
+<span class="n">fh</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">logFile</span><span class="p">)</span>
+<span class="n">fh</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="c1"># create console handler and set level to debug</span>
+<span class="n">ch</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+<span class="n">ch</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="c1"># add the handlers to the logger</span>
+<span class="n">my_logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+<span class="n">my_logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
+
+<span class="n">vfb</span><span class="p">,</span> <span class="n">tsim</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">cmax</span> <span class="o">=</span> <span class="n">pnpis</span><span class="o">.</span><span class="n">two_layers_constant_source</span><span class="p">(</span>
+    <span class="n">D1cms</span><span class="o">=</span><span class="n">D1</span><span class="p">,</span> <span class="n">D2cms</span><span class="o">=</span><span class="n">D2</span><span class="p">,</span>
+    <span class="n">Cs</span><span class="o">=</span><span class="n">Cs</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">thickness_sinx</span><span class="o">=</span><span class="n">thickness_1</span><span class="p">,</span> <span class="n">thickness_si</span><span class="o">=</span><span class="n">thickness_2</span><span class="p">,</span>
+    <span class="n">tempC</span><span class="o">=</span><span class="n">temp_c</span><span class="p">,</span> <span class="n">voltage</span><span class="o">=</span><span class="n">voltage</span><span class="p">,</span> <span class="n">time_s</span><span class="o">=</span><span class="n">time_s</span><span class="p">,</span>
+    <span class="n">tsteps</span><span class="o">=</span><span class="n">t_steps</span><span class="p">,</span> <span class="n">h5_storage</span><span class="o">=</span><span class="n">h5FileName</span><span class="p">,</span> <span class="n">er</span><span class="o">=</span><span class="mf">7.0</span>
+<span class="p">)</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>D1cms</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The diffusion coefficient of Na in the dielectric (cm^2/s)</p></li>
-<li><p><strong>D2cms</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The diffusion coefficient of Na in silicon (cm^2/s)</p></li>
-<li><p><strong>Cs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The source concentration (1/cm^3)</p></li>
-<li><p><strong>h</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The surface mass transfer coefficient (cm/s)</p></li>
-<li><p><strong>m</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The segregation coefficient (unitless)</p></li>
-<li><p><strong>thickness_sinx</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The thickness of the simulated dielectric layer (um)</p></li>
-<li><p><strong>thickness_si</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The thickness of the simulated silicon layer (um)</p></li>
-<li><p><strong>tempC</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – The temperature in °C</p></li>
-<li><p><strong>voltage</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – The voltage applied to the dielectric (V)</p></li>
-<li><p><strong>time_s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – The simulation time in seconds</p></li>
-<li><p><strong>recovery_time_s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – An additional simulation time during which, no electrical stress is applied (s).</p></li>
-<li><p><strong>recovery_voltage</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – If provided a recovery time, the bias at which it will recover (V).</p></li>
+<li><p><strong>D1cms</strong> (<em>float</em>) – The diffusion coefficient of Na in the dielectric (cm<sup>2</sup>/s)</p></li>
+<li><p><strong>D2cms</strong> (<em>float</em>) – The diffusion coefficient of Na in silicon (cm<sup>2</sup>/s)</p></li>
+<li><p><strong>Cs</strong> (<em>float</em>) – The source concentration (1/cm<sup>3</sup>)</p></li>
+<li><p><strong>h</strong> (<em>float</em>) – The surface mass transfer coefficient (cm/s)</p></li>
+<li><p><strong>m</strong> (<em>float</em>) – The segregation coefficient (unitless)</p></li>
+<li><p><strong>thickness_sinx</strong> (<em>float</em>) – The thickness of the simulated dielectric layer (um)</p></li>
+<li><p><strong>thickness_si</strong> (<em>float</em>) – The thickness of the simulated silicon layer (um)</p></li>
+<li><p><strong>tempC</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – The temperature in °C</p></li>
+<li><p><strong>voltage</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – The voltage applied to the dielectric (V)</p></li>
+<li><p><strong>time_s</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – The simulation time in seconds</p></li>
+<li><p><strong>recovery_time_s</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – An additional simulation time during which, no electrical stress is applied (s).</p></li>
+<li><p><strong>recovery_voltage</strong> (<em>float</em>) – If provided a recovery time, the bias at which it will recover (V).</p></li>
 <li><p><strong>**kwargs</strong> – <dl class="simple">
-<dt>cbulk: double</dt><dd><p>The base concentration cm-3</p>
+<dt>cbulk: double</dt><dd><p>The base concentration cm<sup>-3</sup>.</p>
 </dd>
-<dt>xpoints_sinx: int</dt><dd><p>The number of cells in the sinx layer</p>
+<dt>xpoints_sinx: int</dt><dd><p>The number of cells in the sinx layer.</p>
 </dd>
-<dt>xpoints_si: int</dt><dd><p>The number of cells in the si layer</p>
+<dt>xpoints_si: int</dt><dd><p>The number of cells in the si layer.</p>
 </dd>
-<dt>z: integer</dt><dd><p>The valency of the ion
+<dt>z: integer</dt><dd><p>The valency of the ion.
 default: 1</p>
 </dd>
-<dt>er: double</dt><dd><p>The relative permittivity of the dielectric</p>
+<dt>er: double</dt><dd><p>The relative permittivity of the dielectric.</p>
 </dd>
-<dt>xpoints: int</dt><dd><p>The number of x points to simulate</p>
+<dt>xpoints: int</dt><dd><p>The number of x points to simulate.</p>
 </dd>
 <dt>fcall: int</dt><dd><p>The number of times the function has been called to solve the same
-problem</p>
+problem.</p>
 </dd>
-<dt>tsteps: int</dt><dd><p>The number of time steps to simulate</p>
+<dt>tsteps: int</dt><dd><p>The number of time steps to simulate.</p>
 </dd>
 <dt>max_calls: int</dt><dd><p>The maximum number of times the function can be recursively call if the convergence fails.</p>
 </dd>
-<dt>max_iter: int</dt><dd><p>The maximum number of iterations for the solver</p>
+<dt>max_iter: int</dt><dd><p>The maximum number of iterations for the solver.</p>
 </dd>
-<dt>relaxation_parameter: float</dt><dd><p>The relaxation w for the Newton algorithm</p>
+<dt>relaxation_parameter: float</dt><dd><p>The relaxation w for the Newton algorithm.</p>
 </dd>
 <dt>t_smear: int, float</dt><dd><p>The time in seconds taken to “smooth” the initial profile (assuming a constant concentration diffused
 over t_smear).</p>
 </dd>
-<dt>h5fn: str</dt><dd><p>The path to the h5 file to store the simulation results</p>
+<dt>h5fn: str</dt><dd><p>The path to the h5 file to store the simulation results.</p>
 </dd>
-<dt>debug: bool</dt><dd><p>True if debugging the function</p>
+<dt>debug: bool</dt><dd><p>True if debugging the function.</p>
 </dd>
 </dl>
 </p></li>
@@ -397,15 +708,15 @@ over t_smear).</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>Vfb</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – An array containing the flat band voltage shift as a function of time
+<li><p><strong>Vfb</strong> (<em>np.ndarray</em>) – An array containing the flat band voltage shift as a function of time
 in (V)</p></li>
-<li><p><strong>tsim</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The time for each flatband voltage point</p></li>
-<li><p><strong>x1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The depth of the concentration profile in SiNx</p></li>
-<li><p><strong>c1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The final concentration profile as a function of depth in SiNx</p></li>
-<li><p><strong>potential</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The final potential profile as a function of depth in SiNx</p></li>
-<li><p><strong>x2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The depth of the concentration profile in Si</p></li>
-<li><p><strong>c2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The final concentration profile in Si</p></li>
-<li><p><strong>cmax</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The maximum concentration in silicon nitride</p></li>
+<li><p><strong>tsim</strong> (<em>np.ndarray</em>) – The time for each flatband voltage point in seconds.</p></li>
+<li><p><strong>x1</strong> (<em>np.ndarray</em>) – The depth of the concentration profile in SiNx in um.</p></li>
+<li><p><strong>c1</strong> (<em>np.ndarray</em>) – The final concentration profile as a function of depth in SiNx in cm<sup>-3</sup>.</p></li>
+<li><p><strong>potential</strong> (<em>np.ndarray</em>) – The final potential profile as a function of depth in SiNx in V.</p></li>
+<li><p><strong>x2</strong> (<em>np.ndarray</em>) – The depth of the concentration profile in Si in um.</p></li>
+<li><p><strong>c2</strong> (<em>np.ndarray</em>) – The final concentration profile in Si in cm<sup>-3</sup>.</p></li>
+<li><p><strong>cmax</strong> (<em>float</em>) – The maximum concentration in silicon nitride in cm<sup>-3</sup>.</p></li>
 </ul>
 </p>
 </dd>
@@ -419,19 +730,21 @@ in (V)</p></li>
 <dt id="pnptransport.utils.evaluate_arrhenius">
 <code class="sig-prename descclassname">pnptransport.utils.</code><code class="sig-name descname">evaluate_arrhenius</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a0</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">Ea</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">temp</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#pnptransport.utils.evaluate_arrhenius" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate an Arrhenius variable</p>
+<div class="math notranslate nohighlight">
+\[A = A_0 \exp\left( -\frac{E_{\mathrm{a}}}{k_{\mathrm{B}} T} \right)\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>a0</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The exponential prefactor</p></li>
-<li><p><strong>Ea</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – An activation energy in eV</p></li>
-<li><p><strong>temp</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The temperature</p></li>
+<li><p><strong>a0</strong> (<em>float</em>) – The exponential prefactor</p></li>
+<li><p><strong>Ea</strong> (<em>float</em>) – An activation energy in eV</p></li>
+<li><p><strong>temp</strong> (<em>float</em>) – The temperature</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>x</strong> – The evaluated variable</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
+<dd class="field-odd"><p>float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -443,8 +756,8 @@ in (V)</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>temperature_axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">[double]</span></code>) – The temperature axis</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">[double]</span></code>) – The dependent variable</p></li>
+<li><p><strong>temperature_axis</strong> (<em>[</em><em>double</em><em>]</em>) – The temperature axis</p></li>
+<li><p><strong>y</strong> (<em>[</em><em>double</em><em>]</em>) – The dependent variable</p></li>
 <li><p><strong>**kwargs</strong> – <dl class="simple">
 <dt>inverse_temp: boolean</dt><dd><p>True if the units of the temperature are 1/T</p>
 </dd>
@@ -458,18 +771,30 @@ in (V)</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="pnptransport.utils.format_pid_hhmmss_csv">
+<code class="sig-prename descclassname">pnptransport.utils.</code><code class="sig-name descname">format_pid_hhmmss_csv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path_to_csv</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.utils.format_pid_hhmmss_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function process the input csv so that a column with the time in seconds is added based on the input time
+column in hh:mm:ss</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path_to_csv</strong> (<em>str</em>) – The pid csv file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="pnptransport.utils.format_time_str">
 <code class="sig-prename descclassname">pnptransport.utils.</code><code class="sig-name descname">format_time_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time_s</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.utils.format_time_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a formatted time string</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>time_s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The time in seconds</p>
+<dd class="field-odd"><p><strong>time_s</strong> (<em>float</em>) – The time in seconds</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>timeStr</strong> – A string representing the time</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+<dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -478,17 +803,28 @@ in (V)</p></li>
 <dt id="pnptransport.utils.geometric_series_spaced">
 <code class="sig-prename descclassname">pnptransport.utils.</code><code class="sig-name descname">geometric_series_spaced</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">max_val</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">min_delta</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">steps</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">reverse</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pnptransport.utils.geometric_series_spaced" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produces an array of values spaced according to a geometric series</p>
-<p>S_n = a + a*r + a*r^2 + … + a*r^(n-2) + a*r^(n-1)</p>
-<p>For which S_n = a*(1-r^n)/(1-r)</p>
+<div class="math notranslate nohighlight">
+\[S_n = a + a r + a r^2 + ... + a r^{n-2} + a r^{n-1}\]</div>
+<p>For which <span class="math notranslate nohighlight">\(S_n = a (1-r^n) / (1-r)\)</span></p>
 <p>Here, a is the minimum increment (min_delta) and n is the number of steps and r is determined using Newton’s method</p>
+<p><em>Example:</em></p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">pnptransport.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+
+<span class="gp">In [2]: </span><span class="n">utils</span><span class="o">.</span><span class="n">geometric_series_spaced</span><span class="p">(</span><span class="n">max_val</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span> <span class="n">min_delta</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="gh">Out[2]: </span><span class="go"></span>
+<span class="go">array([0.00000000e+00, 1.00000000e+00, 3.33435191e+00, 8.78355077e+00,</span>
+<span class="go">       2.15038985e+01, 5.11976667e+01, 1.20513371e+02, 2.82320618e+02,</span>
+<span class="go">       6.60035676e+02, 1.54175554e+03, 3.60000000e+03])</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>max_val</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The maximum value the series will take</p></li>
-<li><p><strong>min_delta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The minimum delta value it will take</p></li>
-<li><p><strong>steps</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of values in the array</p></li>
-<li><p><strong>reverse</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If true solve for r = 1 / p</p></li>
-<li><p><strong>**kwargs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">keyword</span> <span class="pre">arguments</span></code>) – <dl class="simple">
+<li><p><strong>max_val</strong> (<em>float</em>) – The maximum value the series will take</p></li>
+<li><p><strong>min_delta</strong> (<em>float</em>) – The minimum delta value it will take</p></li>
+<li><p><strong>steps</strong> (<em>int</em>) – The number of values in the array</p></li>
+<li><p><strong>reverse</strong> (<em>bool</em>) – If true solve for r = 1 / p</p></li>
+<li><p><strong>**kwargs</strong> (<em>keyword arguments</em>) – <dl class="simple">
 <dt>n_iterations: int</dt><dd><p>The number of Newton iterations to estimate r</p>
 </dd>
 </dl>
@@ -511,8 +847,8 @@ in (V)</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.array</span></code>) – The array from which the indices will be drawn</p></li>
-<li><p><strong>requested_values</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.array</span></code>) – </p></li>
+<li><p><strong>x</strong> (<em>np.array</em>) – The array from which the indices will be drawn</p></li>
+<li><p><strong>requested_values</strong> (<em>np.array</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -527,12 +863,12 @@ in (V)</p></li>
 <dl class="py function">
 <dt id="pnptransport.utils.latex_format">
 <code class="sig-prename descclassname">pnptransport.utils.</code><code class="sig-name descname">latex_format</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">digits</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#pnptransport.utils.latex_format" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a latex string for matplotlib plots.</p>
+<dd><p>Creates a LaTeX string for matplotlib plots.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The value to be formatted</p></li>
-<li><p><strong>digits</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of digits to round up to.</p></li>
+<li><p><strong>x</strong> (<em>str</em>) – The value to be formatted</p></li>
+<li><p><strong>digits</strong> (<em>int</em>) – The number of digits to round up to.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -547,21 +883,36 @@ in (V)</p></li>
 <dl class="py function">
 <dt id="pnptransport.utils.latex_format_with_error">
 <code class="sig-prename descclassname">pnptransport.utils.</code><code class="sig-name descname">latex_format_with_error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num</span></em>, <em class="sig-param"><span class="n">err</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.utils.latex_format_with_error" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Parses a measurement quantity and it’s error as a LaTeX string to use in matplotlib texts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num</strong> (<em>float</em>) – The measured quantity to parse</p></li>
+<li><p><strong>err</strong> (<em>float</em>) – The error associated error.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The quantity and its error formatted as a LaTeX string</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt id="pnptransport.utils.latex_order_of_magnitude">
 <code class="sig-prename descclassname">pnptransport.utils.</code><code class="sig-name descname">latex_order_of_magnitude</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">dollar</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.utils.latex_order_of_magnitude" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a latex string with the order of magnitude of the number (10^x)</p>
+<dd><p>Returns a LaTeX string with the order of magnitude of the number (10<sup>x</sup>)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>num</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The number</p></li>
-<li><p><strong>dollar</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If true, enclose string between $. Default False</p></li>
+<li><p><strong>num</strong> (<em>float</em>) – The number</p></li>
+<li><p><strong>dollar</strong> (<em>bool</em>) – If true, enclose string between $. Default False</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The latex-format string with the order of magnitude of the number.</p>
+<dd class="field-even"><p>The LaTeX-format string with the order of magnitude of the number.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>str</p>
@@ -576,21 +927,24 @@ in (V)</p></li>
 equation in the low concentration approximation</p>
 <blockquote>
 <div><div class="math notranslate nohighlight">
-\[\tau_c = \frac{2D}{\mu^2 E^2} + \frac{L}{\mu E} \left[1 ± 2\left( \frac{kT}{q E L}\right)^{1/2}\right]\]</div>
+\[\tau_c = \frac{L}{\mu E} + \frac{2D}{\mu^2 E^2} \left[1 \pm \left( 1 + \frac{q E}{kT} L \right)^{1/2}\right]\]</div>
 </div></blockquote>
 <p>Since  <span class="math notranslate nohighlight">\(\mu = qD/kT\)</span></p>
 <blockquote>
 <div><div class="math notranslate nohighlight">
-\[\tau_c = \left( \frac{2}{D} \right) X^2 + \left( \frac{L}{D} \right) X  \left[ 1 ± 2 \left( \frac{X}{L} \right)^{1/2} \right],\]</div>
+\[\tau_c = \left( \frac{L}{D} \right) X + \left( \frac{2}{D} \right) X^2  \left[ 1 \pm \left( 1 + \frac{L}{X} \right)^{1/2} \right],\]</div>
 </div></blockquote>
 <p>with <span class="math notranslate nohighlight">\(X = kT/qE\)</span></p>
+<p>When <span class="math notranslate nohighlight">\(\mu E \tau_c\)</span> is negligible, compared with the diffusive term <span class="math notranslate nohighlight">\(2\sqrt{D\tau_c}\)</span>, it returns</p>
+<div class="math notranslate nohighlight">
+\[\tau_c = \frac{L^2}{D}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>D</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The diffusion coefficient in cm^2/s</p></li>
-<li><p><strong>E</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The electric field in MV/cm = 1E6 V/cm</p></li>
-<li><p><strong>L</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The distance in cm</p></li>
-<li><p><strong>T</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The temperature in °C</p></li>
+<li><p><strong>D</strong> (<em>float</em>) – The diffusion coefficient in cm<sup>2</sup>/s</p></li>
+<li><p><strong>E</strong> (<em>float</em>) – The electric field in MV/cm = 1E6 V/cm</p></li>
+<li><p><strong>L</strong> (<em>float</em>) – The distance in cm</p></li>
+<li><p><strong>T</strong> (<em>float</em>) – The temperature in °C</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -610,11 +964,10 @@ equation in the low concentration approximation</p>
 <code class="sig-prename descclassname">pnptransport.confidence.</code><code class="sig-name descname">confidence_interval</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span><span class="p">:</span> <span class="n">scipy.optimize.optimize.OptimizeResult</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.confidence.confidence_interval" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function estimates the confidence interval for the optimized parameters
 from the fit.</p>
-<p>Adapted from Matlab</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>res</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code>) – The optimized result from least_squares minimization</p></li>
+<li><p><strong>res</strong> (<em>OptimizeResult</em>) – The optimized result from least_squares minimization</p></li>
 <li><p><strong>**kwargs</strong> – <dl class="simple">
 <dt>confidence: float</dt><dd><p>The confidence level (default 0.95)</p>
 </dd>
@@ -633,26 +986,29 @@ from the fit.</p>
 
 <dl class="py function">
 <dt id="pnptransport.confidence.confint">
-<code class="sig-prename descclassname">pnptransport.confidence.</code><code class="sig-name descname">confint</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">pars</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">pcov</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">confidence</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.95</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.confidence.confint" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pnptransport.confidence.</code><code class="sig-name descname">confint</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">pars</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">pcov</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">confidence</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.95</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.confidence.confint" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function returns the confidence interval for each parameter</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Adapted from
+<a class="reference external" href="http://kitchingroup.cheme.cmu.edu/blog/2013/02/12/Nonlinear-curve-fitting-with-parameter-confidence-intervals/">http://kitchingroup.cheme.cmu.edu/blog/2013/02/12/Nonlinear-curve-fitting-with-parameter-confidence-intervals/</a>
+Copyright (C) 2013 by John Kitchin.
+<a class="reference external" href="https://kite.com/python/examples/702/scipy-compute-a-confidence-interval-from-a-dataset">https://kite.com/python/examples/702/scipy-compute-a-confidence-interval-from-a-dataset</a></p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of data points</p></li>
-<li><p><strong>pars</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">[double]</span></code>) – The array with the fitted parameters</p></li>
-<li><p><strong>pcov</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">[double]</span></code>) – The covariance matrix</p></li>
-<li><p><strong>confidence</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The confidence interval</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – The number of data points</p></li>
+<li><p><strong>pars</strong> (<em>np.ndarray</em>) – The array with the fitted parameters</p></li>
+<li><p><strong>pcov</strong> (<em>np.ndarray</em>) – The covariance matrix</p></li>
+<li><p><strong>confidence</strong> (<em>float</em>) – The confidence interval</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><em>np.ndarray</em> – ci: The matrix with the confindence intervals for the parameters</p></li>
-<li><p><em>Note</em> – Adapted from
-<a class="reference external" href="http://kitchingroup.cheme.cmu.edu/blog/2013/02/12/Nonlinear-curve-fitting-with-parameter-confidence-intervals/">http://kitchingroup.cheme.cmu.edu/blog/2013/02/12/Nonlinear-curve-fitting-with-parameter-confidence-intervals/</a>
-Copyright (C) 2013 by John Kitchin.
-<a class="reference external" href="https://kite.com/python/examples/702/scipy-compute-a-confidence-interval-from-a-dataset">https://kite.com/python/examples/702/scipy-compute-a-confidence-interval-from-a-dataset</a></p></li>
-</ul>
-</p>
+<dd class="field-even"><p>The matrix with the confindence intervals for the parameters</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
 </dd>
 </dl>
 </dd></dl>
@@ -660,22 +1016,25 @@ Copyright (C) 2013 by John Kitchin.
 <dl class="py function">
 <dt id="pnptransport.confidence.get_rsquared">
 <code class="sig-prename descclassname">pnptransport.confidence.</code><code class="sig-name descname">get_rsquared</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">y</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">popt</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">]</span><span class="p">, </span>numpy.ndarray<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.confidence.get_rsquared" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function estimates R^2 for the fitting</p>
+<dd><p>This function estimates R<sup>2</sup> for the fitting</p>
+<dl class="simple">
+<dt>Reference:</dt><dd><p><a class="reference external" href="http://bagrow.info/dsv/LEC10_notes_2014-02-13.html">http://bagrow.info/dsv/LEC10_notes_2014-02-13.html</a></p>
+</dd>
+</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The experimetnal x points</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The experimental y points</p></li>
-<li><p><strong>popt</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The best fit parameters</p></li>
-<li><p><strong>func</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Callable[[np.ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray]</span></code>) – The fitted function</p></li>
+<li><p><strong>x</strong> (<em>np.ndarray</em>) – The experimetnal x points</p></li>
+<li><p><strong>y</strong> (<em>np.ndarray</em>) – The experimental y points</p></li>
+<li><p><strong>popt</strong> (<em>np.ndarray</em>) – The best fit parameters</p></li>
+<li><p><strong>func</strong> (<em>Callable</em><em>[</em><em>[</em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>]</em>) – The fitted function</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><em>float</em> – rsquared: The value of R^2</p></li>
-<li><p><em>Reference</em> – <a class="reference external" href="http://bagrow.info/dsv/LEC10_notes_2014-02-13.html">http://bagrow.info/dsv/LEC10_notes_2014-02-13.html</a></p></li>
-</ul>
-</p>
+<dd class="field-even"><p>The value of R<sup>2</sup></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -683,19 +1042,19 @@ Copyright (C) 2013 by John Kitchin.
 <dl class="py function">
 <dt id="pnptransport.confidence.mean_squared_error">
 <code class="sig-prename descclassname">pnptransport.confidence.</code><code class="sig-name descname">mean_squared_error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">yd</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">ym</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.confidence.mean_squared_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function estimates the mean squared error of a fitting</p>
+<dd><p>This function estimates the mean squared error of a fitting.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>yd</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The observed data points</p></li>
-<li><p><strong>ym</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The datapoints from the model</p></li>
+<li><p><strong>yd</strong> (<em>np.ndarray</em>) – The observed data points</p></li>
+<li><p><strong>ym</strong> (<em>np.ndarray</em>) – The datapoints from the model</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>mse: The mean squared error</p>
+<dd class="field-even"><p>The mean squared error</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>double</p>
+<dd class="field-odd"><p>float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -708,19 +1067,19 @@ Copyright (C) 2013 by John Kitchin.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The requested data points for the prediction bands</p></li>
-<li><p><strong>xd</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The experimental values for x</p></li>
-<li><p><strong>yd</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The experimental values for y</p></li>
-<li><p><strong>p</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The fitted parameters</p></li>
-<li><p><strong>func</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Callable[[np.ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray]</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray]</span></code>) – The optimized function</p></li>
-<li><p><strong>conf</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The confidence level</p></li>
+<li><p><strong>x</strong> (<em>np.ndarray</em>) – The requested data points for the prediction bands</p></li>
+<li><p><strong>xd</strong> (<em>np.ndarray</em>) – The experimental values for x</p></li>
+<li><p><strong>yd</strong> (<em>np.ndarray</em>) – The experimental values for y</p></li>
+<li><p><strong>p</strong> (<em>np.ndarray</em>) – The fitted parameters</p></li>
+<li><p><strong>func</strong> (<em>Callable</em><em>[</em><em>[</em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>]</em><em>, </em><em>np.ndarray</em><em>]</em>) – The optimized function</p></li>
+<li><p><strong>conf</strong> (<em>float</em>) – The confidence level</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><em>np.ndarray</em> – yp: The value of the function at the requested points (x)</p></li>
-<li><p><em>np.ndarray</em> – lpb: The lower prediction band</p></li>
-<li><p><em>np.ndarray</em> – upb: The upper prediction band</p></li>
+<li><p><em>np.ndarray</em> – The value of the function at the requested points (x)</p></li>
+<li><p><em>np.ndarray</em> – The lower prediction band</p></li>
+<li><p><em>np.ndarray</em> – The upper prediction band</p></li>
 </ul>
 </p>
 </dd>
@@ -731,16 +1090,16 @@ Copyright (C) 2013 by John Kitchin.
 <dt id="pnptransport.confidence.predint">
 <code class="sig-prename descclassname">pnptransport.confidence.</code><code class="sig-name descname">predint</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">xd</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">yd</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">]</span><span class="p">, </span>numpy.ndarray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">res</span><span class="p">:</span> <span class="n">scipy.optimize.optimize.OptimizeResult</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.confidence.predint" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function estimates the prediction bands for the fit
-(see: <a class="reference external" href="https://www.mathworks.com/help/curvefit/confidence-and-prediction-bounds.html">https://www.mathworks.com/help/curvefit/confidence-and-prediction-bounds.html</a>)</p>
+(see <a class="reference external" href="https://www.mathworks.com/help/curvefit/confidence-and-prediction-bounds.html">https://www.mathworks.com/help/curvefit/confidence-and-prediction-bounds.html</a>)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The requested x points for the bands</p></li>
-<li><p><strong>xd</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The x datapoints</p></li>
-<li><p><strong>yd</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The y datapoints</p></li>
-<li><p><strong>func</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Callable[[np.ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray]</span></code>) – The fitted function</p></li>
-<li><p><strong>res</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizeResult</span></code>) – The optimzied result from least_squares minimization</p></li>
-<li><p><strong>**kwargs</strong> – <dl class="simple">
+<li><p><strong>x</strong> (<em>np.ndarray</em>) – The requested x points for the bands</p></li>
+<li><p><strong>xd</strong> (<em>np.ndarray</em>) – The x datapoints</p></li>
+<li><p><strong>yd</strong> (<em>np.ndarray</em>) – The y datapoints</p></li>
+<li><p><strong>func</strong> (<em>Callable</em><em>[</em><em>[</em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>]</em>) – The fitted function</p></li>
+<li><p><strong>res</strong> (<em>OptimizeResult</em>) – The optimzied result from least_squares minimization</p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em>) – <dl class="simple">
 <dt>confidence: float</dt><dd><p>The confidence level (default 0.95)</p>
 </dd>
 <dt>simulateneous: bool</dt><dd><p>True if the bound type is simultaneous, false otherwise</p>
@@ -750,6 +1109,41 @@ Copyright (C) 2013 by John Kitchin.
 </dl>
 </p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pnptransport.confidence.predint_multi">
+<code class="sig-prename descclassname">pnptransport.confidence.</code><code class="sig-name descname">predint_multi</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">xd</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">yd</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">]</span><span class="p">, </span>numpy.ndarray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">res</span><span class="p">:</span> <span class="n">scipy.optimize.optimize.OptimizeResult</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pnptransport.confidence.predint_multi" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function estimates the prediction bands for the fit</p>
+<p>(See <a class="reference external" href="https://www.mathworks.com/help/curvefit/confidence-and-prediction-bounds.html">https://www.mathworks.com/help/curvefit/confidence-and-prediction-bounds.html</a>)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.ndarray</em>) – The requested x points for the bands</p></li>
+<li><p><strong>xd</strong> (<em>np.ndarray</em>) – The x datapoints</p></li>
+<li><p><strong>yd</strong> (<em>np.ndarray</em>) – The y datapoints</p></li>
+<li><p><strong>func</strong> (<em>Callable</em><em>[</em><em>[</em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>]</em>) – The fitted function</p></li>
+<li><p><strong>res</strong> (<em>OptimizeResult</em>) – The optimzied result from least_squares minimization</p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em>) – <dl class="simple">
+<dt>confidence: float</dt><dd><p>The confidence level (default 0.95)</p>
+</dd>
+<dt>simultaneous: bool</dt><dd><p>True if the bound type is simultaneous, false otherwise</p>
+</dd>
+<dt>mode: [functional, observation]</dt><dd><p>Default observation</p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>np.ndarray</em> – The predicted values.</p></li>
+<li><p><em>np.ndarray</em> – The lower bound for the predicted values.</p></li>
+<li><p><em>np.ndarray</em> – The upper bound for the predicted values.</p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>
@@ -768,7 +1162,7 @@ Copyright (C) 2013 by John Kitchin.
 <dd><p>The label of the layers in the simulations: [1, 2]</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dd class="field-odd"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -779,7 +1173,7 @@ Copyright (C) 2013 by John Kitchin.
 <dd><p>An array containing the time points in the simulation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code></p>
+<dd class="field-odd"><p>np.ndarray</p>
 </dd>
 </dl>
 </dd></dl>
@@ -796,8 +1190,8 @@ Copyright (C) 2013 by John Kitchin.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>requested_time_s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – The time at which we want to retrive the concentration profile</p></li>
-<li><p><strong>layer</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The layer from which to get the concentration profile (valid values are 1 and 2)</p></li>
+<li><p><strong>requested_time_s</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – The time at which we want to retrive the concentration profile</p></li>
+<li><p><strong>layer</strong> (<em>int</em>) – The layer from which to get the concentration profile (valid values are 1 and 2)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -815,7 +1209,7 @@ Copyright (C) 2013 by John Kitchin.
 <dd><p>Gets the x coordinate for the transport simulation in the layer X</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>layer</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The layer to query the position data from (1 or 2)</p>
+<dd class="field-odd"><p><strong>layer</strong> (<em>int</em>) – The layer to query the position data from (1 or 2)</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>An array containing the coordinates for the layer n</p>
@@ -832,7 +1226,7 @@ Copyright (C) 2013 by John Kitchin.
 <dd><p>Tries to find the concentration profile at the specified time</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>requested_time_s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int]</span></code>) – The time at which we want to retrive the concentration profile</p>
+<dd class="field-odd"><p><strong>requested_time_s</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – The time at which we want to retrive the concentration profile</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>The concentration profile in atoms/cm^3</p>
@@ -873,7 +1267,7 @@ Copyright (C) 2013 by John Kitchin.
 <dd><p>The path to the h5 datafile</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+<dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -891,9 +1285,9 @@ Copyright (C) 2013 by John Kitchin.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the dataset</p></li>
-<li><p><strong>data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>) – The data to store</p></li>
-<li><p><strong>group_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the group to save the dataset to</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name of the dataset</p></li>
+<li><p><strong>data</strong> (<em>np.ndarray</em>) – The data to store</p></li>
+<li><p><strong>group_name</strong> (<em>str</em>) – The name of the group to save the dataset to</p></li>
 </ul>
 </dd>
 </dl>
@@ -905,8 +1299,8 @@ Copyright (C) 2013 by John Kitchin.
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the group to create</p></li>
-<li><p><strong>parent_group</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The parent group</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name of the group to create</p></li>
+<li><p><strong>parent_group</strong> (<em>str</em>) – The parent group</p></li>
 </ul>
 </dd>
 </dl>
@@ -929,7 +1323,7 @@ Copyright (C) 2013 by John Kitchin.
 <dd><p>Returns the attributes of a selected group.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>group</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The group to get the attributes from</p>
+<dd class="field-odd"><p><strong>group</strong> (<em>str</em>) – The group to get the attributes from</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A dictionary with the attributes of the dataset/group</p>
@@ -947,8 +1341,8 @@ Copyright (C) 2013 by John Kitchin.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the dataset to extract</p></li>
-<li><p><strong>group_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the group the dataset is at (default ‘/’)</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name of the dataset to extract</p></li>
+<li><p><strong>group_name</strong> (<em>str</em>) – The name of the group the dataset is at (default ‘/’)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -967,8 +1361,8 @@ Copyright (C) 2013 by John Kitchin.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>metadata</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>) – A dictionary with the metadata to save</p></li>
-<li><p><strong>group</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The dataset/group to save the attributes to.</p></li>
+<li><p><strong>metadata</strong> (<em>dict</em>) – A dictionary with the metadata to save</p></li>
+<li><p><strong>group</strong> (<em>str</em>) – The dataset/group to save the attributes to.</p></li>
 </ul>
 </dd>
 </dl>
@@ -998,19 +1392,11 @@ Copyright (C) 2013 by John Kitchin.
 
   <div role="contentinfo">
     <p>
-        
         &copy; Copyright 2020, Erick R Martinez Loran
 
     </p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1021,6 +1407,7 @@ Copyright (C) 2013 by John Kitchin.
 
   </div>
   
+
 
   <script type="text/javascript">
       jQuery(function () {

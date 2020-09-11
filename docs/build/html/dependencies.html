@@ -1,0 +1,310 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>FEniCS &mdash; PNP Transport 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Finite Source Simulations" href="quickstart.html" />
+    <link rel="prev" title="Welcome to PNP Transport’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> PNP Transport
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">FEniCS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#python-modules">Python Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation-of-dependencies-using-pip">Installation of dependencies using PIP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation-of-dependencies-using-conda">Installation of dependencies using conda</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Finite Source Simulations</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ofat.html">One-factor-at-a-time simulations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ofat.html#one-factor-at-a-time-analysis">One-factor-at-a-time analysis</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pnptransport.html">Finite Source Simulation Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pnptransport.html#module-pnptransport.infinitesource">Infinite Source Simulation Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pnptransport.html#module-pnptransport.utils">Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pnptransport.html#module-pnptransport.confidence">Confidence Intervals Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pnptransport.html#module-pnptransport.transport_storage">Transport HD5 Storage System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pnptransport.html#module-pnptransport.hd5storage">HD5 Storage</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pidsim.html">Rsh Approximation Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pidsim.html#module-pidsim.korol_conductivity">Korol Conductivity Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pidsim.html#module-pidsim.parameter_span">Parameter Span</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pidsim.html#module-pidsim.conductivity_interface">Conductivty Interface</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PNP Transport</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>FEniCS</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/dependencies.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="fenics">
+<h1>FEniCS<a class="headerlink" href="#fenics" title="Permalink to this headline">¶</a></h1>
+<p>In order to be able to run this code you need to have FEniCS installed.
+The best way to achieve this is to use a <cite>dockerized</cite> installation to run
+FEniCS. Refer to</p>
+<p><a class="reference external" href="https://fenics.readthedocs.io/projects/containers/en/latest/introduction.html#installing-docker">FEniCS installation guide</a></p>
+<p>FEniCS installation usually includes a minimum set of python libraries.
+However, you might need to install additional ones like.</p>
+<p>It is recommended to create a named container with a folder shared with the
+local os:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker run -ti -v <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/home/fenics/shared --name fenics-container quay.io/fenicsproject/stable
+</pre></div>
+</div>
+<p>To run the container we can create a shell script containing</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">run_fenics.sh</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+docker <span class="nb">exec</span> -ti -u fenics fenics-container /bin/bash -l
+</pre></div>
+</div>
+</div>
+<p>Add execution permissions to the script</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> chmod +x run_fenics.sh
+</pre></div>
+</div>
+<p>Then, we can just access the container by</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> ./run_fenics.sh
+</pre></div>
+</div>
+</div>
+<div class="section" id="python-modules">
+<h1>Python Modules<a class="headerlink" href="#python-modules" title="Permalink to this headline">¶</a></h1>
+<p>To run the analysis on the client side, make sure you have the following packages</p>
+<ol class="arabic simple">
+<li><p>Matplotlib</p></li>
+<li><p>Scipy</p></li>
+<li><p>h5py</p></li>
+<li><p>pandas</p></li>
+<li><p>tqdm</p></li>
+</ol>
+<div class="section" id="installation-of-dependencies-using-pip">
+<h2>Installation of dependencies using PIP<a class="headerlink" href="#installation-of-dependencies-using-pip" title="Permalink to this headline">¶</a></h2>
+<p>Install the matplotlib package</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> pip install matplotlib
+</pre></div>
+</div>
+<p>Install scipy</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> pip install scipy
+</pre></div>
+</div>
+<p>Install the h5py package</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> pip install h5py
+</pre></div>
+</div>
+<p>Install pandas</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> pip install pandas
+</pre></div>
+</div>
+<p>Install tqdm (for progress bars)</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> pip install tqdm
+</pre></div>
+</div>
+</div>
+<div class="section" id="installation-of-dependencies-using-conda">
+<h2>Installation of dependencies using conda<a class="headerlink" href="#installation-of-dependencies-using-conda" title="Permalink to this headline">¶</a></h2>
+<p>Conda distributions usually come with matplotlib, scipy. In case your distribution does not include it you can run</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> conda install matplotlib
+<span class="gp">$</span> conda install scipy
+</pre></div>
+</div>
+<p>Install the h5py package</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> conda install h5py
+</pre></div>
+</div>
+<p>Install pandas</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> conda install pandas
+</pre></div>
+</div>
+<p>Install tqdm (for progress bars)</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> conda install -c conda-forge tqdm
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="quickstart.html" class="btn btn-neutral float-right" title="Finite Source Simulations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to PNP Transport’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Erick R Martinez Loran
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

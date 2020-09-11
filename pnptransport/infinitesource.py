@@ -36,14 +36,53 @@ def two_layers_constant_source(D1cms: float, D2cms: float, Cs: float, h: float,
 
     The system solves Poisson-Nernst-Planck equation for a single species.
 
+    *Example*
+
+    .. code-block:: python
+
+        import pnptransport.infinitesource as pnpis
+        import logging
+
+        D1, D2 = 1E-16, 1E-15
+        Cs = 1E16
+        h, m = 1E-12, 1.0
+        thickness_1, thickness_2 = 75E-7, 1.
+        temp_c = 60.
+        voltage = 0.75
+        time_s = 86400.
+        h5FileName = 'simulation_output.h5'
+        # Chose a small time step to reduce truncation error in the TR-BDF2
+        t_steps = 3600
+
+        # Create a logger
+        logFile = 'simulation_output.log'
+        my_logger = logging.getLogger('simlog')
+        my_logger.setLevel(logging.DEBUG)
+        # create file handler which logs even debug messages
+        fh = logging.FileHandler(logFile)
+        fh.setLevel(logging.DEBUG)
+        # create console handler and set level to debug
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.DEBUG)
+        # add the handlers to the logger
+        my_logger.addHandler(fh)
+        my_logger.addHandler(ch)
+
+        vfb, tsim, x1, c1, x2, c2, cmax = pnpis.two_layers_constant_source(
+            D1cms=D1, D2cms=D2,
+            Cs=Cs, h=h, m=m, thickness_sinx=thickness_1, thickness_si=thickness_2,
+            tempC=temp_c, voltage=voltage, time_s=time_s,
+            tsteps=t_steps, h5_storage=h5FileName, er=7.0
+        )
+
     Parameters
     ----------
     D1cms: float
-        The diffusion coefficient of Na in the dielectric (cm^2/s)
+        The diffusion coefficient of Na in the dielectric (cm\ :sup:`2`\/s)
     D2cms: float
-        The diffusion coefficient of Na in silicon (cm^2/s)
+        The diffusion coefficient of Na in silicon (cm\ :sup:`2`\/s)
     Cs: float
-        The source concentration (1/cm^3)
+        The source concentration (1/cm\ :sup:`3`\)
     h: float
         The surface mass transfer coefficient (cm/s)
     m: float
@@ -64,37 +103,36 @@ def two_layers_constant_source(D1cms: float, D2cms: float, Cs: float, h: float,
         If provided a recovery time, the bias at which it will recover (V).
     **kwargs:
         cbulk: double
-            The base concentration cm-3
+            The base concentration cm\ :sup:`-3`\.
         xpoints_sinx: int
-            The number of cells in the sinx layer
+            The number of cells in the sinx layer.
         xpoints_si: int
-            The number of cells in the si layer
+            The number of cells in the si layer.
         z: integer
-            The valency of the ion
+            The valency of the ion.
             default: 1
         er: double
-            The relative permittivity of the dielectric
+            The relative permittivity of the dielectric.
         xpoints: int
-            The number of x points to simulate
+            The number of x points to simulate.
         fcall: int
             The number of times the function has been called to solve the same
-            problem
+            problem.
         tsteps: int
-            The number of time steps to simulate
+            The number of time steps to simulate.
         max_calls: int
             The maximum number of times the function can be recursively call if the convergence fails.
         max_iter: int
-            The maximum number of iterations for the solver
+            The maximum number of iterations for the solver.
         relaxation_parameter: float
-            The relaxation w for the Newton algorithm
+            The relaxation w for the Newton algorithm.
         t_smear: int, float
             The time in seconds taken to "smooth" the initial profile (assuming a constant concentration diffused
             over t_smear).
         h5fn: str
-            The path to the h5 file to store the simulation results
-
+            The path to the h5 file to store the simulation results.
         debug: bool
-            True if debugging the function
+            True if debugging the function.
 
 
     Returns
@@ -103,19 +141,19 @@ def two_layers_constant_source(D1cms: float, D2cms: float, Cs: float, h: float,
         An array containing the flat band voltage shift as a function of time
         in (V)
     tsim: np.ndarray
-        The time for each flatband voltage point
+        The time for each flatband voltage point in seconds.
     x1: np.ndarray
-        The depth of the concentration profile in SiNx
+        The depth of the concentration profile in SiNx in um.
     c1: np.ndarray
-        The final concentration profile as a function of depth in SiNx
+        The final concentration profile as a function of depth in SiNx in cm\ :sup:`-3`\.
     potential: np.ndarray
-        The final potential profile as a function of depth in SiNx
+        The final potential profile as a function of depth in SiNx in V.
     x2: np.ndarray
-        The depth of the concentration profile in Si
+        The depth of the concentration profile in Si in um.
     c2: np.ndarray
-        The final concentration profile in Si
+        The final concentration profile in Si in cm\ :sup:`-3`\.
     cmax: float
-        The maximum concentration in silicon nitride
+        The maximum concentration in silicon nitride in cm\ :sup:`-3`\.
     """
     Cbulk = kwargs.get('cbulk', 1E-20)
     xpoints_sinx = kwargs.get('xpoints_sinx', 1000)
@@ -599,7 +637,7 @@ def two_layers_constant_source(D1cms: float, D2cms: float, Cs: float, h: float,
         if os.path.exists(h5fn):
             os.remove(h5fn)
         with h5py.File(h5fn, 'w') as hf:
-            # filetag = os.path.splitext(os.path.basename(h5fn))[0]
+            # file_tag = os.path.splitext(os.path.basename(h5fn))[0]
             if debug:
                 fcallLogger.info('Created file for storage \'{}\''.format(h5fn))
 

@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 # import pidsim.rsh as prsh
-import pidsim.pmpp_rf as pmpp_rf
+import pidsim.ml_simulator as pmpp_rf
 import h5py
 import os
 import platform
@@ -25,10 +25,13 @@ from scipy import integrate
 import pnptransport.utils as utils
 from tqdm import tqdm
 
-path_to_csv = r'G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\inputs_20200813\ofat_db.csv'
-path_to_results = r'G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\inputs_20200813\results'
+path_to_csv = r'G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\inputs_20200831\ofat_db.csv'
+path_to_results = r'G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\inputs_20200831\results'
+t_max_h = 96.  # h
 
-color_map = 'Blues'
+pid_experiment_csv = None #'G:\My Drive\Research\PVRD1\DATA\PID\MC4_Raw_IV_modified.csv'
+
+color_map = 'viridis_r'
 
 defaultPlotStyle = {
     'font.size': 11,
@@ -68,13 +71,20 @@ if __name__ == '__main__':
     if platform.system() == 'Windows':
         path_to_csv = r'\\?\\' + path_to_csv
         path_to_results = r'\\?\\' + path_to_results
+        if pid_experiment_csv is not None:
+            pid_experiment_csv = r'\\?\\' + pid_experiment_csv
 
+    t_max = t_max_h * 3600.
     # Create an analysis folder within the base dir for the database file
     working_path = os.path.dirname(path_to_csv)
     analysis_path = os.path.join(working_path, 'batch_analysis')
     # If the folder does not exists, create it
     if not os.path.exists(analysis_path):
         os.makedirs(analysis_path)
+
+    # If an experimental profile is provided load the csv
+    if pid_experiment_csv is not None:
+        pid_experiment_df = pd.read_csv(pid_experiment_csv)
 
     # Read the database of simulations
     simulations_df = pd.read_csv(filepath_or_buffer=path_to_csv)
@@ -103,17 +113,17 @@ if __name__ == '__main__':
         time_max = r['time (s)']
         temp_c = r['temp (C)']
 
-        source_str1 = r'$\sigma_{{\mathrm{{s}}}} = {0} \; (\mathrm{{cm^{{-2}}}})$'.format(
+        source_str1 = r'$S_{{\mathrm{{s}}}} = {0} \; (\mathrm{{cm^{{-2}}}})$'.format(
             utils.latex_order_of_magnitude(simga_s))
-        source_str2 = r'$\zeta = {0} \; (\mathrm{{1/s}})$'.format(utils.latex_order_of_magnitude(zeta))
+        source_str2 = r'$k = {0} \; (\mathrm{{1/s}})$'.format(utils.latex_order_of_magnitude(zeta))
         e_field_str = r'$E = {0} \; (\mathrm{{V/cm}})$'.format(utils.latex_order_of_magnitude(e_field))
         h_str = r'$h = {0} \; (\mathrm{{cm/s}})$'.format(utils.latex_order_of_magnitude(h))
         temp_str = r'${0:.0f} \; (\mathrm{{°C}})$'.format(temp_c)
         dsf_str = r'$D_{{\mathrm{{SF}}}} = {0} \; (\mathrm{{cm^2/s}})$'.format(utils.latex_order_of_magnitude(dsf))
         # Normalize the time scale
-        normalize = mpl.colors.Normalize(vmin=1E-3, vmax=(time_max / 3600.))
+        normalize = mpl.colors.Normalize(vmin=1E-3, vmax=(t_max / 3600.))
         # Get a 20 time points geometrically spaced
-        requested_time = utils.geometric_series_spaced(max_val=time_max, min_delta=600, steps=20)
+        requested_time = utils.geometric_series_spaced(max_val=t_max, min_delta=600, steps=20)
         # Get the full path to the h5 file
         path_to_h5 = os.path.join(path_to_results, filetag + '.h5')
         # Create the concentration figure
@@ -177,7 +187,7 @@ if __name__ == '__main__':
         ax_s_0.set_xlabel(r'Time (h)')
         ax_s_0.set_ylabel(r'$\bar{C}$ ($\mathregular{cm^{-3}}$)')
         # Set the limits for the x axis
-        ax_s_0.set_xlim(left=0, right=time_max / 3600.)
+        ax_s_0.set_xlim(left=0, right=t_max / 3600.)
         # Make the y axis log
         ax_s_0.set_yscale('log')
         # Set the ticks for the y axis
@@ -333,14 +343,23 @@ if __name__ == '__main__':
         )
 
         # rsh_analysis = prsh.Rsh(h5_transport_file=path_to_h5)
-        pmpp_analysis = pmpp_rf.Pmpp(h5_transport_file=path_to_h5)
-        time_s = pmpp_analysis.time_s
+        ml_analysis = pmpp_rf.MLSim(h5_transport_file=path_to_h5)
+        time_s = ml_analysis.time_s
         time_h = time_s / 3600.
-        requested_indices = pmpp_analysis.get_requested_time_indices(time_s)
-        pmpp = pmpp_analysis.pmpp_time_series(requested_indices=requested_indices)
+        requested_indices = ml_analysis.get_requested_time_indices(time_s)
+        pmpp = ml_analysis.pmpp_time_series(requested_indices=requested_indices)
+        rsh = ml_analysis.rsh_time_series(requested_indices=requested_indices)
 
-        ax_r_0.plot(time_h, pmpp / pmpp[0])
+        simulated_pmpp_df = pd.DataFrame(data={'time (s)': time_s, 'Pmpp (mW/cm^2)': pmpp, 'Rsh (Ohm cm^2)' : rsh})
+        simulated_pmpp_df.to_csv(os.path.join(analysis_path, filetag + '_simulated_pid.csv'), index=False)
+
+        ax_r_0.plot(time_h, pmpp / pmpp[0], label='Simulation')
         ax_r_0.set_xlim(0, np.amax(time_h))
+        if pid_experiment_csv is not None:
+            time_exp = pid_experiment_df['time (s)']/3600.
+            pmax_exp = pid_experiment_df['Pmax']
+            ax_r_0.plot(time_exp, pmax_exp / pmax_exp[0], ls='None', marker='o', fillstyle='none', label='Experiment')
+            leg = ax_r_0.legend(loc='lower right', frameon=True)
         # ax_r_0.set_yscale('log')
         ax_r_0.set_xlabel('time (h)')
         # ax_r_0.set_ylabel('$R_{\mathrm{sh}}\;(\Omega \cdot \mathregular{cm^2})$')
@@ -368,8 +387,10 @@ if __name__ == '__main__':
         fig_r.tight_layout()
 
         fig_c.savefig(os.path.join(analysis_path, filetag + '_c.png'), dpi=600)
+        fig_c.savefig(os.path.join(analysis_path, filetag + '_c.svg'), dpi=600)
         fig_s.savefig(os.path.join(analysis_path, filetag + '_s.png'), dpi=600)
         fig_r.savefig(os.path.join(analysis_path, filetag + '_p.png'), dpi=600)
+        fig_r.savefig(os.path.join(analysis_path, filetag + '_p.svg'), dpi=600)
 
         plt.close(fig_c)
         plt.close(fig_s)
