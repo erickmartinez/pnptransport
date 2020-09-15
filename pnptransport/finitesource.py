@@ -900,7 +900,7 @@ def two_layers_constant_flux(D1cms: float, D2cms: float, h: float,
                              surface_concentration: float = 1E11, rate: float = 1E-4,
                              recovery_time_s: Union[float, int] = 0,
                              recovery_voltage: float = 0,
-                             trapping: bool = True,
+                             trapping: bool = True, supg: bool = False,
                              **kwargs):
     """
     This function simulates the flatband voltage as a function of time for a
@@ -980,6 +980,8 @@ def two_layers_constant_flux(D1cms: float, D2cms: float, h: float,
         If provided a recovery time, the bias at which it will recover (V).
     trapping: bool
         If True, apply trapping correction to the image charges. Default (True)
+    supg: bool
+        If true use SUPG stabilization. Default False
     **kwargs:
         cbulk: double
             The base concentration cm\ :sup:`-3`\.
@@ -1064,7 +1066,7 @@ def two_layers_constant_flux(D1cms: float, D2cms: float, h: float,
     # Chose the backend type
     if has_linear_algebra_backend("PETSc"):
         parameters["linear_algebra_backend"] = "PETSc"
-    #        print('PETSc linear algebra backend found.')
+    # print('PETSc linear algebra backend found.')
     elif has_linear_algebra_backend("Eigen"):
         parameters["linear_algebra_backend"] = "Eigen"
     else:
@@ -1434,35 +1436,36 @@ def two_layers_constant_flux(D1cms: float, D2cms: float, h: float,
         F1G = (1. / dt_) * (c1_G - c1_n) * v1c * dx1 - TRF * (a1G + a10)
         F1N = (1. / dt_) * (c1 - BDF2_T1 * c1_G + BDF2_T2 * c1_n) * v1c * dx1 - BDF2_T3 * a11
 
-        # SUPG stabilization
-        b1_ = mu1 * Dx(phi1_n, 0)
-        nb1 = sqrt(dot(b1_, b1_) + DOLFIN_EPS)
-        Pek1 = nb1 * hk1 / (2.0 * D1ums)
+        if supg:
+            # SUPG stabilization
+            b1_ = mu1 * Dx(phi1_n, 0)
+            nb1 = sqrt(dot(b1_, b1_) + DOLFIN_EPS)
+            Pek1 = nb1 * hk1 / (2.0 * D1ums)
 
-        b2_ = mu1 * Dx(phi1_G, 0)
-        nb2 = sqrt(dot(b2_, b2_) + DOLFIN_EPS)
-        Pek2 = nb2 * hk1 / (2.0 * D1ums)
+            b2_ = mu1 * Dx(phi1_G, 0)
+            nb2 = sqrt(dot(b2_, b2_) + DOLFIN_EPS)
+            Pek2 = nb2 * hk1 / (2.0 * D1ums)
 
-        tau1 = conditional(gt(Pek1, DOLFIN_EPS),
-                           (hk1 / (2.0 * nb1)) * (((exp(2.0 * Pek1) + 1.0) / (exp(2.0 * Pek1) - 1.0)) - 1.0 / Pek1),
-                           0.0)
-        tau2 = conditional(gt(Pek2, DOLFIN_EPS),
-                           (hk1 / (2.0 * nb2)) * (((exp(2.0 * Pek2) + 1.0) / (exp(2.0 * Pek2) - 1.0)) - 1.0 / Pek2),
-                           0.0)
+            tau1 = conditional(gt(Pek1, DOLFIN_EPS),
+                               (hk1 / (2.0 * nb1)) * (((exp(2.0 * Pek1) + 1.0) / (exp(2.0 * Pek1) - 1.0)) - 1.0 / Pek1),
+                               0.0)
+            tau2 = conditional(gt(Pek2, DOLFIN_EPS),
+                               (hk1 / (2.0 * nb2)) * (((exp(2.0 * Pek2) + 1.0) / (exp(2.0 * Pek2) - 1.0)) - 1.0 / Pek2),
+                               0.0)
 
-        # get the skew symmetric part of the L operator
-        # LSSNP = dot(vel2,Dx(v2,0))
-        Lss1 = (mu1 * inner(grad(phi1_G), grad(v1c)) + (mu1 / 2) * div(grad(phi1_G)) * v1c)
-        Lss2 = (mu1 * inner(grad(phi1), grad(v1c)) + (mu1 / 2) * div(grad(phi1)) * v1c)
-        # SUPG Stabilization term
-        ta = getTRBDF2ta(c1_G, phi1_G)
-        tb = getTRBDF2ta(c1_n, phi1_n)
-        tc = getTRBDF2ta(c1, phi1)
-        ra = inner(((1 / dt_) * (c1_G - c1_n) - TRF * (ta + tb)), tau1 * Lss1) * dx1
-        rb = inner((c1 / dt_ - BDF2_T1 * c1_G / dt_ + BDF2_T2 * c1_n / dt_ - BDF2_T3 * tc), tau2 * Lss2) * dx1
+            # get the skew symmetric part of the L operator
+            # LSSNP = dot(vel2,Dx(v2,0))
+            Lss1 = (mu1 * inner(grad(phi1_G), grad(v1c)) + (mu1 / 2) * div(grad(phi1_G)) * v1c)
+            Lss2 = (mu1 * inner(grad(phi1), grad(v1c)) + (mu1 / 2) * div(grad(phi1)) * v1c)
+            # SUPG Stabilization term
+            ta = getTRBDF2ta(c1_G, phi1_G)
+            tb = getTRBDF2ta(c1_n, phi1_n)
+            tc = getTRBDF2ta(c1, phi1)
+            ra = inner(((1 / dt_) * (c1_G - c1_n) - TRF * (ta + tb)), tau1 * Lss1) * dx1
+            rb = inner((c1 / dt_ - BDF2_T1 * c1_G / dt_ + BDF2_T2 * c1_n / dt_ - BDF2_T3 * tc), tau2 * Lss2) * dx1
 
-        F1G += ra
-        F1N += rb
+            F1G += ra
+            F1N += rb
 
         J1G = derivative(F1G, u1_G, du1)
         J1N = derivative(F1N, u1, du1)  # J1G
@@ -1719,7 +1722,8 @@ def two_layers_constant_flux(D1cms: float, D2cms: float, h: float,
                     trapping=trapping,
                     phi_b=phi_b,
                     en_opt=en_opt,
-                    c_fp=c_fp
+                    c_fp=c_fp,
+                    supg=supg
                 )
             else:
                 fcallLogger.error('Reached max refinement without success...')
