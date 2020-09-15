@@ -11,11 +11,10 @@ the installation. If they do not already have execution permissions run:
    $ cd executables
    $ chmod +x *.sh
 
-Running a finite source simulation
+Running a finite source simulation. From the root of pnptransport run
 
 .. code-block:: console
 
-   $ cd ./executables
    $ ./simulate_fs.py --config input_example.ini
 
 where the .ini file looks like
