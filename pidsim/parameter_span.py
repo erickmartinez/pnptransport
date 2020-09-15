@@ -559,7 +559,7 @@ def create_input_file(simulation_time: float, temperature_c: float, sigma_s: flo
         recovery_e_field=recovery_e_field
     )
     params = {
-        'file_tag': filetag,
+        'filetag': filetag,
         'time': simulation_time,
         'temperature': temperature_c,
         'sigma_s': '{0:.3E}'.format(sigma_s),

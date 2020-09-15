@@ -1191,16 +1191,16 @@ def two_layers_constant_flux(D1cms: float, D2cms: float, h: float,
         xu = mesh.coordinates()
         cu = c_.compute_vertex_values(mesh) * 1E12
         pu = phi.compute_vertex_values(mesh)
-        xyz = np.array([(xu[j], cu[j], pu[j]) for j in range(len(xu))], dtype=[('x', 'd'), ('c', 'd'), ('phi', 'd')])
-        xyz.sort(order='x')
-        return xyz['x'], xyz['c'], xyz['phi']
+        out = np.array([(xu[j], cu[j], pu[j]) for j in range(len(xu))], dtype=[('x', 'd'), ('c', 'd'), ('phi', 'd')])
+        out.sort(order='x')
+        return out['x'], out['c'], out['phi']
 
     def get_solution_array2(mesh, sol):
         xu = mesh.coordinates()
         yu = sol.compute_vertex_values(mesh) * 1E12
-        xy = np.array([(xu[j], yu[j]) for j in range(len(xu))], dtype=[('x', 'd'), ('y', 'd')])
-        xy.sort(order='x')
-        return xy['x'], xy['y']
+        out = np.array([(xu[j], yu[j]) for j in range(len(xu))], dtype=[('x', 'd'), ('c', 'd')])
+        out.sort(order='x')
+        return out['x'], out['c']
 
     top = Top()
     bottom = Bottom()
@@ -1209,9 +1209,10 @@ def two_layers_constant_flux(D1cms: float, D2cms: float, h: float,
 
     # Create mesh and define function space
     mesh1 = IntervalMesh(M1, 0.0, L1)
-    mesh2 = IntervalMesh(M2, L1, L)
+    mesh2 = IntervalMesh(M2, L1, L) # L = L1 + L2
 
-    nor = 2
+    # Mesh refinement
+    nor = 2  # Number of refinements
     dr = L1 * 0.2
     for i in range(nor):
         cell_markers = MeshFunction("bool", mesh1, mesh1.topology().dim(), False)
@@ -1245,21 +1246,21 @@ def two_layers_constant_flux(D1cms: float, D2cms: float, h: float,
         fcallLogger.info('MIN DX: {0:.3E} um, MAX DX {1:.3E}'.format(mesh2.hmin(), mesh2.hmax()))
 
     # Initialize mesh function for boundary domains
-    boundaries1 = MeshFunction("size_t", mesh1, mesh1.topology().dim() - 1)
-    boundaries2 = MeshFunction("size_t", mesh2, mesh2.topology().dim() - 1)
+    boundaries1 = MeshFunction("size_t", mesh1, mesh1.topology().dim() - 1)  # SiNx
+    boundaries2 = MeshFunction("size_t", mesh2, mesh2.topology().dim() - 1)  # Si
     boundaries1.set_all(0)
     boundaries2.set_all(0)
 
-    top.mark(boundaries1, 1)
-    innerBoundaryL.mark(boundaries1, 2)
-    innerBoundaryR.mark(boundaries2, 1)
-    bottom.mark(boundaries2, 2)
+    top.mark(boundaries1, 1)  # Gate/SiNx
+    innerBoundaryL.mark(boundaries1, 2)  # -> SiNx/Si
+    innerBoundaryR.mark(boundaries2, 1)  # SiNx/S <-
+    bottom.mark(boundaries2, 2) # Bottom boundary
 
     # Define the measures
-    ds1 = Measure('ds', domain=mesh1, subdomain_data=boundaries1)
-    ds2 = Measure('ds', domain=mesh2, subdomain_data=boundaries2)
-    dx1 = Measure('dx', domain=mesh1, subdomain_data=boundaries1)
-    dx2 = Measure('dx', domain=mesh2, subdomain_data=boundaries2)
+    ds1 = Measure('ds', domain=mesh1, subdomain_data=boundaries1)  # SiNx
+    ds2 = Measure('ds', domain=mesh2, subdomain_data=boundaries2)  # Si
+    dx1 = Measure('dx', domain=mesh1, subdomain_data=boundaries1)  # SiNx
+    dx2 = Measure('dx', domain=mesh2, subdomain_data=boundaries2)  # Si
 
     # Define the initial concentration in both layers
     # u1i = Expression(('cb', '(1-x[0]/L)*Vapp/er'), cb=Cbulk * CM3TOUM3, L=L1, Vapp=float(voltage), er=er, degree=1)
@@ -1305,7 +1306,7 @@ def two_layers_constant_flux(D1cms: float, D2cms: float, h: float,
     def update_bcs1(bias):
         return [DirichletBC(W.sub(1), bias / er, boundaries1, 1), DirichletBC(W.sub(1), 0.0, boundaries1, 2)]
 
-    bcs1 = [DirichletBC(W.sub(1), voltage / er, boundaries1, 1)]
+    #bcs1 = [DirichletBC(W.sub(1), voltage / er, boundaries1, 1)]
     bcs2 = None  # [DirichletBC(V2,Cbulk*CM3TOUM3,boundaries2,2)]
 
     # bcs1 = [DirichletBC(W.sub(1), bias / er, boundaries1, 1)]
