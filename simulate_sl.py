@@ -80,7 +80,7 @@ if __name__ == '__main__':
     # The configuration file
     # Logging
     # The base filename for the output
-    file_tag = config.get(section='global', option='file_tag')
+    file_tag = config.get(section='global', option='filetag')
     logFile = file_tag + ".log"
 
     full_path = os.path.abspath(config_file)
@@ -143,6 +143,7 @@ if __name__ == '__main__':
                 z=1.0,
                 maxr_calls=5,
                 x1=x1,
+                cbulk=c_bulk,
                 debug=True
             )
         else:

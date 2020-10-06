@@ -58,6 +58,27 @@ class MLSim:
         self.__predictors_depth = np.linspace(0.0, 1.0, 100)
         self.__predictors_colnames = ['sigma at {0:.3f} um'.format(x) for x in self.__predictors_depth]
 
+    def set_mpp_dump_model(self, path: str):
+        """
+        Override the default ML regressor for the MPP data
+
+        Parameters
+        ----------
+        path: str
+            The path to the trained ML dump
+        """
+        self.__ml_dump_mpp = path
+
+    def set_rsh_dump_model(self, path: str):
+        """
+        Override the default ML regressor for the Rsh data
+
+        Parameters
+        ----------
+        path: str
+            The path to the trained ML dump
+        """
+        self.__ml_dump_rsh = path
 
     @property
     def activated_na_fraction(self) -> float:
@@ -166,8 +187,8 @@ class MLSim:
                 # Get the concentration at the stacking fault partition
                 concentration = f(self.__predictors_depth)
                 self._conductivity_model.concentration_profile = concentration
-                self._conductivity_model.segregation_coefficient = 50
-                self._conductivity_model.activated_na_fraction = 1
+                self._conductivity_model.segregation_coefficient = self.segregation_coefficient
+                self._conductivity_model.activated_na_fraction = self.activated_na_fraction
                 conductivity = self._conductivity_model.estimate_conductivity()
                 pmpp = np.array(model_rf.predict(X=np.array([conductivity]))).mean()
                 pmpp_t[i] = pmpp

@@ -12,6 +12,7 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import  DecisionTreeRegressor
 from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.neural_network import MLPRegressor
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
@@ -49,7 +50,7 @@ if __name__ == "__main__":
     X = df[predictors].values
     y = df[target_column].values
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30, random_state=10)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30, random_state=100)
     print(X_train.shape)
     print(X_test.shape)
 
@@ -57,14 +58,33 @@ if __name__ == "__main__":
     model_rf = RandomForestRegressor(n_estimators=500, oob_score=True, random_state=100)
     model_rf.fit(X_train, y_train.ravel())
 
+    # Multi layer perceptron regressor
+    model_mlp = MLPRegressor(
+        random_state=100, hidden_layer_sizes=(500,), max_iter=100000, solver='adam', activation='relu', alpha=1E-4,
+    )
+    model_mlp.fit(X_train, y_train.ravel())
+
     pred_train_rf = model_rf.predict(X_train)
-    print(np.sqrt(mean_squared_error(y_train, pred_train_rf)))
-    print(r2_score(y_train, pred_train_rf))
+    print('******* Random Forest Regressor train *********')
+    print('Sqrt(mean variance): {0}'.format(np.sqrt(mean_squared_error(y_train, pred_train_rf))))
+    print('Coefficient of determination: {0}'.format(r2_score(y_train, pred_train_rf)))
 
     pred_test_rf = model_rf.predict(X_test)
-    print(np.sqrt(mean_squared_error(y_test, pred_test_rf)))
-    print(r2_score(y_test, pred_test_rf))
+    print('******* Random Forest Regressor test *********')
+    print('Sqrt(mean variance): {0}'.format(np.sqrt(mean_squared_error(y_test, pred_test_rf))))
+    print('Coefficient of determination: {0}'.format(r2_score(y_test, pred_test_rf)))
+
+    pred_train_mlp = model_mlp.predict(X_train)
+    print('******* Multilevel Perceptron Train *********')
+    print('Sqrt(mean variance): {0}'.format(np.sqrt(mean_squared_error(y_train, pred_train_mlp))))
+    print('Coefficient of determination: {0}'.format(r2_score(y_train, pred_train_mlp)))
+
+    pred_test_mlp = model_mlp.predict(X_test)
+    print('******* Multilevel Perceptron Test *********')
+    print('Sqrt(mean variance): {0}'.format(np.sqrt(mean_squared_error(y_test, pred_test_mlp))))
+    print('Coefficient of determination: {0}'.format(r2_score(y_test, pred_test_mlp)))
 
     # If fitting mpp append mpp to the pickle, if fitting rsh append rsh
     dump(model_rf, os.path.join(base_path, 'random_forest_mpp.joblib'))
+    dump(model_rf, os.path.join(base_path, 'multilevel_perceptron_mpp.joblib'))
 

@@ -14,7 +14,7 @@ It interpolates the corresponding profile within a distance of 1.0 um and append
 | n | s(x=0) | s(x=0.01) | ... | s(x=1.0) | time (s) | pd_mpp (mW/cm2) | Rsh (Ohms cm2) |
 +---+--------+-----------+-----+----------+----------+-----------------+----------------+
 
-@author Erick R Martinez Loran <erm013@ucsd.edu>
+@author Erick R Martinez Loran <erickrmartinez@gmail.com>
 2020
 """
 import numpy as np
@@ -28,12 +28,34 @@ import re
 from shutil import copyfile
 
 
+# The base path to containing different folders with simulaiton results
 base_path = r'G:\Shared drives\FenningLab2\Projects\PVRD1\Simulations\Sentaurus PID\results\3D'
+# The folder to output the results
 output_folder = r'G:\My Drive\Research\PVRD1\FENICS\SUPG_TRBDF2\simulations\sentaurus_fitting'
+# The base folder where the pnp simulation results where saved
 pnp_base = r'G:\My Drive\Research\PVRD1\Sentaurus_DDD\pnp_simulations'
 
 
 def find_h5(the_path: str, the_file: str, len_sigma: int):
+    """
+    This function finds the h5 files corresponding to the concentration profiles corresponding to a conductivity profile
+    generated during a Sentaurus DDD simulation. It looks for the file within the filepath recursively and outputs the
+    complete path to the h5 file which contains the concentration profile.
+
+    Parameters
+    ----------
+    the_path: str
+        The path to look for the concentration profile
+    the_file: str
+        The name of the file to look for
+    len_sigma: int
+        The length of the conductivity profile. If the length of the conductivity profile does not match the length
+        of the concentration profile of the found file, it disregards this file.
+
+    Returns
+    -------
+
+    """
     files = glob.glob('{0}\**\{1}'.format(the_path, the_file))
     if len(files) > 0:
         for k, f_ in enumerate(files):
@@ -65,7 +87,7 @@ if __name__ == '__main__':
     n_c_points = 100
     # The maximum depth in um to take for the concentration profile
     x_max = 1.
-    x_inter = np.linspace(start=0., stop=1., num=n_c_points)
+    x_inter = np.linspace(start=0., stop=x_max, num=n_c_points)
     column_names = ['sigma at {0:.3f} um'.format(x) for x in x_inter]
     column_names.append('time (s)')
     column_names.append('pd_mpp (mW/cm2)')
@@ -77,8 +99,9 @@ if __name__ == '__main__':
     df = pd.DataFrame(columns=column_names)
     for fb in folder_list:
         f = os.path.join(base_path, fb)
-
+        # Find the efficiecny data
         efficiency_file = os.path.join(f, r'jv_plots\efficiency_results.csv')
+        # Find the shunt resistance data
         rsh_file = os.path.join(f, r'analysis_plots\rsh_data.csv')
         conductivity_file = os.path.join(f, 'conductivity_profiles.h5')
         # Check that the files exist

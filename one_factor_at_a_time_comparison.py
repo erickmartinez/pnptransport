@@ -16,8 +16,8 @@ import re
 
 base_path = r'G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\inputs_20200831'
 span_database = r'G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\inputs_20200831\one_factor_at_a_time_lower_20200828_h=1E-12.csv'
-parameter = 'h'
-output_folder = 'ofat_comparison'
+parameter = 'E'
+output_folder = 'ofat_comparison_s=1'
 t_max_h = 48.
 
 parameter_units = {

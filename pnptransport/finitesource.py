@@ -1304,7 +1304,7 @@ def two_layers_constant_flux(D1cms: float, D2cms: float, h: float,
     tol = 1E-16
 
     def update_bcs1(bias):
-        return [DirichletBC(W.sub(1), bias / er, boundaries1, 1), DirichletBC(W.sub(1), 0.0, boundaries1, 2)]
+        return [DirichletBC(W.sub(1), bias/er, boundaries1, 1), DirichletBC(W.sub(1)/er, 0.0, boundaries1, 2)]
 
     #bcs1 = [DirichletBC(W.sub(1), voltage / er, boundaries1, 1)]
     bcs2 = None  # [DirichletBC(V2,Cbulk*CM3TOUM3,boundaries2,2)]
@@ -1909,6 +1909,8 @@ def single_layer_zero_flux(D1cms: float, thickness_dielectric: float, tempC: flo
     vd1 = constants.elementary_charge * (E * 1E8) * (D1cms * 1E-4) * 1E6 / (constants.Boltzmann * tempK)
     # vd2 = 0.0  # constants.elementary_charge*(E2*1E8)*(D2cms*1E-4)*1E6/(constants.Boltzmann*TempK)
 
+    tau_snow = 4. * (x1**2) / (np.pi ** 2) / D1cms * 1E-8
+
     set_log_level(50)
     logging.getLogger('FFC').setLevel(logging.WARNING)
 
@@ -1920,6 +1922,7 @@ def single_layer_zero_flux(D1cms: float, thickness_dielectric: float, tempC: flo
         fcallLogger.info('Temperature: {0:.1f} °C'.format(tempC))
         fcallLogger.info('Source surface concentration: {0:.3E} (Na atoms/cm^2)'.format(surface_concentration))
         fcallLogger.info('x1: {0:.3E} (um)'.format(x1))
+        fcallLogger.info('sqrt(tau_snow): {0:.3E} (h^0.5)'.format((tau_snow/3600)**0.5))
         fcallLogger.info('Thermal voltage {0:.4} V.'.format(vth))
         fcallLogger.info('*************** SiNx ******************')
         fcallLogger.info('Thickness: {0:.1E} um'.format(thickness_dielectric))
@@ -1930,13 +1933,6 @@ def single_layer_zero_flux(D1cms: float, thickness_dielectric: float, tempC: flo
         fcallLogger.info('D: {0:.3E} cm^2/s'.format(D1cms))
         fcallLogger.info('Ionic mobility: {0:.3E} um^2/ V*s'.format(mu1))
         fcallLogger.info('Drift velocity: {0:.3E} um/s'.format(vd1))
-        fcallLogger.info('**************** Si *******************')
-        fcallLogger.info('er: {0:.1f}'.format(11.9))
-        fcallLogger.info('Voltage: {0:.1f} V'.format(0.0))
-        fcallLogger.info('Electric Field: {0:.3E} MV/cm'.format(0.0))
-        fcallLogger.info('Electric Field (Effective): {0:.3E} MV/cm'.format(0.0))
-        fcallLogger.info('Ionic mobility: {0:.3E} cm^2/ V*s'.format(0.0))
-        fcallLogger.info('Drift velocity: {0:.3E} cm/s'.format(0.0))
 
     # Create classes for defining parts of the boundaries and the interior
     # of the domain
@@ -1966,7 +1962,7 @@ def single_layer_zero_flux(D1cms: float, thickness_dielectric: float, tempC: flo
     # Create mesh and define function space
     mesh1 = IntervalMesh(M1, 0.0, L1)
 
-    nor = 2
+    nor = 3
     dr = L1 * 0.1
     for i in range(nor):
         cell_markers = MeshFunction("bool", mesh1, mesh1.topology().dim(), False)
@@ -2110,7 +2106,7 @@ def single_layer_zero_flux(D1cms: float, thickness_dielectric: float, tempC: flo
         # (10^-19 C / cm ) x (10^14 J cm / C^2)
         vfb_ = q_red * Cint_ / (er * e0_red) * 1E-5  # + vfb_trap
 
-        return gp1_, gp2_, Cint_, Ctot_, E_g_, E_si_, xbar_, vfb_
+        return gp1_, gp2_, Cint_, Ctot_, E_g_, E_si_, xbar_, vfb_, scd_si, scd_g
 
     hk1 = CellDiameter(mesh1)
 
@@ -2235,6 +2231,8 @@ def single_layer_zero_flux(D1cms: float, thickness_dielectric: float, tempC: flo
 
     # Allocate memory for the flatband voltage
     vfb = np.zeros(len(t_sim), dtype=np.float64)
+    xbar = np.zeros(len(t_sim), dtype=np.float64)
+    Qs = np.zeros(len(t_sim), dtype=np.float64)
 
     x1i, c1i, p1i = get_solution_array1(mesh1, u1_n)
     c_max = -np.inf
@@ -2276,14 +2274,17 @@ def single_layer_zero_flux(D1cms: float, thickness_dielectric: float, tempC: flo
 
     charge_density_fp = 0
     e_fp_traps = 0
-    tau_snow = 4. * ((x1 * 1E-4 / np.pi) ** 2) / D1cms
+    
+    _, _, _, _, _, _, _, _, Q0, _ = update_potential_bc(
+            u1_n, bias=voltage, s_fp=charge_density_fp
+        )
 
     for n, t in enumerate(t_sim):
         bias_t = voltage
         dti = dtt[n]
         if t > time_s:
             bcs1 = update_bcs1(bias=bias_t)
-        gp1, gp2, Cint, Ctot, E_g, E_si, xbar, vfb[n] = update_potential_bc(
+        gp1, gp2, Cint, Ctot, E_g, E_si, xbar[n], vfb[n], Qs[n], _ = update_potential_bc(
             u1_n, bias=bias_t, s_fp=charge_density_fp
         )
         x1i, c1i, p1i = get_solution_array1(mesh1, u1_n)
@@ -2307,14 +2308,19 @@ def single_layer_zero_flux(D1cms: float, thickness_dielectric: float, tempC: flo
 
         if n == (size_n - 1) or debug:
             prog_str = "%s, " % utils.format_time_str(time_s=t)
-            prog_str += 'sqrt(t): {0:.2f} h^0.5, '.format(np.sqrt(t / tau_snow))
+            prog_str += 'sqrt(t/tau): {0:.2f} , '.format(np.sqrt(t / tau_snow))
             #        progStr = ' i={0:4d}/{1:4d} '.format(n,num_steps)
             prog_str += 'C0={0:.2E}, C1L={1:.1E}, '.format(c1i[0], c1i[-1])
             prog_str += "vfb={0:.2E} V ".format(vfb[n])
+            # prog_str += "xbar={0:.2E} um ".format(xbar[n])
             prog_str += 'D1 = {0:2.1E}, '.format(D1cms)
+            prog_str += 'Eg = {0:1.2E} V/um '.format(E_g)
             prog_str += 'Es = {0:1.2E} V/um '.format(E_si)
             prog_str += 'Qs/Q0 = {0:1.2E} '.format(
-                np.abs(vfb[n] * (er * e0_red) * 1E9 / q_red) / L / surface_concentration)
+                np.abs(( Qs[n]) / (surface_concentration * constants.elementary_charge )))
+            prog_str += 'Qs\'/Q0 = {0:1.2E} '.format(
+                np.abs(( Qs[n] - Q0) / (surface_concentration * constants.elementary_charge )))
+
 
             fcallLogger.info(prog_str)
 
@@ -2323,7 +2329,7 @@ def single_layer_zero_flux(D1cms: float, thickness_dielectric: float, tempC: flo
             solver1G.solve()
 
             # Update the electric potential gradients
-            gp1, gp2, _, _, _, _, _, _, = update_potential_bc(
+            gp1, gp2, _, _, _, _, _, _, _, _ = update_potential_bc(
                 u1_G, bias=bias_t
             )
             solver1N, solver1G, _, _, _ = get_solvers_1(gp1, gp2, dti, t)
@@ -2334,10 +2340,10 @@ def single_layer_zero_flux(D1cms: float, thickness_dielectric: float, tempC: flo
 
         except RuntimeError:
             message = 'Could not solve for time {0:.1f} h. D1 = {1:.3E} cm2/s CSi = {2:.1E} 1/cm^3,\t'.format(
-                t / 3600, D1cms, c1i[-1] * 1E1
+                t / 3600., D1cms, c1i[-1] * 1E1
             )
             message += 'T = {0:3.1f} °C, E = {1:.1E} MV/cm, tmax: {2:3.2f} hr, XPOINTS = {3:d}, TSTEPS: {4:d}'.format(
-                tempC, E * er, time_s / 3600, M1, N
+                tempC, E * er, time_s / 3600., M1, N
             )
             fcallLogger.info(message)
             if fcall <= max_calls:
@@ -2380,7 +2386,7 @@ def single_layer_zero_flux(D1cms: float, thickness_dielectric: float, tempC: flo
             ds_qs = hf.create_dataset('QS', (len(vfb),))
             ds_vfb[...] = vfb
             # vfb -q_red * QS / (er * e0_red) * 1E-5
-            ds_qs[...] = np.abs(vfb * (er * e0_red) * 1E9 / q_red) / L
+            ds_qs[...] = np.abs(Qs[n] / surface_concentration / constants.elementary_charge)
             hf['/time'].attrs['Cmax'] = c_max
             hf.close()
 
@@ -2644,7 +2650,7 @@ def single_layer_constant_source_flux(D1cms: float, thickness_sinx: float, tempC
 
     # Define the initial concentration in both layers
     u1i = Expression(
-        ('cb', '(1-x[0]/L)*Vapp'),
+        ('cb', '(1-x[0]/L)*Vapp/er'),
         cb=Cbulk * CM3TOUM3, L=L1, Vapp=float(voltage), er=er, degree=1
     )
 
@@ -2674,7 +2680,7 @@ def single_layer_constant_source_flux(D1cms: float, thickness_sinx: float, tempC
     tol = 1E-16
 
     def update_bcs1(bias):
-        return [DirichletBC(W.sub(1), bias, boundaries1, 1), DirichletBC(W.sub(1), 0.0, boundaries1, 2)]
+        return [DirichletBC(W.sub(1), bias/er, boundaries1, 1), DirichletBC(W.sub(1), 0.0, boundaries1, 2)]
 
     bcs1 = None  # [DirichletBC(W.sub(1), voltage, boundaries1, 1)]#, DirichletBC(W.sub(1), 0.0, boundaries1, 2)]
     bcs2 = None  # [DirichletBC(V2,Cbulk*CM3TOUM3,boundaries2,2)]
