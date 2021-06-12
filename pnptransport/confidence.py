@@ -107,7 +107,7 @@ def confidence_interval(res: OptimizeResult, **kwargs):
 
     # Find R to get the variance
     _, R = LA.qr(res.jac)
-    # Get the rank of jac
+    # Get the rank of jac_pnp
     Rinv = LA.pinv(R)
 
     v = np.sum(Rinv ** 2, axis=1) * mse
@@ -296,7 +296,7 @@ def predint(x: np.ndarray, xd: np.ndarray, yd: np.ndarray, func: Callable[[np.nd
 
     # Find R to get the variance
     _, R = LA.qr(res.jac)
-    # Get the rank of jac
+    # Get the rank of jac_pnp
     rankJ = res.jac.shape[1]
     Rinv = LA.pinv(R)
     pinvJTJ = np.dot(Rinv, Rinv.T)
@@ -427,7 +427,7 @@ def predint_multi(x: np.ndarray, xd: np.ndarray, yd: np.ndarray,
 
     # Find R to get the variance
     _, R = LA.qr(res.jac)
-    # Get the rank of jac
+    # Get the rank of jac_pnp
     rankJ = res.jac.shape[1]
     Rinv = LA.pinv(R)
     pinvJTJ = np.dot(Rinv, Rinv.T)

@@ -900,7 +900,7 @@ def two_layers_constant_flux(D1cms: float, D2cms: float, h: float,
                              surface_concentration: float = 1E11, rate: float = 1E-4,
                              recovery_time_s: Union[float, int] = 0,
                              recovery_voltage: float = 0,
-                             trapping: bool = True, supg: bool = False,
+                             trapping: bool = True, supg: bool = True,
                              **kwargs):
     """
     This function simulates the flatband voltage as a function of time for a
@@ -1143,31 +1143,31 @@ def two_layers_constant_flux(D1cms: float, D2cms: float, h: float,
         fcallLogger.info('Temperature: {0:.1f} °C'.format(tempC))
         fcallLogger.info('h: {0:.4E} cm/s'.format(h))
         fcallLogger.info('m: {0:.4E}'.format(m))
-        fcallLogger.info('Source surface concentration: {0:.3E} (Na atoms/cm^2)'.format(surface_concentration))
-        fcallLogger.info('Source transport rate: {0:.3E} (1/s)'.format(rate))
+        fcallLogger.info('Source surface concentration: {0:.4E} (Na atoms/cm^2)'.format(surface_concentration))
+        fcallLogger.info('Source transport rate: {0:.4E} (1/s)'.format(rate))
         fcallLogger.info('Constant flux at the source: {0:.3} 1/um^2/s'.format(flux_source_ums))
         fcallLogger.info('Recovery time: {0}.'.format(utils.format_time_str(recovery_time_s)))
-        fcallLogger.info('Recovery voltage: {0:.3E}.'.format(recovery_voltage))
+        fcallLogger.info('Recovery voltage: {0:.4E}.'.format(recovery_voltage))
         fcallLogger.info('Trap corrected: {0}.'.format(trapping))
         fcallLogger.info('Thermal voltage {0:.4} V.'.format(vth))
         fcallLogger.info('*************** SiNx ******************')
         fcallLogger.info('Thickness: {0:.1E} um'.format(thickness_sinx))
         fcallLogger.info('er: {0:.1f}'.format(er))
         fcallLogger.info('Voltage: {0:.1f} V'.format(voltage))
-        fcallLogger.info('Electric Field: {0:.3E} MV/cm'.format(E * er))
-        fcallLogger.info('Electric Field (Effective): {0:.3E} MV/cm'.format(E))
-        fcallLogger.info('D: {0:.3E} cm^2/s'.format(D1cms))
-        fcallLogger.info('Ionic mobility: {0:.3E} um^2/ V*s'.format(mu1))
-        fcallLogger.info('Drift velocity: {0:.3E} um/s'.format(vd1))
+        fcallLogger.info('Electric Field: {0:.4E} MV/cm'.format(E * er))
+        fcallLogger.info('Electric Field (Effective): {0:.4E} MV/cm'.format(E))
+        fcallLogger.info('D: {0:.4E} cm^2/s'.format(D1cms))
+        fcallLogger.info('Ionic mobility: {0:.4E} um^2/ V*s'.format(mu1))
+        fcallLogger.info('Drift velocity: {0:.4E} um/s'.format(vd1))
         fcallLogger.info('**************** Si *******************')
         fcallLogger.info('Thickness: {0:.1E} um'.format(thickness_si))
         fcallLogger.info('er: {0:.1f}'.format(11.9))
         fcallLogger.info('Voltage: {0:.1f} V'.format(0.0))
-        fcallLogger.info('Electric Field: {0:.3E} MV/cm'.format(0.0))
-        fcallLogger.info('Electric Field (Effective): {0:.3E} MV/cm'.format(0.0))
-        fcallLogger.info('D: {0:.3E} cm^2/s'.format(D2cms))
-        fcallLogger.info('Ionic mobility: {0:.3E} cm^2/ V*s'.format(0.0))
-        fcallLogger.info('Drift velocity: {0:.3E} cm/s'.format(0.0))
+        fcallLogger.info('Electric Field: {0:.4E} MV/cm'.format(0.0))
+        fcallLogger.info('Electric Field (Effective): {0:.4E} MV/cm'.format(0.0))
+        fcallLogger.info('D: {0:.4E} cm^2/s'.format(D2cms))
+        fcallLogger.info('Ionic mobility: {0:.4E} cm^2/ V*s'.format(0.0))
+        fcallLogger.info('Drift velocity: {0:.4E} cm/s'.format(0.0))
 
     # Create classes for defining parts of the boundaries and the interior
     # of the domain
@@ -1304,7 +1304,7 @@ def two_layers_constant_flux(D1cms: float, D2cms: float, h: float,
     tol = 1E-16
 
     def update_bcs1(bias):
-        return [DirichletBC(W.sub(1), bias/er, boundaries1, 1), DirichletBC(W.sub(1)/er, 0.0, boundaries1, 2)]
+        return [DirichletBC(W.sub(1), bias/er, boundaries1, 1), DirichletBC(W.sub(1), 0.0, boundaries1, 2)]
 
     #bcs1 = [DirichletBC(W.sub(1), voltage / er, boundaries1, 1)]
     bcs2 = None  # [DirichletBC(V2,Cbulk*CM3TOUM3,boundaries2,2)]
@@ -1649,7 +1649,7 @@ def two_layers_constant_flux(D1cms: float, D2cms: float, h: float,
                     dsv1.attrs['time'] = t
 
         if n == (size_n - 1) or debug:
-            js1 = h * (c1i[-1] - c2i[0] / m) * 1E-4
+            js1 = h * (c1i[-1] - c2i[0] / m) 
             prog_str = "%s, " % utils.format_time_str(time_s=t)
             #        progStr = ' i={0:4d}/{1:4d} '.format(n,num_steps)
             prog_str += 'C0={0:.2E}, C1L={1:.1E}, C1R={2:.1E}, Js1={3:.1E} '.format(c1i[0], c1i[-1], c2i[0], js1)
@@ -1909,7 +1909,8 @@ def single_layer_zero_flux(D1cms: float, thickness_dielectric: float, tempC: flo
     vd1 = constants.elementary_charge * (E * 1E8) * (D1cms * 1E-4) * 1E6 / (constants.Boltzmann * tempK)
     # vd2 = 0.0  # constants.elementary_charge*(E2*1E8)*(D2cms*1E-4)*1E6/(constants.Boltzmann*TempK)
 
-    tau_snow = 4. * (x1**2) / (np.pi ** 2) / D1cms * 1E-8
+    tau_snow = 4. * (x1 / np.pi) ** 2 / D1cms * 1E-8
+    tau_erml = x1 ** 2 / D1cms * 1E-8 / 4.0
 
     set_log_level(50)
     logging.getLogger('FFC').setLevel(logging.WARNING)
@@ -1920,19 +1921,20 @@ def single_layer_zero_flux(D1cms: float, thickness_dielectric: float, tempC: flo
         fcallLogger.info('Time: {0}'.format(utils.format_time_str(time_s)))
         fcallLogger.info('Time step: {0}'.format(utils.format_time_str(time_s / tsteps)))
         fcallLogger.info('Temperature: {0:.1f} °C'.format(tempC))
-        fcallLogger.info('Source surface concentration: {0:.3E} (Na atoms/cm^2)'.format(surface_concentration))
-        fcallLogger.info('x1: {0:.3E} (um)'.format(x1))
-        fcallLogger.info('sqrt(tau_snow): {0:.3E} (h^0.5)'.format((tau_snow/3600)**0.5))
+        fcallLogger.info('Source surface concentration: {0:.4E} (Na atoms/cm^2)'.format(surface_concentration))
+        fcallLogger.info('x1: {0:.4E} (um)'.format(x1))
+        fcallLogger.info('sqrt(tau_snow): {0:.4E} (h^0.5)'.format((tau_snow/3600)**0.5))
+        fcallLogger.info('sqrt(tau_erml): {0:.4E} (h^0.5)'.format((tau_erml / 3600) ** 0.5))
         fcallLogger.info('Thermal voltage {0:.4} V.'.format(vth))
         fcallLogger.info('*************** SiNx ******************')
         fcallLogger.info('Thickness: {0:.1E} um'.format(thickness_dielectric))
         fcallLogger.info('er: {0:.1f}'.format(er))
         fcallLogger.info('Voltage: {0:.1f} V'.format(voltage))
-        fcallLogger.info('Electric Field: {0:.3E} MV/cm'.format(E * er))
-        fcallLogger.info('Electric Field (Effective): {0:.3E} MV/cm'.format(E))
-        fcallLogger.info('D: {0:.3E} cm^2/s'.format(D1cms))
-        fcallLogger.info('Ionic mobility: {0:.3E} um^2/ V*s'.format(mu1))
-        fcallLogger.info('Drift velocity: {0:.3E} um/s'.format(vd1))
+        fcallLogger.info('Electric Field: {0:.4E} MV/cm'.format(E * er))
+        fcallLogger.info('Electric Field (Effective): {0:.4E} MV/cm'.format(E))
+        fcallLogger.info('D: {0:.4E} cm^2/s'.format(D1cms))
+        fcallLogger.info('Ionic mobility: {0:.4E} um^2/ V*s'.format(mu1))
+        fcallLogger.info('Drift velocity: {0:.4E} um/s'.format(vd1))
 
     # Create classes for defining parts of the boundaries and the interior
     # of the domain
@@ -2171,8 +2173,8 @@ def single_layer_zero_flux(D1cms: float, thickness_dielectric: float, tempC: flo
         ra = inner(((1 / dt_) * (c1_G - c1_n) - TRF * (ta + tb)), tau1 * Lss1) * dx1
         rb = inner((c1 / dt_ - BDF2_T1 * c1_G / dt_ + BDF2_T2 * c1_n / dt_ - BDF2_T3 * tc), tau2 * Lss2) * dx1
 
-        # F1G += ra
-        # F1N += rb
+        F1G += ra
+        F1N += rb
 
         J1G = derivative(F1G, u1_G, du1)
         J1N = derivative(F1N, u1, du1)  # J1G
@@ -2319,7 +2321,7 @@ def single_layer_zero_flux(D1cms: float, thickness_dielectric: float, tempC: flo
             prog_str += 'Qs/Q0 = {0:1.2E} '.format(
                 np.abs(( Qs[n]) / (surface_concentration * constants.elementary_charge )))
             prog_str += 'Qs\'/Q0 = {0:1.2E} '.format(
-                np.abs(( Qs[n] - Q0) / (surface_concentration * constants.elementary_charge )))
+                np.abs(( Qs[n] - Q0) / (surface_concentration * constants.elementary_charge - Q0)))
 
 
             fcallLogger.info(prog_str)
@@ -2386,7 +2388,7 @@ def single_layer_zero_flux(D1cms: float, thickness_dielectric: float, tempC: flo
             ds_qs = hf.create_dataset('QS', (len(vfb),))
             ds_vfb[...] = vfb
             # vfb -q_red * QS / (er * e0_red) * 1E-5
-            ds_qs[...] = np.abs(Qs[n] / surface_concentration / constants.elementary_charge)
+            ds_qs[...] = np.abs(Qs)#/ surface_concentration / constants.elementary_charge)
             hf['/time'].attrs['Cmax'] = c_max
             hf.close()
 
@@ -2571,25 +2573,25 @@ def single_layer_constant_source_flux(D1cms: float, thickness_sinx: float, tempC
         fcallLogger.info('Time: {0}'.format(utils.format_time_str(time_s)))
         fcallLogger.info('Time step: {0}'.format(utils.format_time_str(time_s / tsteps)))
         fcallLogger.info('Temperature: {0:.1f} °C'.format(tempC))
-        fcallLogger.info('Source surface concentration: {0:.3E} (Na atoms/cm^2)'.format(surface_concentration))
-        fcallLogger.info('rate: {0:.3E} 1/s'.format(rate))
+        fcallLogger.info('Source surface concentration: {0:.4E} (Na atoms/cm^2)'.format(surface_concentration))
+        fcallLogger.info('rate: {0:.4E} 1/s'.format(rate))
         fcallLogger.info('Thermal voltage {0:.4} V.'.format(vth))
         fcallLogger.info('*************** SiNx ******************')
         fcallLogger.info('Thickness: {0:.1E} um'.format(thickness_sinx))
         fcallLogger.info('er: {0:.1f}'.format(er))
         fcallLogger.info('Voltage: {0:.1f} V'.format(voltage))
-        fcallLogger.info('Electric Field: {0:.3E} MV/cm'.format(E * er))
-        fcallLogger.info('Electric Field (Effective): {0:.3E} MV/cm'.format(E))
-        fcallLogger.info('D: {0:.3E} cm^2/s'.format(D1cms))
-        fcallLogger.info('Ionic mobility: {0:.3E} um^2/ V*s'.format(mu1))
-        fcallLogger.info('Drift velocity: {0:.3E} um/s'.format(vd1))
+        fcallLogger.info('Electric Field: {0:.4E} MV/cm'.format(E * er))
+        fcallLogger.info('Electric Field (Effective): {0:.4E} MV/cm'.format(E))
+        fcallLogger.info('D: {0:.4E} cm^2/s'.format(D1cms))
+        fcallLogger.info('Ionic mobility: {0:.4E} um^2/ V*s'.format(mu1))
+        fcallLogger.info('Drift velocity: {0:.4E} um/s'.format(vd1))
         fcallLogger.info('**************** Si *******************')
         fcallLogger.info('er: {0:.1f}'.format(11.9))
         fcallLogger.info('Voltage: {0:.1f} V'.format(0.0))
-        fcallLogger.info('Electric Field: {0:.3E} MV/cm'.format(0.0))
-        fcallLogger.info('Electric Field (Effective): {0:.3E} MV/cm'.format(0.0))
-        fcallLogger.info('Ionic mobility: {0:.3E} cm^2/ V*s'.format(0.0))
-        fcallLogger.info('Drift velocity: {0:.3E} cm/s'.format(0.0))
+        fcallLogger.info('Electric Field: {0:.4E} MV/cm'.format(0.0))
+        fcallLogger.info('Electric Field (Effective): {0:.4E} MV/cm'.format(0.0))
+        fcallLogger.info('Ionic mobility: {0:.4E} cm^2/ V*s'.format(0.0))
+        fcallLogger.info('Drift velocity: {0:.4E} cm/s'.format(0.0))
 
     # Create classes for defining parts of the boundaries and the interior
     # of the domain

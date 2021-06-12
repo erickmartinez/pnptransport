@@ -13,12 +13,14 @@ import pidsim.parameter_span as pspan
 from scipy import interpolate
 import pnptransport.utils as utils
 import re
+import json
 
-base_path = r'G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\inputs_20200831'
-span_database = r'G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\inputs_20200831\one_factor_at_a_time_lower_20200828_h=1E-12.csv'
-parameter = 'E'
-output_folder = 'ofat_comparison_s=1'
-t_max_h = 48.
+base_path = r'G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\inputs_20201028'
+span_database = r'G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\inputs_20201028\one_factor_at_a_time_lower_20201028_h=1E-12.csv'
+parameter = 'h'
+output_folder = 'ofat_comparison_20201121'
+batch_analysis = 'batch_analysis_rfr_20201121'
+t_max_h = 96.
 
 parameter_units = {
     'sigma_s': 'cm^{-2}',
@@ -31,38 +33,13 @@ parameter_units = {
     'recovery electric field': 'V/cm'
 }
 
-defaultPlotStyle = {
-    'font.size': 11,
-    'font.family': 'Arial',
-    'font.weight': 'regular',
-    'legend.fontsize': 12,
-    'mathtext.fontset': 'stix',
-    'xtick.direction': 'in',
-    'ytick.direction': 'in',
-    'xtick.major.size': 4.5,
-    'xtick.major.width': 1.75,
-    'ytick.major.size': 4.5,
-    'ytick.major.width': 1.75,
-    'xtick.minor.size': 2.75,
-    'xtick.minor.width': 1.0,
-    'ytick.minor.size': 2.75,
-    'ytick.minor.width': 1.0,
-    'xtick.top': False,
-    'ytick.right': False,
-    'lines.linewidth': 2.5,
-    'lines.markersize': 10,
-    'lines.markeredgewidth': 0.85,
-    'axes.labelpad': 5.0,
-    'axes.labelsize': 12,
-    'axes.labelweight': 'regular',
-    'legend.handletextpad': 0.2,
-    'legend.borderaxespad': 0.2,
-    'axes.linewidth': 1.25,
-    'axes.titlesize': 12,
-    'axes.titleweight': 'bold',
-    'axes.titlepad': 6,
-    'figure.titleweight': 'bold',
-    'figure.dpi': 100
+map_parameter_names = {
+    'sigma_s': 'S_0',
+    'zeta': 'k',
+    'DSF': r'D_{{\mathrm{{SF}}}}',
+    'E': 'E',
+    'm': 'm',
+    'h': 'h',
 }
 
 
@@ -101,7 +78,7 @@ if __name__ == '__main__':
     parameter_info = span_df.loc[parameter]
     parameter_span = pspan.string_list_to_float(parameter_info['span'])
     units = parameter_units[parameter]
-    # Get the values of every other parameter from the ofat_db file
+    # Get the values of every parameter from the ofat_db file
     ofat_constant_parameters = ofat_df.iloc[0]
     time_s = float(ofat_constant_parameters['time (s)'])
     temp_c = float(ofat_constant_parameters['temp (C)'])
@@ -186,24 +163,32 @@ if __name__ == '__main__':
                 'units': parameter_units[parameter]
             })
 
+    # for f in data_files:
+    #     print(f)
+
     n_files = len(data_files)
-    c_map1 = mpl.cm.get_cmap('cool')
-    normalize = mpl.colors.Normalize(vmin=0, vmax=n_files)
+    # c_map1 = mpl.cm.get_cmap('RdYlGn_r')
+    c_map1 = mpl.cm.get_cmap('rainbow')
+    if parameter == 'DSF':
+        c_map1 = mpl.cm.get_cmap('rainbow_r')
+    normalize = mpl.colors.Normalize(vmin=0, vmax=(n_files-1))
     plot_colors = [c_map1(normalize(i)) for i in range(n_files)]
     t_max = t_max_h * 3600.
     failure_times = np.empty(
         n_files, dtype=np.dtype([
-            ('D (cm^2/s)', 'd'),
-            ('t 5% loss (s)', 'd'),
+            (r'{0} ({1})'.format(parameter, parameter_units[parameter]), 'd'),
+            ('t 1000 (s)', 'd'), ('Rsh 96h (Ohm cm2)', 'd')
         ])
     )
 
-    mpl.rcParams.update(defaultPlotStyle)
+    with open('plotstyle.json', 'r') as style_file:
+        mpl.rcParams.update(json.load(style_file)['defaultPlotStyle'])
+    # mpl.rcParams.update(defaultPlotStyle)
     xfmt = ScalarFormatter(useMathText=True)
     xfmt.set_powerlimits((-3, 3))
 
     fig_p = plt.figure(1)
-    fig_p.set_size_inches(4.75, 3.0, forward=True)
+    fig_p.set_size_inches(4.75, 2.5, forward=True)
     # fig_p.subplots_adjust(hspace=0.0, wspace=0.0)
     # gs0_p = gridspec.GridSpec(ncols=1, nrows=1, figure=fig_p, width_ratios=[1])
     # gs00_p = gridspec.GridSpecFromSubplotSpec(nrows=1, ncols=1, subplot_spec=gs0_p[0])
@@ -211,7 +196,7 @@ if __name__ == '__main__':
     ax1_p = fig_p.add_subplot(1, 1, 1)
 
     fig_r = plt.figure(2)
-    fig_r.set_size_inches(4.75, 3.0, forward=True)
+    fig_r.set_size_inches(4.75, 2.5, forward=True)
     # fig_r.subplots_adjust(hspace=0.0, wspace=0.0)
     gs0_r = gridspec.GridSpec(ncols=1, nrows=1, figure=fig_r, width_ratios=[1])
     gs00_r = gridspec.GridSpecFromSubplotSpec(nrows=1, ncols=1, subplot_spec=gs0_r[0])
@@ -219,30 +204,52 @@ if __name__ == '__main__':
     pbar = trange(n_files, desc='Analyzing file', leave=True)
     for i, file_info in enumerate(data_files):
         # Read the simulated data from the csv file
-        csv_file = os.path.join(base_path, 'batch_analysis', file_info['pid_file'])
+        csv_file = os.path.join(base_path, batch_analysis, file_info['pid_file'])
         pid_df = pd.read_csv(csv_file)
+        # print('Analysing file \'{0}\':'.format(csv_file))
+        # print(pid_df.head())
         time_s = pid_df['time (s)'].to_numpy(dtype=float)
         power = pid_df['Pmpp (mW/cm^2)'].to_numpy(dtype=float)
         rsh = pid_df['Rsh (Ohm cm^2)'].to_numpy(dtype=float)
         time_h = time_s / 3600.
 
         t_interp = np.linspace(np.amin(time_s), np.amax(time_s), num=1000)
-        f_p_interp = interpolate.interp1d(time_s, power, kind='linear')
-        power_interp = f_p_interp(t_interp)
-        idx_5 = (np.abs(power_interp / power_interp[0] - 0.95)).argmin()
-        failure_times[i] = (file_info['value'], t_interp[idx_5].copy())
-        sv_txt = r'{0} = ${1}$ $\mathregular{{{2}}}$'.format(
-            file_info['parameter'], utils.latex_order_of_magnitude(file_info['value'], dollar=False),
+        f_r_interp = interpolate.interp1d(time_s, rsh, kind='linear')
+        rsh_interp = f_r_interp(t_interp)
+        if rsh_interp.min() <= 1000:
+            idx_1000 = (np.abs(rsh_interp - 1000)).argmin()
+            failure_times[i] = (file_info['value'], t_interp[idx_1000].copy(), f_r_interp(96.*3600.))
+        else:
+            failure_times[i] = (file_info['value'], np.inf, f_r_interp(96.*3600.))
+
+        sv_txt = r'${0}$ = ${1}$ $\mathregular{{{2}}}$'.format(
+            map_parameter_names[file_info['parameter']], utils.latex_order_of_magnitude(
+                file_info['value'], dollar=False
+            ),
             file_info['units']
         )
 
         ax1_p.plot(
-            time_h, power / power[0], color=plot_colors[i], ls='-', label=sv_txt,
+            time_h, power / power[0], color=plot_colors[i], ls='-', label=sv_txt, zorder=(i+1)
         )
 
         ax1_r.plot(
-            time_h, rsh / rsh[0], color=plot_colors[i], ls='-', label=sv_txt,
+            time_h, rsh, color=plot_colors[i], ls='-', label=sv_txt, zorder=(i+1)
         )
+
+        ptx = t_interp[idx_1000]/3600.
+        
+        ax1_r.scatter(
+            ptx, 1000, marker='o', color='k', zorder=(1+n_files), lw=1,
+            s=10
+        )
+
+        # ax1_r.plot(
+        #     [ptx, ptx], [0, 1000],
+        #     lw=1.5, ls='-', color=(0.95, 0.95, 0.95), zorder=0,
+        # )
+
+        # print('1000 Ohms cm2 failure: ({0:.3f}) h'.format(t_interp[idx_1000]/3600.))
         pbar.set_description('Analyzing parameter {0}: {1}'.format(
             parameter, file_info['value'], file_info['units']
         ))
@@ -250,10 +257,12 @@ if __name__ == '__main__':
         pbar.refresh()
 
     ax1_p.set_ylabel('Normalized Power')
-    ax1_r.set_ylabel('Normalized $R_{sh}$')
+    ax1_r.set_ylabel(r'$R_{\mathrm{sh}}$ ($\Omega\cdot$ cm$^{2})$' )
+    ax1_r.set_title(r'${0}$'.format(map_parameter_names[parameter]))
 
     ax1_p.set_xlim(0, t_max_h)
     ax1_r.set_xlim(0, t_max_h)
+    # ax1_p.set_ylim(top=1.1, bottom=0.2)
     ax1_p.set_xlabel('Time (hr)')
     ax1_r.set_xlabel('Time (hr)')
 
@@ -263,36 +272,46 @@ if __name__ == '__main__':
     ax1_r.set_yscale('log')
     ax1_r.yaxis.set_major_locator(mpl.ticker.LogLocator(base=10.0, numticks=5))
     ax1_r.yaxis.set_minor_locator(mpl.ticker.LogLocator(base=10.0, numticks=50, subs=np.arange(2, 10) * .1))
+    
+    ax1_r.axhline(y=1000, lw=1.5, ls='--', color=(0.9, 0.9, 0.9), zorder=0)
+
 
     ax1_p.xaxis.set_major_formatter(xfmt)
-    ax1_p.xaxis.set_major_locator(mticker.MaxNLocator(7, prune=None))
+    ax1_p.xaxis.set_major_locator(mticker.MaxNLocator(12, prune=None))
     ax1_p.xaxis.set_minor_locator(mticker.AutoMinorLocator(2))
 
     ax1_p.yaxis.set_major_formatter(xfmt)
-    ax1_p.yaxis.set_major_locator(mticker.MaxNLocator(6, prune=None))
+    ax1_p.yaxis.set_major_locator(mticker.MaxNLocator(5, prune=None))
     ax1_p.yaxis.set_minor_locator(mticker.AutoMinorLocator(2))
 
     ax1_r.xaxis.set_major_formatter(xfmt)
-    ax1_r.xaxis.set_major_locator(mticker.MaxNLocator(7, prune=None))
+    ax1_r.xaxis.set_major_locator(mticker.MaxNLocator(12, prune=None))
     ax1_r.xaxis.set_minor_locator(mticker.AutoMinorLocator(2))
 
     # leg1 = ax1_p.legend(bbox_to_anchor=(1.05, 1.), loc='upper left', borderaxespad=0., ncol=1, frameon=False)
     # leg2 = ax1_r.legend(bbox_to_anchor=(1.05, 1.), loc='upper left', borderaxespad=0., ncol=1, frameon=False)
 
-    leg1 = ax1_p.legend(loc='upper right', frameon=False)
-    leg2 = ax1_r.legend(loc='upper right', frameon=False)
+    if parameter == 'DSF':
+        leg_cols = 2 
+    else:
+        leg_cols = 1
+
+    leg1 = ax1_p.legend(loc='upper right', frameon=False, ncol=leg_cols, fontsize=8)
+    leg2 = ax1_r.legend(loc='upper right', frameon=False, ncol=leg_cols, fontsize=8)
+        
 
     fig_p.tight_layout()
     fig_r.tight_layout()
     plt.show()
 
-    output_file_tag = 'ofat_parameter_{}.svg'.format(slugify(value=parameter))
+    output_file_tag = 'ofat_parameter_{}'.format(slugify(value=parameter))
     fig_p.savefig(os.path.join(output_path, output_file_tag + '_power.png'), dpi=600)
     fig_p.savefig(os.path.join(output_path, output_file_tag + '_power.svg'), dpi=600)
     fig_r.savefig(os.path.join(output_path, output_file_tag + '_rsh.png'), dpi=600)
     fig_r.savefig(os.path.join(output_path, output_file_tag + '_rsh.svg'), dpi=600)
 
     df_degradation = pd.DataFrame(failure_times)
+    print(df_degradation)
     df_degradation.to_csv(
         path_or_buf=os.path.join(
             output_path,

@@ -25,8 +25,8 @@ from scipy import integrate
 import pnptransport.utils as utils
 from tqdm import tqdm
 
-path_to_csv = r'G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\inputs_20200831\ofat_db.csv'
-path_to_results = r'G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\inputs_20200831\results'
+path_to_csv = r'G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\inputs_20201028\ofat_db.csv'
+path_to_results = r'G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\inputs_20201028\results'
 t_max_h = 96.  # h
 
 pid_experiment_csv = None #'G:\My Drive\Research\PVRD1\DATA\PID\MC4_Raw_IV_modified.csv'
@@ -197,22 +197,37 @@ if __name__ == '__main__':
         # Configure the ticks for the x axis
         ax_s_0.xaxis.set_major_locator(mticker.MaxNLocator(6, prune=None))
         ax_s_0.xaxis.set_minor_locator(mticker.AutoMinorLocator(2))
-        # Create the rsh figure
-        fig_r = plt.figure()
-        fig_r.set_size_inches(4.75, 3.0, forward=True)
-        fig_r.subplots_adjust(hspace=0.1, wspace=0.1)
-        gs_r_0 = gridspec.GridSpec(ncols=1, nrows=1, figure=fig_r)
-        gs_r_00 = gridspec.GridSpecFromSubplotSpec(
-            nrows=1, ncols=1, subplot_spec=gs_r_0[0], hspace=0.1,
+        # Create the mpp figure
+        fig_mpp = plt.figure()
+        fig_mpp.set_size_inches(4.75, 3.0, forward=True)
+        fig_mpp.subplots_adjust(hspace=0.1, wspace=0.1)
+        gs_mpp_0 = gridspec.GridSpec(ncols=1, nrows=1, figure=fig_mpp)
+        gs_mpp_00 = gridspec.GridSpecFromSubplotSpec(
+            nrows=1, ncols=1, subplot_spec=gs_mpp_0[0], hspace=0.1,
         )
-        ax_r_0 = fig_r.add_subplot(gs_r_00[0, 0])
+        ax_mpp_0 = fig_mpp.add_subplot(gs_mpp_00[0, 0])
         # Set the axis labels
-        ax_r_0.set_xlabel(r'Time (h)')
-        ax_r_0.set_ylabel(r'$R_{\mathrm{sh}}$ ($\mathrm{\Omega\cdot cm^2}}$)')
+        ax_mpp_0.set_xlabel(r'Time (h)')
+        ax_mpp_0.set_ylabel(r'$R_{\mathrm{sh}}$ ($\mathrm{\Omega\cdot cm^2}}$)')
+
+        # Vfb figure
+        fig_vfb = plt.figure()
+        fig_vfb.set_size_inches(4.75, 3.0, forward=True)
+        fig_vfb.subplots_adjust(hspace=0.1, wspace=0.1)
+        gs_vfb_0 = gridspec.GridSpec(ncols=1, nrows=1, figure=fig_vfb)
+        gs_vfb_00 = gridspec.GridSpecFromSubplotSpec(
+            nrows=1, ncols=1, subplot_spec=gs_vfb_0[0], hspace=0.1,
+        )
+        ax_vfb_0 = fig_vfb.add_subplot(gs_vfb_00[0, 0])
+        # Set the axis labels
+        ax_vfb_0.set_xlabel(r'Time (h)')
+        ax_vfb_0.set_ylabel(r'$V_{\mathrm{FB}}$ (V)')
 
         with h5py.File(path_to_h5, 'r') as hf:
             # Get the time dataset
             time_s = np.array(hf['time'])
+            # Get the vfb dataset
+            vfb = np.array(hf.get(name='vfb'))
             # Get the sinx group
             grp_sinx = hf['L1']
             # get the si group
@@ -235,14 +250,18 @@ if __name__ == '__main__':
                     time_profile[j] = time_j
                     # Get the specific profile
                     ct_ds = 'ct_{0:d}'.format(idx)
-                    c_sin = np.array(grp_sinx['concentration'][ct_ds])
-                    c_si = np.array(grp_si['concentration'][ct_ds])
-                    color_j = cm(normalize(time_j))
-                    ax_c_0.plot(x_sin, c_sin, color=color_j, zorder=0)
-                    ax_c_1.plot(x_si, c_si, color=color_j, zorder=0)
-                    pbar.set_description('Extracting profile {0} at time {1:.1f} h...'.format(ct_ds, time_j))
-                    pbar.update()
-                    pbar.refresh()
+                    try:
+                        c_sin = np.array(grp_sinx['concentration'][ct_ds])
+                        c_si = np.array(grp_si['concentration'][ct_ds])
+                        color_j = cm(normalize(time_j))
+                        ax_c_0.plot(x_sin, c_sin, color=color_j, zorder=0)
+                        ax_c_1.plot(x_si, c_si, color=color_j, zorder=0)
+                        pbar.set_description('Extracting profile {0} at time {1:.1f} h...'.format(ct_ds, time_j))
+                        pbar.update()
+                        pbar.refresh()
+                    except KeyError as ke:
+                        print("Error reading file '{0}'.".format(filetag))
+                        raise ke
 
             # Estimate the integrated concentrations as a function of time for each layer
             c_sin_int = np.empty(n_profiles)
@@ -266,6 +285,9 @@ if __name__ == '__main__':
         ax_s_0.plot(time_s / 3600., c_sin_int, label=r'$\mathregular{SiN_x}$')
         ax_s_0.plot(time_s / 3600., c_si_int, label=r'Si')
         # ax_s_0.plot(time_s / 3600., c_si_int + c_sin_int, label=r'Si + $\mathregular{SiN_x}$')
+
+        ax_vfb_0.plot(time_s / 3600., vfb)
+        ax_vfb_0.set_xlim(left=0, right=t_max_h)
 
         integrated_final_concentrations[i] = (c_sin_int[-1], c_si_int[-1])
 
@@ -350,53 +372,71 @@ if __name__ == '__main__':
         pmpp = ml_analysis.pmpp_time_series(requested_indices=requested_indices)
         rsh = ml_analysis.rsh_time_series(requested_indices=requested_indices)
 
-        simulated_pmpp_df = pd.DataFrame(data={'time (s)': time_s, 'Pmpp (mW/cm^2)': pmpp, 'Rsh (Ohm cm^2)' : rsh})
+        simulated_pmpp_df = pd.DataFrame(data={
+            'time (s)': time_s, 'Pmpp (mW/cm^2)': pmpp, 'Rsh (Ohm cm^2)': rsh,
+            'vfb (V)': vfb
+        })
         simulated_pmpp_df.to_csv(os.path.join(analysis_path, filetag + '_simulated_pid.csv'), index=False)
 
-        ax_r_0.plot(time_h, pmpp / pmpp[0], label='Simulation')
-        ax_r_0.set_xlim(0, np.amax(time_h))
+        ax_mpp_0.plot(time_h, rsh, label='Simulation')
+        ax_mpp_0.set_xlim(0, np.amax(time_h))
         if pid_experiment_csv is not None:
             time_exp = pid_experiment_df['time (s)']/3600.
             pmax_exp = pid_experiment_df['Pmax']
-            ax_r_0.plot(time_exp, pmax_exp / pmax_exp[0], ls='None', marker='o', fillstyle='none', label='Experiment')
-            leg = ax_r_0.legend(loc='lower right', frameon=True)
-        # ax_r_0.set_yscale('log')
-        ax_r_0.set_xlabel('time (h)')
-        # ax_r_0.set_ylabel('$R_{\mathrm{sh}}\;(\Omega \cdot \mathregular{cm^2})$')
-        ax_r_0.set_ylabel('Normalized Power')
+            ax_mpp_0.plot(time_exp, pmax_exp / pmax_exp.max(), ls='None', marker='o', fillstyle='none', label='Experiment')
+            leg = ax_mpp_0.legend(loc='lower right', frameon=True)
+        ax_mpp_0.set_yscale('log')
+        ax_mpp_0.set_xlabel('time (h)')
+        ax_mpp_0.set_ylabel('$R_{\mathrm{sh}}\;(\Omega \cdot \mathregular{cm^2})$')
+        # ax_mpp_0.set_ylabel('Normalized Power')
 
-        ax_r_0.xaxis.set_major_locator(mticker.MaxNLocator(6, prune=None))
-        ax_r_0.xaxis.set_minor_locator(mticker.AutoMinorLocator(2))
+        ax_mpp_0.xaxis.set_major_locator(mticker.MaxNLocator(6, prune=None))
+        ax_mpp_0.xaxis.set_minor_locator(mticker.AutoMinorLocator(2))
 
         title_str = source_str1 + ', ' + source_str2 + ', ' + dsf_str
 
         plot_txt = e_field_str + '\n' + temp_str + '\n' + h_str
-        ax_r_0.set_title(title_str)
-        ax_r_0.text(
+        ax_mpp_0.set_title(title_str)
+        ax_mpp_0.text(
             0.65, 0.95,
             plot_txt,
             horizontalalignment='left',
             verticalalignment='top',
-            transform=ax_r_0.transAxes,
+            transform=ax_mpp_0.transAxes,
+            fontsize=11,
+            color='k'
+        )
+
+        ax_vfb_0.set_title(title_str)
+        ax_vfb_0.text(
+            0.65, 0.95,
+            plot_txt,
+            horizontalalignment='left',
+            verticalalignment='top',
+            transform=ax_vfb_0.transAxes,
             fontsize=11,
             color='k'
         )
 
         fig_c.tight_layout()
         fig_s.tight_layout()
-        fig_r.tight_layout()
+        fig_mpp.tight_layout()
+        fig_vfb.tight_layout()
 
         fig_c.savefig(os.path.join(analysis_path, filetag + '_c.png'), dpi=600)
         fig_c.savefig(os.path.join(analysis_path, filetag + '_c.svg'), dpi=600)
         fig_s.savefig(os.path.join(analysis_path, filetag + '_s.png'), dpi=600)
-        fig_r.savefig(os.path.join(analysis_path, filetag + '_p.png'), dpi=600)
-        fig_r.savefig(os.path.join(analysis_path, filetag + '_p.svg'), dpi=600)
+        fig_mpp.savefig(os.path.join(analysis_path, filetag + '_p.png'), dpi=600)
+        fig_mpp.savefig(os.path.join(analysis_path, filetag + '_p.svg'), dpi=600)
+        fig_vfb.savefig(os.path.join(analysis_path, filetag + '_vfb.png'), dpi=600)
+        fig_vfb.savefig(os.path.join(analysis_path, filetag + '_vfb.svg'), dpi=600)
 
         plt.close(fig_c)
         plt.close(fig_s)
-        plt.close(fig_r)
+        plt.close(fig_mpp)
+        plt.close(fig_vfb)
 
-        del fig_c, fig_s, fig_r
+        del fig_c, fig_s, fig_mpp, fig_vfb
 
     simulations_df['C_SiNx average final (atoms/cm^3)'] = integrated_final_concentrations['C_SiNx average final (atoms/cm^3)']
     simulations_df['C_Si average final (atoms/cm^3)'] = integrated_final_concentrations['C_Si average final (atoms/cm^3)']

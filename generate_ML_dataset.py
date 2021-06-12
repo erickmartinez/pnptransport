@@ -25,7 +25,10 @@ from scipy import interpolate
 import h5py
 import glob
 import re
+import pnptransport.utils as utils
 from shutil import copyfile
+from pathlib import Path
+
 
 
 # The base path to containing different folders with simulaiton results
@@ -34,6 +37,11 @@ base_path = r'G:\Shared drives\FenningLab2\Projects\PVRD1\Simulations\Sentaurus 
 output_folder = r'G:\My Drive\Research\PVRD1\FENICS\SUPG_TRBDF2\simulations\sentaurus_fitting'
 # The base folder where the pnp simulation results where saved
 pnp_base = r'G:\My Drive\Research\PVRD1\Sentaurus_DDD\pnp_simulations'
+cut_off = 1E-10
+
+exclusions = [
+    # 'FS_E=10.0kVcm_S0=1E+10_k=1E-04_D1=4E-16_h=1E-12_D2=1E-14_rho=4E-05_SD=1.0_s=1E+00'
+]
 
 
 def find_h5(the_path: str, the_file: str, len_sigma: int):
@@ -56,7 +64,8 @@ def find_h5(the_path: str, the_file: str, len_sigma: int):
     -------
 
     """
-    files = glob.glob('{0}\**\{1}'.format(the_path, the_file))
+    files = glob.glob('{0}\**\{1}'.format(the_path, the_file), recursive=True)
+    # files = [fp.name for fp in Path(the_path).rglob(the_file)]
     if len(files) > 0:
         for k, f_ in enumerate(files):
             with h5py.File(f_, 'r') as hf:
@@ -64,6 +73,8 @@ def find_h5(the_path: str, the_file: str, len_sigma: int):
             if len_sigma == len_x2:
                 print('The length of x2 in file {0} matches the length of the conductivity dataset ({1}).'.format(f_, len_sigma))
                 return files[k]
+    else:
+        print('Could not find \'{0}\'\nin path \'{1}\'.'.format(the_file, the_path))
 
     return None
 
@@ -80,24 +91,33 @@ if __name__ == '__main__':
 
     # Get the list of subfolders in the base path (each subfolder has a single result of a sentaurus simulation)
     folder_list = os.listdir(base_path)
+    for fl in folder_list:
+        print(fl)
+
+    added_t0 = False
 
     # Iterate over the folder list to estimate the total number of rsh points to store
     n_rsh = 0
     # The number of interpolated conductivity points to select
-    n_c_points = 100
+    n_c_points = 101
     # The maximum depth in um to take for the concentration profile
     x_max = 1.
     x_inter = np.linspace(start=0., stop=x_max, num=n_c_points)
-    column_names = ['sigma at {0:.3f} um'.format(x) for x in x_inter]
+    # x_inter = utils.geometric_series_spaced(max_val=x_max, steps=(n_c_points-1), min_delta=1E-5)
+    column_names = ['sigma at {0:.3E} um'.format(x) for x in x_inter]
     column_names.append('time (s)')
     column_names.append('pd_mpp (mW/cm2)')
     column_names.append('Rsh (Ohms cm2)')
+    for cn in column_names:
+        print(cn)
 
     # A regular expression to find the names of the h5 files corresponding to the transport simulation
     pattern = re.compile(r".*\/(.*\.h5)")
 
     df = pd.DataFrame(columns=column_names)
     for fb in folder_list:
+        if fb in exclusions:
+            continue
         f = os.path.join(base_path, fb)
         # Find the efficiecny data
         efficiency_file = os.path.join(f, r'jv_plots\efficiency_results.csv')
@@ -108,6 +128,13 @@ if __name__ == '__main__':
         efficiency_file_exists = os.path.exists(efficiency_file)
         rsh_file_exists = os.path.exists(rsh_file)
         conductivity_file_exists = os.path.exists(conductivity_file)
+
+        if not efficiency_file_exists:
+            print("'{0}' does not exist".format(efficiency_file))
+        if not rsh_file_exists:
+            print("'{0}' does not exist".format(rsh_file))
+        if not conductivity_file_exists:
+            print("'{0}' does not exist".format(conductivity_file))
 
         # Get the name of the h5 file from the pidlog
         pidlog_file = os.path.join(f, 'pidlogger.log')
@@ -147,7 +174,7 @@ if __name__ == '__main__':
             rsh_file_df = pd.read_csv(rsh_file)
             rsh_file_df['time (s)'] = rsh_file_df['time (h)'] * 3600
             merged_df = pd.merge(efficiency_df, rsh_file_df, on='time (s)', how='inner')
-            required_columns = ['time (s)', 'pd_mpp (mW/cm2)', 'Rsh (Ohms cm2)']
+            required_columns = ['time (s)', 'pd_mpp (mW/cm2)', 'Rsh (Ohms cm2)', 'voc (V)', 'jsc (mA/cm2)']
             merged_df = merged_df[required_columns]
             # Iterate over the merged df to get the time and find the respective concentration profile
             for i, r in merged_df.iterrows():
@@ -156,16 +183,21 @@ if __name__ == '__main__':
                 idx = np.abs(time_i - time_s).argmin()
                 # construct the dataset name
                 ds_name = 'sigma_{0}'.format(idx)
+                ct_ds = '/L1/concentration/ct_{0:d}'.format(idx)
                 with h5py.File(conductivity_file, 'r') as hf:
                     # Get the conductivity data set
                     sigma = np.array(hf['/conductivity'][ds_name])
+                with h5py.File(path_to_h5, 'r') as hf:
+                    c1 = np.array(hf[ct_ds])
 
                 # Interpolate the dataset
                 # The number of columns in the dataset
                 n_cols = len(x_inter) + 3
                 if len(sigma) == len(depth):
-                    f = interpolate.interp1d(depth, sigma)
-                    sigma_interp = f(x_inter)
+                    fs = interpolate.interp1d(depth, sigma)
+                    sigma_interp = fs(x_inter)
+                    # Cutoff to 1E-10 S/cm
+                    # sigma_interp[sigma_interp < cut_off] = 0.0
                     data_i = np.zeros(n_cols)
                     for j in range(len(sigma_interp)):
                         data_i[j] = sigma_interp[j]
@@ -173,10 +205,17 @@ if __name__ == '__main__':
                     data_i[j+2] = r['pd_mpp (mW/cm2)']
                     data_i[j+3] = r['Rsh (Ohms cm2)']
 
-                    data_to_append = {}
+                    data_to_append = {
+                        'Folder': os.path.basename(f), 'PNP depth': depth.max(),
+                        'jsc (mA/cm2)': r['jsc (mA/cm2)'], 'voc (V)': r['voc (V)']
+
+                        # 'C_t': c1[0], 'pnp xpoints': len(x2)
+                    }
                     for j, col in enumerate(column_names):
                         data_to_append[col] = data_i[j]
-                    df = df.append(data_to_append, ignore_index=True)
+                    if True: #data_i[0] > 1E-20 :# or not added_t0:
+                        df = df.append(data_to_append, ignore_index=True)
+                        added_t0 = True
                     # print(df)
 
                 # except Exception as e:

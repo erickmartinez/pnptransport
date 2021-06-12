@@ -8,12 +8,21 @@ import os
 
 template_file_fs = 'input_template_finite_source_1.txt'
 # The D0 for sinx
-d0_sinx = 1E-14
+_d0_sinx = 1E-14
 # The activation energy for sinx
-ea_sinx = 0.1
+_ea_sinx = 0.1
 
 sim_db_dtype = np.dtype([
     ('config file', 'U200'), ('sigma_s (cm^-2)', 'd'), ('zeta (1/s)', 'd'), ('D_SF (cm^2/s)', 'd'),
+    ('E (V/cm)', 'd'), ('h (cm/s)', 'd'), ('m', 'd'), ('time (s)', 'd'), ('temp (C)', 'd'), ('bias (V)', 'd'),
+    ('recovery time (s)', 'd'), ('recovery E (V/cm)', 'd'), ('recovery  bias (V)', 'd'),
+    ('thickness sin (um)', 'd'), ('thickness si (um)', 'd'), ('er', 'd'), ('cb (cm^-3)', 'd'), ('t_steps', 'i'),
+    ('x_points sin', 'i'), ('x_points si', 'i')
+])
+
+sim_db_dtype_dsin = np.dtype([
+    ('config file', 'U200'), ('sigma_s (cm^-2)', 'd'), ('zeta (1/s)', 'd'),
+    ('D_SiN (cm^2/s)', 'd'), ('D_SF (cm^2/s)', 'd'),
     ('E (V/cm)', 'd'), ('h (cm/s)', 'd'), ('m', 'd'), ('time (s)', 'd'), ('temp (C)', 'd'), ('bias (V)', 'd'),
     ('recovery time (s)', 'd'), ('recovery E (V/cm)', 'd'), ('recovery  bias (V)', 'd'),
     ('thickness sin (um)', 'd'), ('thickness si (um)', 'd'), ('er', 'd'), ('cb (cm^-3)', 'd'), ('t_steps', 'i'),
@@ -104,7 +113,6 @@ def one_factor_at_a_time(csv_file: str, simulation_time: float, temperature_c: f
         'recovery_e_field': recovery_e_field['base']
     }
 
-
     # Define the parameter spans
     span_sigma_s = string_list_to_float(sigma_s['span'])
     span_zeta = string_list_to_float(zeta['span'])
@@ -176,7 +184,7 @@ def one_factor_at_a_time(csv_file: str, simulation_time: float, temperature_c: f
             )
 
             bias = sin_bias_from_e(e_field=params['e_field'], thickness_sin=thickness_sin)
-            bias_recovery =  sin_bias_from_e(e_field=params['recovery_e_field'], thickness_sin=thickness_sin)
+            bias_recovery = sin_bias_from_e(e_field=params['recovery_e_field'], thickness_sin=thickness_sin)
             ofat_simulations_db[i] = (
                 config_filename, params['sigma_s'], params['zeta'], params['dsf'], params['e_field'], params['h'],
                 params['segregation_coefficient'], simulation_time, temperature_c, bias,
@@ -371,7 +379,8 @@ def string_list_to_float(the_list: str) -> np.ndarray:
 
 
 def create_filetag(time_s: float, temp_c: float, sigma_s: float, zeta: float, d_sf: float, ef: float, m: float,
-                   h: float, recovery_time: float = 0, recovery_e_field: float = 0) -> str:
+                   h: float, recovery_time: float = 0, recovery_e_field: float = 0,
+                   d_sin: float = None) -> str:
     """
     Create the file_tag for the simulation input file
 
@@ -408,6 +417,8 @@ def create_filetag(time_s: float, temp_c: float, sigma_s: float, zeta: float, d_
     filetag += '_{0:.0f}C'.format(temp_c)
     filetag += '_{0:.0E}pcm2'.format(sigma_s)
     filetag += '_z{0:.0E}ps'.format(zeta)
+    if not d_sin is None:
+        filetag += '_DSIN{0:.1E}'.format(d_sin)
     filetag += '_DSF{0:.0E}'.format(d_sf)
     filetag += '_{0:.0E}Vcm'.format(ef)
     filetag += '_h{0:.0E}'.format(h)
@@ -497,7 +508,8 @@ def create_input_file(simulation_time: float, temperature_c: float, sigma_s: flo
                       e_field: float, segregation_coefficient: float, h: float, thickness_sin: float,
                       thickness_si: float, base_concentration: float, er: float, t_steps: int,
                       x_points_sin: int, x_points_si: int, out_dir: str, recovery_time: float = 0.,
-                      recovery_e_field: float = 0) -> str:
+                      recovery_e_field: float = 0, d0_sinx: float = _d0_sinx, ea_sinx: float = _ea_sinx,
+                      d_sin: float = None) -> str:
     """
     Creates an inputfile for the finite source simulation
 
@@ -539,13 +551,22 @@ def create_input_file(simulation_time: float, temperature_c: float, sigma_s: flo
         Additional time used to model recovery (s). Default: 0.
     recovery_e_field: float
         Electric field applied during the recovery process in V/cm. Default: 0
+    d0_sinx: float
+        The Arrhenius prefactor for the diffusion coefficient of Na in SiN\ :sub:`x` \, in cm\ :sup:`2` \/s.
+        (only used if d_sin is `None`)
+    ea_sinx: float
+        The activation energy of the diffusion coefficient of Na in SiN\ :sub:`x`, given in eV.
+        (only used if d_sin is `None`)
+    d_sin: float
+        The diffusivity of Na in SiN\ :sub:`x` \, in cm\ :sup:`2` \/s. Default: `None`.
     Returns
     -------
     str:
         The file_tag of the generated file
     """
     temperature_k = 273.15 + temperature_c
-    d_sin = utils.evaluate_arrhenius(a0=d0_sinx, Ea=ea_sinx, temp=temperature_k)
+    if d_sin is None:
+        d_sin = utils.evaluate_arrhenius(a0=d0_sinx, Ea=ea_sinx, temp=temperature_k)
     filetag = create_filetag(
         time_s=simulation_time,
         temp_c=temperature_c,
@@ -630,7 +651,7 @@ def sigma_efield_variations(sigmas: np.ndarray, efields: np.ndarray, out_dir: st
                             x_points_sin: int = 100, x_points_si: int = 200, base_concentration: float = 1E-20):
     """
     Generates inputs for a combination of the initial surface concentrations and electric fields defined in the input.
-    EVery other parameter remains fixed.
+    Every other parameter remains fixed.
 
     Parameters
     ----------
@@ -698,3 +719,92 @@ def sigma_efield_variations(sigmas: np.ndarray, efields: np.ndarray, out_dir: st
     # Save the simulations database to a csv file
     simulations_df = pd.DataFrame(ofat_simulations_db)
     simulations_df.to_csv(path_or_buf=os.path.join(out_dir, 'ofat_db.csv'), index=False)
+
+
+def efield_plus_d_sin(
+        csv_file: str, simulation_time: float, temperature_c: float,
+        sigma_s: float, zeta: float, h: float,
+        segregation_coefficient: float, dsf: float,
+        er: float = 7.0, thickness_sin: float = 75E-3, thickness_si: float = 1, t_steps: int = 720,
+        x_points_sin: int = 100, x_points_si: int = 200, base_concentration: float = 1E-20,
+):
+    """
+    Generate the input files to simulate simultaneous variations in :math: `D_{\mathrm{SiN}}` and
+    :math: `E`.
+
+    Parameters
+    ----------
+    csv_file: str
+        The path to the csv file containing the parameter variations
+    simulation_time:
+        The simulation time (s).
+    temperature_c:
+        The simulation temperature in °C
+    sigma_s: float
+        The surface concentration :math: `S_0` in cm\ :sup:`-2`\.
+    zeta: float
+        The rate of ingress :math: `k` in s\ :sup:`-1`\.
+    dsf: float
+        The diffusion coefficient of Na in the stacking fault in cm\ :sup:`2`\/s
+    h: float
+        The surface mass transfer coefficient between the SiN\ :sub:`x`\ film and the silicon
+        layer. In cm/s.
+    segregation_coefficient: float
+        The segregation coefficient :math: `m`.
+    er: float
+        The relative permittivity of SiN\: sub:`x`\.
+    thickness_sin: float
+        The thickness of SiN\: sub:`x`\ in um.
+    thickness_si:
+        The thickness of the silicon layer in um.
+    t_steps: int
+        The number of time steps to simulate.
+    x_points_sin: int
+        The number of grid points for the SiN\: sub:`x`\ layer.
+    x_points_si: int
+        The number of grid points in the Si layer.
+    base_concentration: float
+        The base concentration to simulate (cm\ :sup: `-3`\).
+
+    Returns
+    -------
+
+    """
+    # Read the csv
+    param_df = pd.read_csv(filepath_or_buffer=csv_file)
+    print(param_df)
+
+    ofat_simulations_db = np.empty(len(param_df), dtype=sim_db_dtype_dsin)
+
+    out_dir = os.path.join(os.path.dirname(csv_file), 'inputs_dsin')
+    if platform.system() == 'Windows':
+        out_dir = r'\\?\\' + out_dir
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    recovery_time = 0.0
+    recovery_e_field = 0.0
+    bias_recovery = 0.0
+
+    for i, r in param_df.iterrows():
+        bias = sin_bias_from_e(e_field=r['e_field'], thickness_sin=thickness_sin)
+        config_filename = create_input_file(
+            simulation_time=simulation_time, temperature_c=temperature_c, sigma_s=sigma_s, zeta=zeta,
+            d_sf=dsf, e_field=r['e_field'], segregation_coefficient=segregation_coefficient,
+            h=h, thickness_sin=thickness_sin, thickness_si=thickness_si, base_concentration=base_concentration,
+            er=er, t_steps=t_steps, x_points_sin=x_points_sin, x_points_si=x_points_si, out_dir=out_dir,
+            recovery_time=recovery_time, recovery_e_field=recovery_e_field, d_sin=r['d_sin']
+        )
+
+        ofat_simulations_db[i] = (
+            config_filename, sigma_s, zeta, r['d_sin'], dsf, r['e_field'], h,
+            segregation_coefficient, simulation_time, temperature_c, bias,
+            recovery_time, recovery_e_field, bias_recovery, thickness_sin, thickness_si,
+            er, base_concentration, t_steps, x_points_sin, x_points_si
+
+        )
+        print('Created recovery D_SiN: {0:.1E}, E: {1:.1E}'.format(r['d_sin'], r['e_field']))
+        i += 1
+
+    simulations_df = pd.DataFrame(ofat_simulations_db)
+    simulations_df.to_csv(path_or_buf=os.path.join(out_dir, 'd_sin_db.csv'), index=False)

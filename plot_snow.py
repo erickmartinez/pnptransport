@@ -10,12 +10,13 @@ import matplotlib as mpl
 import matplotlib.ticker as mticker
 import matplotlib.gridspec as gridspec
 import pnptransport.utils as utils
+from scipy import constants
 from tqdm import tqdm
 
 # base_path = r'G:\My Drive\Research\PVRD1\Manuscripts\thesis\images'
-base_path = r'G:\My Drive\Research\PVRD1\Manuscripts\PNP_Draft\simulations'
+base_path = r'G:\My Drive\Research\PVRD1\Manuscripts\PNP_Draft\simulations\results_20201031'
 # pnp_file = r'G:\My Drive\Research\PVRD1\Manuscripts\PNP_Draft\simulations\single_layer_zero_flux_10_140C_29E11pcm2_D5.1E-16_L1=0.2um_10V_no_screening_x1=0.015.h5'
-pnp_file = r'G:\My Drive\Research\PVRD1\Manuscripts\PNP_Draft\simulations\single_layer_zero_flux_10_140C_29E11pcm2_D5.1E-16_L1=0.2um_10V_no_screening_x1=0.015.h5'
+pnp_file = r'G:\My Drive\Research\PVRD1\Manuscripts\PNP_Draft\simulations\results_20201031\single_layer_zero_flux_12h_140C_2.9E10pcm2_D1.11E-15_L1=0.028um_10V.h5'
 
 snow_data_files = [
     {
@@ -172,16 +173,26 @@ if __name__ == '__main__':
     # Read the h5 file
     with h5py.File(pnp_file, 'r') as hf:
         time_h = np.array(hf['/time']) / 3600.
+        try:
+            x1 = hf['/time'].attrs['x1']
+        except Exception as e:
+            x1 = x1
         qs0 = hf['/time'].attrs['surface_concentration']
         D = hf['/L1'].attrs['D']
         L = np.amax(np.array(hf['L1/x']))
         qs = -np.array(hf['QS'])  # / L * 1E4
-        # tau = 4. * ((x1 * 1E-4 / np.pi) ** 2) / D
-        tau = 1. * ((x1 * 1E-4) ** 2) / D
+        vfb = np.array(hf['vfb'])
+        tau = 4. * ((x1 * 1E-4 / np.pi) ** 2) / D
+        # tau = 1. * ((x1 * 1E-4) ** 2) / D
 
-    # print(qs/qs0)
+
+    # Old data sets
+    # ax_s_0.plot(
+    #     np.sqrt(time_h * 3600 / tau), np.abs(qs / qs0), color='tab:red', label='This work'
+    # )
+    # 2020/10 datasets
     ax_s_0.plot(
-        np.sqrt(time_h * 3600 / tau), np.abs(qs / qs0), color='tab:red', label='This work'
+        np.sqrt(time_h * 3600 / tau), np.abs((qs-qs[0])/(qs[-1]-qs[0])), color='tab:red', label='This work'
     )
     # Set the limits for the x axis
     ax_s_0.set_xlim(left=0, right=time_max)
@@ -200,14 +211,16 @@ if __name__ == '__main__':
     ax_c_0 = fig_c.add_subplot(gs_c_00[0, 0])
     # Set the axis labels
     ax_c_0.set_xlabel(r'Depth ($\mathregular{\mu}$m)')
-    ax_c_0.set_ylabel(r'${C}$ ($\mathregular{cm^{-3}}$)')
+    # ax_c_0.set_ylabel(r'${C}$ ($\mathregular{cm^{-3}}$)')
+    ax_c_0.set_ylabel(r'${C/C_0}$')
 
     # Make the y axis log
     ax_c_0.set_yscale('log')
     # Set the ticks for the y axis
     ax_c_0.yaxis.set_major_locator(mpl.ticker.LogLocator(base=10.0, numticks=6))
     ax_c_0.yaxis.set_minor_locator(mpl.ticker.LogLocator(base=10.0, numticks=60, subs=np.arange(2, 10) * .1))
-    ax_c_0.set_ylim(1E14, 1E20)
+    # ax_c_0.set_ylim(1E14, 1E20)
+    ax_c_0.set_ylim(1E-4, 50.0)
     # Set the ticks for the x axis
     # Configure the ticks for the x axis
     ax_c_0.xaxis.set_major_locator(mticker.MaxNLocator(6, prune=None))
@@ -231,6 +244,8 @@ if __name__ == '__main__':
         # requested_time = np.linspace(0.0, np.amax(time_s), 50)
         requested_indices = utils.get_indices_at_values(x=time_s, requested_values=requested_time)
         time_profile = np.empty(len(requested_indices))
+        C0 = np.array(grp_sinx['concentration']['ct_0'])
+        c0 = C0[0]
 
         print(requested_indices)
 
@@ -244,7 +259,7 @@ if __name__ == '__main__':
                 ct_ds = 'ct_{0:d}'.format(idx)
                 c_sin = np.array(grp_sinx['concentration'][ct_ds])
                 color_j = cm(normalize(np.sqrt(time_j*3600./tau)))
-                ax_c_0.plot(x_sin, c_sin, color=color_j, zorder=0)
+                ax_c_0.plot(x_sin, c_sin/c0, color=color_j, zorder=0)
                 pbar.set_description('Extracting profile {0} at time {1:.1f} h...'.format(ct_ds, time_j))
                 pbar.update()
                 pbar.refresh()

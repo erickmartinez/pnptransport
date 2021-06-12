@@ -6,7 +6,8 @@ import pnptransport.transport_storage as data_storage
 import pnptransport.utils as utils
 import h5py
 import os
-
+# import tensorflow as tf
+# from tensorflow import keras
 
 class MLSim:
     """
@@ -25,7 +26,7 @@ class MLSim:
         (defaults to 1E-10 S/cm)
     """
     _shunt_width: float = 0.57  # nm
-    _shunt_length: float = 1.4142  # um
+    _shunt_length: float = 1.0 # 1.4142  # um
     _h5_transport_file: str = None
     _data_storage: data_storage.TransportStorage = None
     _conductivity_model: KorolConductivity = None
@@ -36,6 +37,7 @@ class MLSim:
     _cell_area: float = 1.0  # cm^2
     __ml_dump_mpp: str = None
     __ml_dump_rsh: str = None
+    __dnn_dump_mpp: str = None
     __predictors_depth: np.ndarray = None
     __predictors_colnames: list = None
 
@@ -50,13 +52,16 @@ class MLSim:
         self._data_storage = data_storage.TransportStorage(filename=h5_transport_file)
         self._conductivity_model = KorolConductivity()
         self.__simulation_time = self._data_storage.time_s
-        self.__ml_dump_mpp = os.path.join(os.getcwd(), 'pidsim/random_forest_mpp.joblib')
-        self.__ml_dump_rsh = os.path.join(os.getcwd(), 'pidsim/random_forest_rsh.joblib')
+        self.__ml_dump_mpp = os.path.join(os.getcwd(), 'pidsim/rfr_optimized_mpp.joblib')
+        self.__ml_dump_rsh = os.path.join(os.getcwd(), 'pidsim/rfr_optimized_rsh.joblib')
+        # self.__dnn_dump_mpp = os.path.join(os.getcwd(), 'pidsim/dnn_mpp.h5')
         self.__generate_predictors_depth()
 
     def __generate_predictors_depth(self):
-        self.__predictors_depth = np.linspace(0.0, 1.0, 100)
+        self.__predictors_depth = np.linspace(0.0, 1.0, 101)
+        # self.__predictors_depth = utils.geometric_series_spaced(max_val=1.0, min_delta=1E-5, steps=99)
         self.__predictors_colnames = ['sigma at {0:.3f} um'.format(x) for x in self.__predictors_depth]
+        self.__predictors_colnames.append('PNP depth')
 
     def set_mpp_dump_model(self, path: str):
         """
@@ -170,6 +175,7 @@ class MLSim:
         from joblib import load
 
         model_rf: RandomForestRegressor = load(self.__ml_dump_mpp)
+        # model_dnn = tf.keras.models.load_model(self.__dnn_dump_mpp, save_format='h5')
 
         # allocate memory
         pmpp_t = np.empty(time_points)
@@ -190,7 +196,14 @@ class MLSim:
                 self._conductivity_model.segregation_coefficient = self.segregation_coefficient
                 self._conductivity_model.activated_na_fraction = self.activated_na_fraction
                 conductivity = self._conductivity_model.estimate_conductivity()
-                pmpp = np.array(model_rf.predict(X=np.array([conductivity]))).mean()
+                # conductivity[conductivity < 1E-10] = 0.0
+                # predictors = np.array([conductivity])
+                predictors_list = list(conductivity)
+                predictors_list.append(x2.max())
+                predictors_list.append(self.__simulation_time[v])
+                predictors = np.array([predictors_list])
+                pmpp = np.array(model_rf.predict(X=predictors)).mean()
+                # pmpp = np.array(model_dnn.predict(predictors)).mean()
                 pmpp_t[i] = pmpp
                 pbar.set_description('Time: {0:.1f} h, Pmpp = {1:.3f} mW/ cm^2'.format(
                     self.__simulation_time[v] / 3600, pmpp
@@ -221,7 +234,7 @@ class MLSim:
         from sklearn.ensemble import RandomForestRegressor
         from joblib import load
 
-        model_rf: RandomForestRegressor = load(self.__ml_dump_rsh)
+        model_rf = load(self.__ml_dump_rsh)
 
         # allocate memory
         rsh_t = np.empty(time_points)
@@ -239,10 +252,15 @@ class MLSim:
                 # Get the concentration at the stacking fault partition
                 concentration = f(self.__predictors_depth)
                 self._conductivity_model.concentration_profile = concentration
-                self._conductivity_model.segregation_coefficient = 50
+                self._conductivity_model.segregation_coefficient = 1.
                 self._conductivity_model.activated_na_fraction = 1
                 conductivity = self._conductivity_model.estimate_conductivity()
-                rsh = np.array(model_rf.predict(X=np.array([conductivity]))).mean()
+                # predictors = np.array([conductivity])
+                predictors_list = list(conductivity)
+                predictors_list.append(x2.max())
+                predictors_list.append(self.__simulation_time[v])
+                predictors = np.array([predictors_list])
+                rsh = 10 ** (np.array(model_rf.predict(X=predictors)).mean())
                 rsh_t[i] = rsh
                 pbar.set_description('Time: {0:.1f} h, Rsh = {1:.3f} Ohms cm^2'.format(
                     self.__simulation_time[v] / 3600, rsh

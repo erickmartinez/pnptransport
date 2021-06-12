@@ -67,7 +67,7 @@ if __name__ == '__main__':
     ax_s_0 = fig_s.add_subplot(gs_s_00[0, 0])
     # Set the axis labels
     ax_s_0.set_xlabel(r'$\sqrt{t}$ (h$\mathregular{^{1/2}}$)')
-    ax_s_0.set_ylabel(r'$\Delta V_{\mathrm{FB}}$ (V')
+    ax_s_0.set_ylabel(r'$\Delta V_{\mathrm{FB}}$ (V)')
 
     ax_s_0.set_ylim(-0.75, 0.1)
 
@@ -98,14 +98,14 @@ if __name__ == '__main__':
         time_s = np.array(hf['time'])
         vfb = - np.array(hf['vfb'])  # / L * 1E4
         ax_s_0.plot(
-            np.sqrt(time_s / 3600.), -vfb, color='tab:red', label='Model'
+            np.sqrt(time_s / 3600.), -(vfb-vfb[0]), color='tab:red', label='Model'
         )
     leg = ax_s_0.legend(loc='upper right', frameon=True)
     ax_s_0.set_xlim(0, np.sqrt(np.amax(time_s/3600.)))
     fig_s.tight_layout()
 
     filetag = os.path.basename(pnp_file)
-    fig_s.savefig(os.path.join(base_path, filetag + '_s.svg'), dpi=600)
-    fig_s.savefig(os.path.join(base_path, filetag + '_s.eps'), dpi=600)
+    fig_s.savefig(os.path.join(base_path, filetag + '_shift_s.svg'), dpi=600)
+    fig_s.savefig(os.path.join(base_path, filetag + '_shift_s.eps'), dpi=600)
 
     plt.show()
