@@ -25,7 +25,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -238,7 +238,7 @@ effect of the variation of a specific parameter.</p>
 <span class="kn">import</span> <span class="nn">pidsim.parameter_span</span> <span class="k">as</span> <span class="nn">pspan</span>
 
 <span class="c1"># The path to the csv file with the conditions of the different variations</span>
-<span class="n">csv_file</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\one_factor_at_a_time_lower_20200828_h=1E-12.csv&#39;</span>
+<span class="n">csv_file</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\one_factor_at_a_time_lower_20201028_h=1E-12.csv&#39;</span>
 <span class="c1"># Simulation time in h</span>
 <span class="n">simulation_time_h</span> <span class="o">=</span> <span class="mf">96.</span>
 <span class="c1"># Temperature in °C</span>
@@ -250,7 +250,7 @@ effect of the variation of a specific parameter.</p>
 <span class="c1"># Modeled thickness of Si um</span>
 <span class="n">thickness_si</span> <span class="o">=</span> <span class="mf">1.0</span>
 <span class="c1"># Number of time steps</span>
-<span class="n">t_steps</span> <span class="o">=</span> <span class="mi">720</span>
+<span class="n">t_steps</span> <span class="o">=</span> <span class="mi">1440</span>
 <span class="c1"># Number of elements in the sin layer</span>
 <span class="n">x_points_sin</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="c1"># number of elements in the Si layer</span>
@@ -1194,7 +1194,47 @@ simulations.</p>
 403
 404
 405
-406</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">This code runs basic analysis on simulations that were computed using the &#39;one at a time analysis&#39;.</span>
 
 <span class="sd">You must provide the path to the csv database with the parameters of each simulation.</span>
@@ -1221,8 +1261,8 @@ simulations.</p>
 <span class="kn">import</span> <span class="nn">pnptransport.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
-<span class="n">path_to_csv</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\inputs_20200831\ofat_db.csv&#39;</span>
-<span class="n">path_to_results</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\inputs_20200831\results&#39;</span>
+<span class="n">path_to_csv</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\inputs_20201028\ofat_db.csv&#39;</span>
+<span class="n">path_to_results</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;G:\My Drive\Research\PVRD1\Manuscripts\Device_Simulations_draft\simulations\inputs_20201028\results&#39;</span>
 <span class="n">t_max_h</span> <span class="o">=</span> <span class="mf">96.</span>  <span class="c1"># h</span>
 
 <span class="n">pid_experiment_csv</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1">#&#39;G:\My Drive\Research\PVRD1\DATA\PID\MC4_Raw_IV_modified.csv&#39;</span>
@@ -1393,22 +1433,37 @@ simulations.</p>
         <span class="c1"># Configure the ticks for the x axis</span>
         <span class="n">ax_s_0</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">mticker</span><span class="o">.</span><span class="n">MaxNLocator</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">prune</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
         <span class="n">ax_s_0</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">mticker</span><span class="o">.</span><span class="n">AutoMinorLocator</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
-        <span class="c1"># Create the rsh figure</span>
-        <span class="n">fig_r</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-        <span class="n">fig_r</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="mf">4.75</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="n">forward</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">fig_r</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
-        <span class="n">gs_r_0</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">figure</span><span class="o">=</span><span class="n">fig_r</span><span class="p">)</span>
-        <span class="n">gs_r_00</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpecFromSubplotSpec</span><span class="p">(</span>
-            <span class="n">nrows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">subplot_spec</span><span class="o">=</span><span class="n">gs_r_0</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="c1"># Create the mpp figure</span>
+        <span class="n">fig_mpp</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+        <span class="n">fig_mpp</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="mf">4.75</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="n">forward</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">fig_mpp</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">gs_mpp_0</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">figure</span><span class="o">=</span><span class="n">fig_mpp</span><span class="p">)</span>
+        <span class="n">gs_mpp_00</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpecFromSubplotSpec</span><span class="p">(</span>
+            <span class="n">nrows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">subplot_spec</span><span class="o">=</span><span class="n">gs_mpp_0</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">ax_r_0</span> <span class="o">=</span> <span class="n">fig_r</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs_r_00</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">ax_mpp_0</span> <span class="o">=</span> <span class="n">fig_mpp</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs_mpp_00</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
         <span class="c1"># Set the axis labels</span>
-        <span class="n">ax_r_0</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Time (h)&#39;</span><span class="p">)</span>
-        <span class="n">ax_r_0</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$R_{\mathrm</span><span class="si">{sh}</span><span class="s1">}$ ($\mathrm{\Omega\cdot cm^2}}$)&#39;</span><span class="p">)</span>
+        <span class="n">ax_mpp_0</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Time (h)&#39;</span><span class="p">)</span>
+        <span class="n">ax_mpp_0</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$R_{\mathrm</span><span class="si">{sh}</span><span class="s1">}$ ($\mathrm{\Omega\cdot cm^2}}$)&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Vfb figure</span>
+        <span class="n">fig_vfb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+        <span class="n">fig_vfb</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="mf">4.75</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="n">forward</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">fig_vfb</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">gs_vfb_0</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">figure</span><span class="o">=</span><span class="n">fig_vfb</span><span class="p">)</span>
+        <span class="n">gs_vfb_00</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpecFromSubplotSpec</span><span class="p">(</span>
+            <span class="n">nrows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">subplot_spec</span><span class="o">=</span><span class="n">gs_vfb_0</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">ax_vfb_0</span> <span class="o">=</span> <span class="n">fig_vfb</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs_vfb_00</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="c1"># Set the axis labels</span>
+        <span class="n">ax_vfb_0</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Time (h)&#39;</span><span class="p">)</span>
+        <span class="n">ax_vfb_0</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$V_{\mathrm</span><span class="si">{FB}</span><span class="s1">}$ (V)&#39;</span><span class="p">)</span>
 
         <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">path_to_h5</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">hf</span><span class="p">:</span>
             <span class="c1"># Get the time dataset</span>
             <span class="n">time_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hf</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
+            <span class="c1"># Get the vfb dataset</span>
+            <span class="n">vfb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;vfb&#39;</span><span class="p">))</span>
             <span class="c1"># Get the sinx group</span>
             <span class="n">grp_sinx</span> <span class="o">=</span> <span class="n">hf</span><span class="p">[</span><span class="s1">&#39;L1&#39;</span><span class="p">]</span>
             <span class="c1"># get the si group</span>
@@ -1431,14 +1486,18 @@ simulations.</p>
                     <span class="n">time_profile</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">time_j</span>
                     <span class="c1"># Get the specific profile</span>
                     <span class="n">ct_ds</span> <span class="o">=</span> <span class="s1">&#39;ct_</span><span class="si">{0:d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-                    <span class="n">c_sin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">grp_sinx</span><span class="p">[</span><span class="s1">&#39;concentration&#39;</span><span class="p">][</span><span class="n">ct_ds</span><span class="p">])</span>
-                    <span class="n">c_si</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">grp_si</span><span class="p">[</span><span class="s1">&#39;concentration&#39;</span><span class="p">][</span><span class="n">ct_ds</span><span class="p">])</span>
-                    <span class="n">color_j</span> <span class="o">=</span> <span class="n">cm</span><span class="p">(</span><span class="n">normalize</span><span class="p">(</span><span class="n">time_j</span><span class="p">))</span>
-                    <span class="n">ax_c_0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_sin</span><span class="p">,</span> <span class="n">c_sin</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color_j</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-                    <span class="n">ax_c_1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_si</span><span class="p">,</span> <span class="n">c_si</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color_j</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-                    <span class="n">pbar</span><span class="o">.</span><span class="n">set_description</span><span class="p">(</span><span class="s1">&#39;Extracting profile </span><span class="si">{0}</span><span class="s1"> at time </span><span class="si">{1:.1f}</span><span class="s1"> h...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ct_ds</span><span class="p">,</span> <span class="n">time_j</span><span class="p">))</span>
-                    <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
-                    <span class="n">pbar</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">c_sin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">grp_sinx</span><span class="p">[</span><span class="s1">&#39;concentration&#39;</span><span class="p">][</span><span class="n">ct_ds</span><span class="p">])</span>
+                        <span class="n">c_si</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">grp_si</span><span class="p">[</span><span class="s1">&#39;concentration&#39;</span><span class="p">][</span><span class="n">ct_ds</span><span class="p">])</span>
+                        <span class="n">color_j</span> <span class="o">=</span> <span class="n">cm</span><span class="p">(</span><span class="n">normalize</span><span class="p">(</span><span class="n">time_j</span><span class="p">))</span>
+                        <span class="n">ax_c_0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_sin</span><span class="p">,</span> <span class="n">c_sin</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color_j</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="n">ax_c_1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_si</span><span class="p">,</span> <span class="n">c_si</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color_j</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="n">pbar</span><span class="o">.</span><span class="n">set_description</span><span class="p">(</span><span class="s1">&#39;Extracting profile </span><span class="si">{0}</span><span class="s1"> at time </span><span class="si">{1:.1f}</span><span class="s1"> h...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ct_ds</span><span class="p">,</span> <span class="n">time_j</span><span class="p">))</span>
+                        <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+                        <span class="n">pbar</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">ke</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error reading file &#39;</span><span class="si">{0}</span><span class="s2">&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filetag</span><span class="p">))</span>
+                        <span class="k">raise</span> <span class="n">ke</span>
 
             <span class="c1"># Estimate the integrated concentrations as a function of time for each layer</span>
             <span class="n">c_sin_int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_profiles</span><span class="p">)</span>
@@ -1462,6 +1521,9 @@ simulations.</p>
         <span class="n">ax_s_0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_s</span> <span class="o">/</span> <span class="mf">3600.</span><span class="p">,</span> <span class="n">c_sin_int</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$\mathregular</span><span class="si">{SiN_x}</span><span class="s1">$&#39;</span><span class="p">)</span>
         <span class="n">ax_s_0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_s</span> <span class="o">/</span> <span class="mf">3600.</span><span class="p">,</span> <span class="n">c_si_int</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Si&#39;</span><span class="p">)</span>
         <span class="c1"># ax_s_0.plot(time_s / 3600., c_si_int + c_sin_int, label=r&#39;Si + $\mathregular{SiN_x}$&#39;)</span>
+
+        <span class="n">ax_vfb_0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_s</span> <span class="o">/</span> <span class="mf">3600.</span><span class="p">,</span> <span class="n">vfb</span><span class="p">)</span>
+        <span class="n">ax_vfb_0</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">t_max_h</span><span class="p">)</span>
 
         <span class="n">integrated_final_concentrations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_sin_int</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">c_si_int</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
@@ -1546,53 +1608,71 @@ simulations.</p>
         <span class="n">pmpp</span> <span class="o">=</span> <span class="n">ml_analysis</span><span class="o">.</span><span class="n">pmpp_time_series</span><span class="p">(</span><span class="n">requested_indices</span><span class="o">=</span><span class="n">requested_indices</span><span class="p">)</span>
         <span class="n">rsh</span> <span class="o">=</span> <span class="n">ml_analysis</span><span class="o">.</span><span class="n">rsh_time_series</span><span class="p">(</span><span class="n">requested_indices</span><span class="o">=</span><span class="n">requested_indices</span><span class="p">)</span>
 
-        <span class="n">simulated_pmpp_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time (s)&#39;</span><span class="p">:</span> <span class="n">time_s</span><span class="p">,</span> <span class="s1">&#39;Pmpp (mW/cm^2)&#39;</span><span class="p">:</span> <span class="n">pmpp</span><span class="p">,</span> <span class="s1">&#39;Rsh (Ohm cm^2)&#39;</span> <span class="p">:</span> <span class="n">rsh</span><span class="p">})</span>
+        <span class="n">simulated_pmpp_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span>
+            <span class="s1">&#39;time (s)&#39;</span><span class="p">:</span> <span class="n">time_s</span><span class="p">,</span> <span class="s1">&#39;Pmpp (mW/cm^2)&#39;</span><span class="p">:</span> <span class="n">pmpp</span><span class="p">,</span> <span class="s1">&#39;Rsh (Ohm cm^2)&#39;</span><span class="p">:</span> <span class="n">rsh</span><span class="p">,</span>
+            <span class="s1">&#39;vfb (V)&#39;</span><span class="p">:</span> <span class="n">vfb</span>
+        <span class="p">})</span>
         <span class="n">simulated_pmpp_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">analysis_path</span><span class="p">,</span> <span class="n">filetag</span> <span class="o">+</span> <span class="s1">&#39;_simulated_pid.csv&#39;</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-        <span class="n">ax_r_0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_h</span><span class="p">,</span> <span class="n">pmpp</span> <span class="o">/</span> <span class="n">pmpp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Simulation&#39;</span><span class="p">)</span>
-        <span class="n">ax_r_0</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">time_h</span><span class="p">))</span>
+        <span class="n">ax_mpp_0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_h</span><span class="p">,</span> <span class="n">rsh</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Simulation&#39;</span><span class="p">)</span>
+        <span class="n">ax_mpp_0</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">time_h</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">pid_experiment_csv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">time_exp</span> <span class="o">=</span> <span class="n">pid_experiment_df</span><span class="p">[</span><span class="s1">&#39;time (s)&#39;</span><span class="p">]</span><span class="o">/</span><span class="mf">3600.</span>
             <span class="n">pmax_exp</span> <span class="o">=</span> <span class="n">pid_experiment_df</span><span class="p">[</span><span class="s1">&#39;Pmax&#39;</span><span class="p">]</span>
-            <span class="n">ax_r_0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_exp</span><span class="p">,</span> <span class="n">pmax_exp</span> <span class="o">/</span> <span class="n">pmax_exp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">fillstyle</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Experiment&#39;</span><span class="p">)</span>
-            <span class="n">leg</span> <span class="o">=</span> <span class="n">ax_r_0</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower right&#39;</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="c1"># ax_r_0.set_yscale(&#39;log&#39;)</span>
-        <span class="n">ax_r_0</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;time (h)&#39;</span><span class="p">)</span>
-        <span class="c1"># ax_r_0.set_ylabel(&#39;$R_{\mathrm{sh}}\;(\Omega \cdot \mathregular{cm^2})$&#39;)</span>
-        <span class="n">ax_r_0</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Normalized Power&#39;</span><span class="p">)</span>
+            <span class="n">ax_mpp_0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_exp</span><span class="p">,</span> <span class="n">pmax_exp</span> <span class="o">/</span> <span class="n">pmax_exp</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">fillstyle</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Experiment&#39;</span><span class="p">)</span>
+            <span class="n">leg</span> <span class="o">=</span> <span class="n">ax_mpp_0</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower right&#39;</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">ax_mpp_0</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+        <span class="n">ax_mpp_0</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;time (h)&#39;</span><span class="p">)</span>
+        <span class="n">ax_mpp_0</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;$R_{\mathrm</span><span class="si">{sh}</span><span class="s1">}\;(\Omega \cdot \mathregular{cm^2})$&#39;</span><span class="p">)</span>
+        <span class="c1"># ax_mpp_0.set_ylabel(&#39;Normalized Power&#39;)</span>
 
-        <span class="n">ax_r_0</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">mticker</span><span class="o">.</span><span class="n">MaxNLocator</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">prune</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
-        <span class="n">ax_r_0</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">mticker</span><span class="o">.</span><span class="n">AutoMinorLocator</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">ax_mpp_0</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">mticker</span><span class="o">.</span><span class="n">MaxNLocator</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">prune</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
+        <span class="n">ax_mpp_0</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">mticker</span><span class="o">.</span><span class="n">AutoMinorLocator</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
 
         <span class="n">title_str</span> <span class="o">=</span> <span class="n">source_str1</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="n">source_str2</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="n">dsf_str</span>
 
         <span class="n">plot_txt</span> <span class="o">=</span> <span class="n">e_field_str</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">temp_str</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">h_str</span>
-        <span class="n">ax_r_0</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title_str</span><span class="p">)</span>
-        <span class="n">ax_r_0</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+        <span class="n">ax_mpp_0</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title_str</span><span class="p">)</span>
+        <span class="n">ax_mpp_0</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
             <span class="mf">0.65</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span>
             <span class="n">plot_txt</span><span class="p">,</span>
             <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span>
             <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span>
-            <span class="n">transform</span><span class="o">=</span><span class="n">ax_r_0</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+            <span class="n">transform</span><span class="o">=</span><span class="n">ax_mpp_0</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+            <span class="n">fontsize</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span>
+        <span class="p">)</span>
+
+        <span class="n">ax_vfb_0</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title_str</span><span class="p">)</span>
+        <span class="n">ax_vfb_0</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+            <span class="mf">0.65</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span>
+            <span class="n">plot_txt</span><span class="p">,</span>
+            <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span>
+            <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span>
+            <span class="n">transform</span><span class="o">=</span><span class="n">ax_vfb_0</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
             <span class="n">fontsize</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span>
             <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span>
         <span class="p">)</span>
 
         <span class="n">fig_c</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
         <span class="n">fig_s</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-        <span class="n">fig_r</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+        <span class="n">fig_mpp</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+        <span class="n">fig_vfb</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 
         <span class="n">fig_c</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">analysis_path</span><span class="p">,</span> <span class="n">filetag</span> <span class="o">+</span> <span class="s1">&#39;_c.png&#39;</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
         <span class="n">fig_c</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">analysis_path</span><span class="p">,</span> <span class="n">filetag</span> <span class="o">+</span> <span class="s1">&#39;_c.svg&#39;</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
         <span class="n">fig_s</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">analysis_path</span><span class="p">,</span> <span class="n">filetag</span> <span class="o">+</span> <span class="s1">&#39;_s.png&#39;</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
-        <span class="n">fig_r</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">analysis_path</span><span class="p">,</span> <span class="n">filetag</span> <span class="o">+</span> <span class="s1">&#39;_p.png&#39;</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
-        <span class="n">fig_r</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">analysis_path</span><span class="p">,</span> <span class="n">filetag</span> <span class="o">+</span> <span class="s1">&#39;_p.svg&#39;</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+        <span class="n">fig_mpp</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">analysis_path</span><span class="p">,</span> <span class="n">filetag</span> <span class="o">+</span> <span class="s1">&#39;_p.png&#39;</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+        <span class="n">fig_mpp</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">analysis_path</span><span class="p">,</span> <span class="n">filetag</span> <span class="o">+</span> <span class="s1">&#39;_p.svg&#39;</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+        <span class="n">fig_vfb</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">analysis_path</span><span class="p">,</span> <span class="n">filetag</span> <span class="o">+</span> <span class="s1">&#39;_vfb.png&#39;</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+        <span class="n">fig_vfb</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">analysis_path</span><span class="p">,</span> <span class="n">filetag</span> <span class="o">+</span> <span class="s1">&#39;_vfb.svg&#39;</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
 
         <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig_c</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig_s</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig_r</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig_mpp</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig_vfb</span><span class="p">)</span>
 
-        <span class="k">del</span> <span class="n">fig_c</span><span class="p">,</span> <span class="n">fig_s</span><span class="p">,</span> <span class="n">fig_r</span>
+        <span class="k">del</span> <span class="n">fig_c</span><span class="p">,</span> <span class="n">fig_s</span><span class="p">,</span> <span class="n">fig_mpp</span><span class="p">,</span> <span class="n">fig_vfb</span>
 
     <span class="n">simulations_df</span><span class="p">[</span><span class="s1">&#39;C_SiNx average final (atoms/cm^3)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">integrated_final_concentrations</span><span class="p">[</span><span class="s1">&#39;C_SiNx average final (atoms/cm^3)&#39;</span><span class="p">]</span>
     <span class="n">simulations_df</span><span class="p">[</span><span class="s1">&#39;C_Si average final (atoms/cm^3)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">integrated_final_concentrations</span><span class="p">[</span><span class="s1">&#39;C_Si average final (atoms/cm^3)&#39;</span><span class="p">]</span>

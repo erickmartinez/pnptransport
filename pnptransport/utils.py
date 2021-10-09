@@ -330,19 +330,19 @@ def tau_c(D: float, E: float, L: float, T: float) -> float:
     equation in the low concentration approximation
 
         .. math::
-            \\tau_c = \\frac{L}{\\mu E} + \\frac{2D}{\\mu^2 E^2} \\left[1 \pm \\left( 1 + \\frac{q E}{kT} L \\right)^{1/2}\\right]
+            \\tau_c = \\frac{L}{\\mu E} + \\frac{D}{\\mu^2 E^2} \\left[2 \pm \\left( 1 + \\frac{q E}{kT} L \\right)^{1/2}\\right]
 
     Since  :math:`\\mu = qD/kT`
 
         .. math::
-            \\tau_c = \\left( \\frac{L}{D} \\right) X + \\left( \\frac{2}{D} \\right) X^2  \\left[ 1 \pm \\left( 1 + \\frac{L}{X} \\right)^{1/2} \\right],
+            \\tau_c = \\left( \\frac{L}{D} \\right) X + \\left( \\frac{1}{D} \\right) X^2  \\left[ 2 \pm \\left( 1 + \\frac{L}{X} \\right)^{1/2} \\right],
 
     with :math:`X = kT/qE`
 
     When :math:`\mu E \\tau_c` is negligible, compared with the diffusive term :math:`2\sqrt{D\\tau_c}`, it returns
 
     .. math::
-        \\tau_c = \\frac{L^2}{D}
+        \\tau_c = \\frac{L^2}{4D}
 
     Parameters
     ----------
@@ -367,10 +367,11 @@ def tau_c(D: float, E: float, L: float, T: float) -> float:
 
     x = kTq_red / E  # x 1E-5 V x 1E-6 cm/V = 1E-11 cm
 
-    tau1 = 1.0E-11 * x * (L / D) + (2.0E-22 * np.power(x, 2.0) / D) * (1.0 - np.sqrt(1E11 * (L / x)))
-    tau2 = 1.0E-11 * x * (L / D) + (2.0E-22 * np.power(x, 2.0) / D) * (1.0 + np.sqrt(1E11 * (L / x)))
+    tau1 = 1.0E-11 * x * (L / D) + (2.0E-22 * np.power(x, 2.0) / D) * (2.0 - np.sqrt(1.0 + 1E11 * (L / x)))
+    tau2 = 1.0E-11 * x * (L / D) + (2.0E-22 * np.power(x, 2.0) / D) * (2.0 + np.sqrt(1.0 + 1E11 * (L / x)))
     
-    tau_d = np.power(L, 2.0) / D
+    tau_d = np.power(L, 2.0) / D / 4.0
+
 
     if tau1 <= 0:
         return min(tau2, tau_d)
